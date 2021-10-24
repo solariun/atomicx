@@ -1,10 +1,10 @@
-# CorePartitionOS
+# AtomicX
 
 Version 2.7.0 release
 
 ![image](https://user-images.githubusercontent.com/1805792/125191254-6591cf80-e239-11eb-9e89-d7500e793cd4.png)
 
-What is atomic? Atomic is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
+What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
 
 * **DO NOT DISPLACE STACK, IT WILL STILL AVAILABLE FOR PROCESSING**, the *Stack Page* will only hold a backup of the most necessary information needed, allowing stacks in few bites most if the time. This implementation if highly suitable for Microcontrollers like ATINY85, for example, that only has 512 bites, and you can have 5 or more threads doing things for you, only backup the most important context information.
 * Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads.
@@ -55,7 +55,7 @@ What is atomic? Atomic is a general purpose **cooperative** thread lib for embed
 ``` C++
 //
 //  main.cpp
-//  atomic
+//  atomicx
 //
 //  Created by GUSTAVO CAMPOS on 28/08/2021.
 //
