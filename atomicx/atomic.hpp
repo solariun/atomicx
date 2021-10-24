@@ -373,21 +373,37 @@ namespace thread
 
         virtual void run(void) noexcept = 0;
         virtual void StackOverflowHandler(void) = 0;
+
+    protected:
         
+        struct Message
+        {
+            size_t tag;
+            size_t message;
+        };
+
+        uint32_t GetTopicID (const char* pszTopic, size_t nKeyLenght);
+
+        /**
+         * ------------------------------
+         * SMART WAIT/NOTIFY  IMPLEMENTATION
+         * ------------------------------
+         */
+
         template<typename T> bool Wait(size_t& nMessage, T& refVar, size_t nTag)
         {
             m_TopicId = 0;
             m_pLockId = (uint8_t*)&refVar;
             m_aStatus = atypes::lock;
-            
+
             m_lockMessage.tag = nTag;
-            
+
             Yield();
 
             nMessage = m_lockMessage.message;
-            
+
             m_lockMessage = {0,0};
-            
+
             return true;
         }
 
@@ -396,13 +412,13 @@ namespace thread
             m_TopicId = 0;
             m_pLockId = (uint8_t*)&refVar;
             m_aStatus = atypes::lock;
-            
+
             m_lockMessage.tag = nTag;
 
             Yield();
-            
+
             m_lockMessage = {0,0};
-            
+
             return true;
         }
 
@@ -418,7 +434,7 @@ namespace thread
                     thr.m_aStatus = atypes::now;
                     thr.m_nTargetTime = 0;
                     thr.m_pLockId = nullptr;
-                    
+
                     thr.m_lockMessage.message = nMessage;
 
                     bRet = true;
@@ -438,7 +454,7 @@ namespace thread
         template<typename T> bool Notify(T& refVar, size_t nTag, bool bAll=false)
         {
             bool bRet = false;
-            
+
             for (auto& thr : *this)
             {
                 if (thr.m_pLockId == (void*) &refVar && nTag == thr.m_lockMessage.tag)
@@ -447,11 +463,11 @@ namespace thread
                     thr.m_aStatus = atypes::now;
                     thr.m_nTargetTime = 0;
                     thr.m_pLockId = nullptr;
-                    
+
                     thr.m_lockMessage.message = 0;
-                    
+
                     bRet = true;
-                    
+
                     if (bAll == false)
                     {
                         break;
@@ -460,7 +476,7 @@ namespace thread
             }
 
             if (bRet) Yield(0);
-            
+
             return bRet;
         }
 
@@ -473,19 +489,9 @@ namespace thread
                     return true;
                 }
             }
-                        
+
             return false;
         }
-
-    protected:
-        
-        struct Message
-        {
-            size_t tag;
-            size_t message;
-        };
-
-        uint32_t GetTopicID (const char* pszTopic, size_t nKeyLenght);
 
         /**
          * ------------------------------
