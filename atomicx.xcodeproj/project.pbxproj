@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6753CAF72725614200366A36 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753CAF62725614200366A36 /* main.cpp */; };
+		6753CAFF272561A900366A36 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753CAFE272561A900366A36 /* main.cpp */; };
+		6753CB02272561C900366A36 /* atomic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753CB01272561C900366A36 /* atomic.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +25,10 @@
 
 /* Begin PBXFileReference section */
 		6753CAF32725614200366A36 /* atomicx */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = atomicx; sourceTree = BUILT_PRODUCTS_DIR; };
-		6753CAF62725614200366A36 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		6753CAFE272561A900366A36 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		6753CB00272561C900366A36 /* atomic.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = atomic.hpp; sourceTree = "<group>"; };
+		6753CB01272561C900366A36 /* atomic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = atomic.cpp; sourceTree = "<group>"; };
+		6753CB032725622E00366A36 /* Arduino */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Arduino; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +45,9 @@
 		6753CAEA2725614200366A36 = {
 			isa = PBXGroup;
 			children = (
+				6753CAFD2725618F00366A36 /* examples */,
 				6753CAF52725614200366A36 /* atomicx */,
+				6753CAFE272561A900366A36 /* main.cpp */,
 				6753CAF42725614200366A36 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -57,9 +63,18 @@
 		6753CAF52725614200366A36 /* atomicx */ = {
 			isa = PBXGroup;
 			children = (
-				6753CAF62725614200366A36 /* main.cpp */,
+				6753CB01272561C900366A36 /* atomic.cpp */,
+				6753CB00272561C900366A36 /* atomic.hpp */,
 			);
 			path = atomicx;
+			sourceTree = "<group>";
+		};
+		6753CAFD2725618F00366A36 /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				6753CB032725622E00366A36 /* Arduino */,
+			);
+			path = examples;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +134,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6753CAF72725614200366A36 /* main.cpp in Sources */,
+				6753CB02272561C900366A36 /* atomic.cpp in Sources */,
+				6753CAFF272561A900366A36 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
