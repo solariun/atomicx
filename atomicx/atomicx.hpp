@@ -20,8 +20,11 @@ extern void yield(void);
 
 namespace thread
 {
+    /* Official version */
+    static const int coreXVVersion[]={ 1, 0, 0 };
+    static const char coreVersionString[] = "V1.0.0 built at " __TIMESTAMP__;
 
-    class atomic
+    class atomicx
     {
     public:
 
@@ -51,17 +54,17 @@ namespace thread
         {
         public:
             aiterator() = delete;
-            aiterator(atomic* ptr);
+            aiterator(atomicx* ptr);
 
-            atomic& operator*() const;
-            atomic* operator->();
+            atomicx& operator*() const;
+            atomicx* operator->();
             aiterator& operator++();
 
             friend bool operator== (const aiterator& a, const aiterator& b){ return a.m_ptr == b.m_ptr;};
             friend bool operator!= (const aiterator& a, const aiterator& b){ return a.m_ptr != b.m_ptr;};
 
         private:
-            atomic* m_ptr;
+            atomicx* m_ptr;
         };
         
         /**
@@ -175,9 +178,9 @@ namespace thread
             {
                 if (m_nItens >= m_nQSize)
                 {
-                    if (atomic::GetCurrent() != nullptr)
+                    if (atomicx::GetCurrent() != nullptr)
                     {
-                        atomic::GetCurrent()->Wait(*this,1);
+                        atomicx::GetCurrent()->Wait(*this,1);
                     }
                     else
                     {
@@ -199,9 +202,9 @@ namespace thread
                 
                 m_nItens++;
                 
-                if (atomic::GetCurrent() != nullptr)
+                if (atomicx::GetCurrent() != nullptr)
                 {
-                    atomic::GetCurrent()->Notify(*this,0);
+                    atomicx::GetCurrent()->Notify(*this,0);
                 }
 
                 return true;
@@ -211,9 +214,9 @@ namespace thread
             {
                 if (m_nItens >= m_nQSize)
                 {
-                    if (atomic::GetCurrent() != nullptr)
+                    if (atomicx::GetCurrent() != nullptr)
                     {
-                        atomic::GetCurrent()->Wait(*this,1);
+                        atomicx::GetCurrent()->Wait(*this,1);
                     }
                     else
                     {
@@ -235,9 +238,9 @@ namespace thread
                 
                 m_nItens++;
                 
-                if (atomic::GetCurrent() != nullptr)
+                if (atomicx::GetCurrent() != nullptr)
                 {
-                    atomic::GetCurrent()->Notify    (*this,0);
+                    atomicx::GetCurrent()->Notify    (*this,0);
                 }
 
                 return true;
@@ -247,7 +250,7 @@ namespace thread
             {
                 if (m_nItens == 0)
                 {
-                    atomic::GetCurrent()->Wait(*this,0);
+                    atomicx::GetCurrent()->Wait(*this,0);
                 }
 
                 T pItem = m_pQIStart->GetItem();
@@ -260,9 +263,9 @@ namespace thread
                 
                 m_nItens--;
                 
-                if (atomic::GetCurrent() != nullptr)
+                if (atomicx::GetCurrent() != nullptr)
                 {
-                    atomic::GetCurrent()->Notify(*this,1);
+                    atomicx::GetCurrent()->Notify(*this,1);
                 }
                 
                 return pItem;
@@ -342,11 +345,11 @@ namespace thread
          * PUBLIC OBJECT METHOS
          */
 
-       atomic() = delete;
+       atomicx() = delete;
 
-        virtual ~atomic(void);
+        virtual ~atomicx(void);
 
-        static atomic* GetCurrent();
+        static atomicx* GetCurrent();
         
         static bool Start(void);
 
@@ -364,7 +367,7 @@ namespace thread
         void SetNice (atomic_time nice);
         
         template<typename T, size_t N>
-        atomic(T (&stack)[N]) : m_context{}, m_stack((volatile uint8_t*) stack)
+        atomicx(T (&stack)[N]) : m_context{}, m_stack((volatile uint8_t*) stack)
         {
             m_stackSize = N  ;
             
@@ -532,8 +535,8 @@ namespace thread
         
         static bool SelectNextThread(void);
 
-        atomic* m_paNext = nullptr;
-        atomic* m_paPrev = nullptr;
+        atomicx* m_paNext = nullptr;
+        atomicx* m_paPrev = nullptr;
 
         atypes  m_aStatus = atypes::start;
 

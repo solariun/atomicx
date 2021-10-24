@@ -5,7 +5,7 @@
 //  Created by GUSTAVO CAMPOS on 29/08/2021.
 //
 
-#include "atomic.hpp"
+#include "atomicx.hpp"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -22,39 +22,39 @@ void yield(void)
 namespace thread
 {
     // Static initializations
-    static atomic* ms_paFirst=nullptr;
-    static atomic* ms_paLast=nullptr;
+    static atomicx* ms_paFirst=nullptr;
+    static atomicx* ms_paLast=nullptr;
     static jmp_buf ms_joinContext{};
-    static atomic* ms_pCurrent=nullptr;
+    static atomicx* ms_pCurrent=nullptr;
 
-    atomic::aiterator::aiterator(atomic* ptr) : m_ptr(ptr)
+    atomicx::aiterator::aiterator(atomicx* ptr) : m_ptr(ptr)
     {}
 
-    atomic& atomic::aiterator::operator*() const
+    atomicx& atomicx::aiterator::operator*() const
     {
         return *m_ptr;
     }
 
-    atomic* atomic::aiterator::operator->()
+    atomicx* atomicx::aiterator::operator->()
     {
         return m_ptr;
     }
 
-    atomic::aiterator& atomic::aiterator::operator++()
+    atomicx::aiterator& atomicx::aiterator::operator++()
     {
         if (m_ptr != nullptr) m_ptr = m_ptr->m_paNext;
         return *this;
     }
 
-    atomic::aiterator atomic::begin() { return aiterator(ms_paFirst); }
-    atomic::aiterator atomic::end()   { return aiterator(nullptr); }
+    atomicx::aiterator atomicx::begin() { return aiterator(ms_paFirst); }
+    atomicx::aiterator atomicx::end()   { return aiterator(nullptr); }
 
-    atomic* atomic::GetCurrent()
+    atomicx* atomicx::GetCurrent()
     {
         return ms_pCurrent;
     }
 
-    void atomic::AddThisThread()
+    void atomicx::AddThisThread()
     {
         if (ms_paFirst == nullptr)
         {
@@ -69,9 +69,9 @@ namespace thread
         }
     }
 
-    bool atomic::SelectNextThread()
+    bool atomicx::SelectNextThread()
     {
-        atomic* pItem = ms_paFirst;
+        atomicx* pItem = ms_paFirst;
                 
         do
         {
@@ -119,7 +119,7 @@ namespace thread
         return true;
     }
 
-    bool atomic::Start(void)
+    bool atomicx::Start(void)
     {
         if (ms_paFirst != nullptr)
         {
@@ -154,7 +154,7 @@ namespace thread
         return false;
     }
 
-    bool atomic::Yield(atomic_time nSleep)
+    bool atomicx::Yield(atomic_time nSleep)
     {
         if (m_aStatus == atypes::running)
         {
@@ -199,22 +199,22 @@ namespace thread
         return true;
     }
 
-    atomic_time atomic::GetNice(void)
+    atomic_time atomicx::GetNice(void)
     {
         return m_nice;
     }
 
-    size_t atomic::GetStackSize(void)
+    size_t atomicx::GetStackSize(void)
     {
         return m_stackSize;
     }
 
-    size_t atomic::GetUsedStackSize(void)
+    size_t atomicx::GetUsedStackSize(void)
     {
         return m_stacUsedkSize;
     }
 
-    void atomic::RemoveThisThread()
+    void atomicx::RemoveThisThread()
     {
         if (m_paNext == nullptr && m_paPrev == nullptr)
         {
@@ -242,49 +242,49 @@ namespace thread
         }
     }
 
-    atomic::~atomic()
+    atomicx::~atomicx()
     {
         RemoveThisThread();
     }
 
-    const char* atomic::GetName(void)
+    const char* atomicx::GetName(void)
     {
         return "thread";
     }
 
-    void atomic::SetNice (atomic_time nice)
+    void atomicx::SetNice (atomic_time nice)
     {
         m_nice = nice;
     }
 
-    size_t atomic::GetID(void)
+    size_t atomicx::GetID(void)
     {
         return (size_t) this;
     }
 
-    atomic_time atomic::GetTargetTime(void)
+    atomic_time atomicx::GetTargetTime(void)
     {
         return m_nTargetTime;
     }
 
-    int atomic::GetStatus(void)
+    int atomicx::GetStatus(void)
     {
         return static_cast<int>(m_aStatus);
     }
 
-    size_t atomic::GetReferenceLock(void)
+    size_t atomicx::GetReferenceLock(void)
     {
         return (size_t) m_pLockId;
     }
 
-    size_t atomic::GetTagLock(void)
+    size_t atomicx::GetTagLock(void)
     {
         return (size_t) m_lockMessage.tag;
     }
 
-    void atomic::lock::Lock()
+    void atomicx::lock::Lock()
     {
-        auto pAtomic = atomic::GetCurrent();
+        auto pAtomic = atomicx::GetCurrent();
         
         if(pAtomic == nullptr) return;
         
@@ -297,9 +297,9 @@ namespace thread
         while (nSharedLockCount && pAtomic->Wait(nSharedLockCount,2));
     }
 
-    void atomic::lock::Unlock()
+    void atomicx::lock::Unlock()
     {
-        auto pAtomic = atomic::GetCurrent();
+        auto pAtomic = atomicx::GetCurrent();
         
         if(pAtomic == nullptr) return;
         
@@ -313,9 +313,9 @@ namespace thread
         }
     }
 
-    void atomic::lock::SharedLock()
+    void atomicx::lock::SharedLock()
     {
-        auto pAtomic = atomic::GetCurrent();
+        auto pAtomic = atomicx::GetCurrent();
         
         if(pAtomic == nullptr) return;
         
@@ -328,9 +328,9 @@ namespace thread
         pAtomic->Notify (nSharedLockCount, 2, false);
     }
 
-    void atomic::lock::SharedUnlock()
+    void atomicx::lock::SharedUnlock()
     {
-        auto pAtomic = atomic::GetCurrent();
+        auto pAtomic = atomicx::GetCurrent();
         
         if(pAtomic == nullptr) return;
 
@@ -342,17 +342,17 @@ namespace thread
         }
     }
 
-    size_t atomic::lock::IsShared()
+    size_t atomicx::lock::IsShared()
     {
         return nSharedLockCount;
     }
     
-    bool atomic::lock::IsLocked()
+    bool atomicx::lock::IsLocked()
     {
         return bExclusiveLock;
     }
 
-    uint16_t atomic::crc16(const uint8_t* pData, size_t nSize, uint16_t nCRC)
+    uint16_t atomicx::crc16(const uint8_t* pData, size_t nSize, uint16_t nCRC)
     {
         #define POLY 0x8408
         unsigned char nCount;
@@ -380,12 +380,12 @@ namespace thread
         return (nCRC);
     }
 
-    uint32_t atomic::GetTopicID (const char* pszTopic, size_t nKeyLenght)
+    uint32_t atomicx::GetTopicID (const char* pszTopic, size_t nKeyLenght)
     {
         return ((uint32_t) ((crc16 ((const uint8_t*)pszTopic, nKeyLenght, 0) << 15) | crc16 ((const uint8_t*)pszTopic, nKeyLenght, 0x8408)));
     }
 
-    bool atomic::HasSubscriptions (const char* pszKey, size_t nKeyLenght)
+    bool atomicx::HasSubscriptions (const char* pszKey, size_t nKeyLenght)
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {
@@ -403,7 +403,7 @@ namespace thread
         return false;
     }
 
-    bool atomic::HasSubscriptions (uint32_t nKeyID)
+    bool atomicx::HasSubscriptions (uint32_t nKeyID)
     {
         for (auto& thr : *this)
         {
@@ -416,7 +416,7 @@ namespace thread
         return false;
     }
 
-    bool atomic::Subscribe (const char* pszKey, size_t nKeyLenght, Message& message)
+    bool atomicx::Subscribe (const char* pszKey, size_t nKeyLenght, Message& message)
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {
@@ -438,7 +438,7 @@ namespace thread
         return false;
     }
 
-    bool atomic::Subscribe (const char* pszKey, size_t nKeyLenght)
+    bool atomicx::Subscribe (const char* pszKey, size_t nKeyLenght)
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {
@@ -457,7 +457,7 @@ namespace thread
         return false;
     }
 
-    bool atomic::Publish (const char* pszKey, size_t nKeyLenght, const Message message)
+    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght, const Message message)
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {
@@ -491,7 +491,7 @@ namespace thread
         return false;
     }
 
-    bool atomic::Publish (const char* pszKey, size_t nKeyLenght)
+    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght)
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {

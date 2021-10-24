@@ -3,7 +3,7 @@
 */
 #include "arduino.h"
 
-#include "atomic.hpp"
+#include "atomicx.hpp"
 
 #include <stdio.h>
 
@@ -13,26 +13,26 @@
 
 using namespace thread;
 
-atomic_time Atomic_GetTick(void)
+atomicx_time atomicx_GetTick(void)
 {    
     ::yield();
     return millis();
 }
 
-void Atomic_SleepTick(atomic_time nSleep)
+void atomicx_SleepTick(atomicx_time nSleep)
 {    
     delay(nSleep);
 }
 
 size_t nDataCount=0;
-atomic::lock gLock;
+atomicx::lock gLock;
 
 String strTopic = "message/topic";
 
-class Consumer : public atomic
+class Consumer : public atomicx
 {
 public:
-    Consumer(uint32_t nNice, const char* pszName) : stack{}, atomic (stack), pszName(pszName)
+    Consumer(uint32_t nNice, const char* pszName) : stack{}, atomicx (stack), pszName(pszName)
     {
         SetNice(nNice);
     }
@@ -132,10 +132,10 @@ private:
 };
 
 
-class Producer : public atomic
+class Producer : public atomicx
 {
 public:
-    Producer(uint32_t nNice, const char* pszName) : stack{}, atomic (stack), pszName(pszName)
+    Producer(uint32_t nNice, const char* pszName) : stack{}, atomicx (stack), pszName(pszName)
     {
         SetNice(nNice);
     }
@@ -175,7 +175,7 @@ public:
                         
             Publish (strTopic.c_str(), strTopic.length(), nTag, nCount);
                         
-            //atomic::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
+            //atomicx::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
                         
         } while (Yield ());
     }
@@ -196,7 +196,7 @@ public:
       size_t nCount=0;
 
       Serial.print ("Context: "); 
-      Serial.print (sizeof (atomic));
+      Serial.print (sizeof (atomicx));
       Serial.println ("---------------------------------");
       
       for (auto& th : *this)
@@ -245,7 +245,7 @@ void setup()
 
   T1.ListAllThreads ();
 
-  atomic::Start();
+  atomicx::Start();
 
   Serial.println ("Full lock detected...");
 

@@ -3,7 +3,7 @@
 */
 #include "arduino.h"
 
-#include "atomic.hpp"
+#include "atomicx.hpp"
 
 #include <stdio.h>
 
@@ -14,17 +14,17 @@
 using namespace thread;
 
 size_t nDataCount=0;
-atomic::lock gLock;
+atomicx::lock gLock;
 
 void ListAllThreads();
 
-atomic_time Atomic_GetTick(void)
+atomicx_time atomicx_GetTick(void)
 {    
     ::yield();
     return millis();
 }
 
-void Atomic_SleepTick(atomic_time nSleep)
+void atomicx_SleepTick(atomicx_time nSleep)
 {   
     ListAllThreads();
     delay(nSleep);
@@ -35,10 +35,10 @@ constexpr size_t GetStackSize(size_t sizeRef)
     return sizeRef * sizeof (size_t);  
 }
 
-class Consumer : public atomic
+class Consumer : public atomicx
 {
 public:
-    Consumer(uint32_t nNice, const char* pszName) :  atomic (m_stack), m_stack{}
+    Consumer(uint32_t nNice, const char* pszName) :  atomicx (m_stack), m_stack{}
     {
         m_threadName = pszName;
         
@@ -112,10 +112,10 @@ private:
 };
 
 
-class Producer : public atomic
+class Producer : public atomicx
 {
 public:
-    Producer(uint32_t nNice, const char* pszName) : atomic (m_stack), m_stack{}, m_threadName{pszName}
+    Producer(uint32_t nNice, const char* pszName) : atomicx (m_stack), m_stack{}, m_threadName{pszName}
     {
         SetNice(nNice);
     }
@@ -158,7 +158,7 @@ public:
             gLock.Unlock();
             Serial.println ("Unlock");
                        
-            //atomic::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
+            //atomicx::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
                         
         } while (Yield ());
     }
@@ -192,9 +192,9 @@ void ListAllThreads()
   Serial.println ((int) gLock.IsShared());
   Serial.println ("---------------------------------------------------------");
   
-  for (auto& th : *(atomic::GetCurrent()))
+  for (auto& th : *(atomicx::GetCurrent()))
   {
-      Serial.print (atomic::GetCurrent() == &th ? "*  " : "   ");
+      Serial.print (atomicx::GetCurrent() == &th ? "*  " : "   ");
       Serial.print (++nCount);
       Serial.print (":'");
       Serial.print (th.GetName());
@@ -238,7 +238,7 @@ void setup()
 
   ListAllThreads ();
 
-  atomic::Start();
+  atomicx::Start();
 
   Serial.println ("Full lock detected...");
 

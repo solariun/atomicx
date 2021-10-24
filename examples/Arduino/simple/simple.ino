@@ -3,7 +3,7 @@
 */
 #include "arduino.h"
 
-#include "atomic.hpp"
+#include "atomicx.hpp"
 
 #include <stdio.h>
 
@@ -30,25 +30,25 @@ struct TalkAFrame
 };
 #pragma pack(pop)   /* restore original alignment from stack */
 
-atomic_time Atomic_GetTick(void)
+atomicx_time atomicx_GetTick(void)
 {    
     ::yield();
     return millis();
 }
 
-void Atomic_SleepTick(atomic_time nSleep)
+void atomicx_SleepTick(atomicx_time nSleep)
 {    
     delay(nSleep);
 }
 
 uint8_t nLockVar = 0;
 
-atomic::queue<size_t> q(5);
+atomicx::queue<size_t> q(5);
 
-class Eventual : public atomic
+class Eventual : public atomicx
 {
 public:
-    Eventual(uint32_t nNice, const char* pszName) : stack{}, atomic (stack), pszName(pszName)
+    Eventual(uint32_t nNice, const char* pszName) : stack{}, atomicx (stack), pszName(pszName)
     {
         SetNice(nNice);
     }
@@ -105,10 +105,10 @@ private:
 };
 
 
-class Executor : public atomic
+class Executor : public atomicx
 {
 public:
-    Executor(uint32_t nNice, const char* pszName) : stack{}, atomic (stack), pszName(pszName)
+    Executor(uint32_t nNice, const char* pszName) : stack{}, atomicx (stack), pszName(pszName)
     {
         SetNice(nNice);
     }
@@ -143,7 +143,7 @@ public:
             
             nCount++;
             
-            //atomic::smart_ptr<Eventual> eventual_thread (new Eventual(100, "t::eventual"));
+            //atomicx::smart_ptr<Eventual> eventual_thread (new Eventual(100, "t::eventual"));
 
             q.PushBack (nCount);
             
@@ -232,7 +232,7 @@ void setup()
   
   T1.ListAllThreads ();
 
-  atomic::Start();
+  atomicx::Start();
 
   Serial.println ("Full lock detected...");
 
