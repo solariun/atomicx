@@ -49,6 +49,9 @@ What is atomic? Atomic is a general purpose **cooperative** thread lib for embed
  
 * **IMPORTANT** since all threads will be executed in the "regular" stack, it will not be jailed in the stack memory page, *DO NOT USE STACK ADDRESS TO COMMUNICATE with another threads or source of information that could be read by others thread.
 
+* **IMPORTANT** It is necessary to provide functions specialise ticks (read a tick and sleep some ticks), but with the difference that now developers can choose what is the tick granularity (real processing tick, nano seconds, milliseconds, microseconds and etc...). 
+    * Since it will be provided by the developer, it gives the possibility to use external clocks, hardware sleep or lower consumptions and fine tune power and resource usages.  
+ 
 ``` C++
 //
 //  main.cpp
