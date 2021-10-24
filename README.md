@@ -80,6 +80,11 @@ uint nCounter=0;
 
 void ListAllThreads();
 
+/*
+ * Define the default ticket granularity
+ * to milliseconds or round tick if -DFAKE_TICKER
+ * is provided on calculation
+ /
 atomic_time Atomic_GetTick (void)
 {
 #ifndef FAKE_TIMER
@@ -95,6 +100,11 @@ atomic_time Atomic_GetTick (void)
 #endif
 }
 
+/*
+ * Sleep for few Ticks, since the default ticket granularity
+ * is set to Milliseconds (if -DFAKE_TICKET provide will it will 
+ * be context switch countings), the thread will sleep for 
+ * the amount of time needed till next thread start.
 void Atomic_SleepTick(atomic_time nSleep)
 {
 #ifndef FAKE_TIMER
@@ -104,7 +114,9 @@ void Atomic_SleepTick(atomic_time nSleep)
 #endif
 }
 
-
+/*
+ * Object that implements thread
+ */
 class Thread : public atomic
 {
 public:
@@ -156,6 +168,7 @@ int main()
 
     std::cout << "Start contexts for thread 3" << std::endl;
 
+    // This must creates threads and destroy on leaving {} context 
     {
         Thread t3_1(0, "Eventual 3.1");
         Thread t3_2(0, "Eventual 3.2");
@@ -168,7 +181,6 @@ int main()
     Thread t4(1000, "Producer 4");
 
     atomic::Start();
-    
 }
 
 ```
