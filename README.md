@@ -22,7 +22,8 @@ What is atomic? Atomic is a general purpose **cooperative** thread lib for embed
         |           |     ---------
         |           |     - During context
         *-----------*       can goes deeper as 
-                            necessary```
+                            necessary
+    ```
                             
 * Full prepared for IPC (_Inter Process Communication_)
     * Thread safe Queues for data communication
