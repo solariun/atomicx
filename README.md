@@ -83,7 +83,7 @@ void ListAllThreads();
 /*
  * Define the default ticket granularity
  * to milliseconds or round tick if -DFAKE_TICKER
- * is provided on calculation
+ * is provided on compilation
  */
 atomicx_time Atomicx_GetTick (void)
 {
