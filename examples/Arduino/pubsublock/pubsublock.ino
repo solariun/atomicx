@@ -13,14 +13,15 @@
 
 using namespace thread;
 
-atomicx_time atomicx_GetTick(void)
+atomic_time Atomic_GetTick(void)
 {    
     ::yield();
     return millis();
 }
 
-void atomicx_SleepTick(atomicx_time nSleep)
-{    
+void Atomic_SleepTick(atomic_time nSleep)
+{   
+    //ListAllThreads();
     delay(nSleep);
 }
 
@@ -69,16 +70,16 @@ public:
         return true;
     }
 
-    bool BrokerHandler(const char* pszKey, size_t nKeyLenght, lockMessage& message)
+    bool BrokerHandler(const char* pszKey, size_t nKeyLenght, Message& message)
     {
-        Serial.print (__FUNCTION__);
+        Serial.print (GetName());
         Serial.print (":");
         Serial.print (pszKey);
         Serial.print (":");
         Serial.print (message.tag);
         Serial.print (":");
         Serial.print (message.message);
-        Serial.println (": dynamic Handling topic ....");
+        Serial.println (": async Handling topic ....");
         Serial.flush();
         
         return true;  
@@ -86,13 +87,12 @@ public:
     
     void run() noexcept override
     {
-        size_t nCount=0;
-        size_t nTag = 0;
+        Message message={0,0};
         
         do
-        {
-            Subscribe (strTopic.c_str(), strTopic.length(), nTag, nCount);
-            
+        {            
+            WaitBrokerMessage (strTopic.c_str(), strTopic.length(), message);
+    
             // --------------------------------------
             
             Serial.print ("Executing Consumer ");
@@ -105,8 +105,10 @@ public:
             Serial.print (gLock.IsLocked());
             Serial.print ("/");
             Serial.print (gLock.IsShared());
-            Serial.print (", Counter: ");
-            Serial.println (nCount);
+            Serial.print (", nTag: ");
+            Serial.print (message.tag);
+            Serial.print (", Message: ");
+            Serial.println (message.message);
             
             Serial.flush();
             
@@ -154,7 +156,7 @@ public:
     void run() noexcept override
     {
         size_t nCount=0;
-        size_t nTag;
+        size_t nTag = GetID ();
         
         do
         {
@@ -173,7 +175,7 @@ public:
             
             Serial.flush();
                         
-            Publish (strTopic.c_str(), strTopic.length(), nTag, nCount);
+            Publish (strTopic.c_str(), strTopic.length(), {nTag, nCount});
                         
             //atomicx::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
                         
@@ -239,9 +241,9 @@ void setup()
 
   
   Producer T1(100, "Thread 1");
-  Consumer E1(1, "Consumer 1");
-  Consumer E2(1, "Consumer 2");
-  Consumer E4(1, "Consumer 3");
+  Consumer E1(100, "Consumer 1");
+  Consumer E2(250, "Consumer 2");
+  Consumer E4(500, "Consumer 3");
 
   T1.ListAllThreads ();
 

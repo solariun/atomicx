@@ -28,8 +28,8 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 * Due to the **zero stack-displacement** technology, developers can ensure minimal stack memory page, allowing ultra sophisticated designes and execution stack diving and only backing up to the stack memory page what is necessary.
                            
 * Full feature for IPC (_Inter Process Communication_)
-    * Thread safe Queues for data communication
-    * EVERY Smart Lock can transport information ab atomicx::message
+    * Thread safe Queues for data/object transporting.
+    * EVERY Smart Lock can transport information (atomicx::message)
     * Message is composed by "size_t atomix::message" and a "size_t tag"
         * This novel concept of "tag"s for an atomicx::message gives the message meaning.
         * Since atomicx::message uses "size_t" messages can also transport pointers

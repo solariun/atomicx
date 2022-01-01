@@ -416,7 +416,7 @@ namespace thread
         return false;
     }
 
-    bool atomicx::Subscribe (const char* pszKey, size_t nKeyLenght, Message& message)
+    bool atomicx::WaitBrokerMessage (const char* pszKey, size_t nKeyLenght, Message& message)
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {
@@ -438,7 +438,7 @@ namespace thread
         return false;
     }
 
-    bool atomicx::Subscribe (const char* pszKey, size_t nKeyLenght)
+    bool atomicx::WaitBrokerMessage (const char* pszKey, size_t nKeyLenght)
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {

@@ -502,8 +502,8 @@ namespace thread
          * ------------------------------
          */
         
-        bool Subscribe (const char* pszKey, size_t nKeyLenght, Message& message);
-        bool Subscribe (const char* pszKey, size_t nKeyLenght);
+        bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght, Message& message);
+        bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght);
 
         bool Publish (const char* pszKey, size_t nKeyLenght, const Message message);
         bool Publish (const char* pszKey, size_t nKeyLenght);

@@ -83,7 +83,7 @@ public:
         
         do
         {
-            Subscribe(strTopic.c_str(), strTopic.length(), message);
+            WaitBrokerMessage (strTopic.c_str(), strTopic.length(), message);
             nCount = message.message;
             
 //            std::cout << "SharedLock..." << std::endl;
