@@ -7,7 +7,10 @@ Version 2.7.0 release
 What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
 
 * **DO NOT DISPLACE STACK, IT WILL STILL AVAILABLE FOR PROCESSING**, the *Stack Page* will only hold a backup of the most necessary information needed, allowing stacks in few bites most if the time. This implementation if highly suitable for Microcontrollers like ATINY85, for example, that only has 512 bites, and you can have 5 or more threads doing things for you, only backup the most important context information.
+    * *IMPORTANT*: DO NOT USE CONTEXT MEMORY POINTER to exchange information to other threads, wait/notify and etc. All threads will use the *dafault stack memory* to execute, instead use Global variables, allocated memory or atomicx_smart_ptr objects.
+    
 * Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads.
+
 * CoreX **DO NOT DISPLACE STACK**, yes, it will use a novel technique that allow you to use full stack memory freely, and once done, just call `Yield()` to switch the context.
     1. Allow you to use all your stack during thread execution and only switch once back to an appropriate place
     ``` 
@@ -15,10 +18,10 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
         *-----------*
         |___________| Yield()
         |___________|    thread 0..N
-        |___________|     |       .  - After execution execution
+        |___________|     |       .  - After context execution
         |___________|     |      /|\   is done, the developer can
-        |___________|     |       |    choose wether to switch 
-        |___________|     |       |    context, using only what is
+        |___________|     |       |    choose where to switch 
+        |___________|     |       |    context, saving only what is
         |___________|    \|/      |    necessary
         |___________|     ---------
         |           |     - During context
@@ -41,13 +44,14 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
     * On event notification a atomix::message can be sent/received
     
 * A message broker based on observer pattern
-    * A thread can subscribe (in a more dynamic way) to any information, instead of adding subscriptions, the process method to confirm if it IsSubscribed. This will allow async messages to be received.
-    * Sync wait for broker messages.
-    * Also uses atomicx::message
+    * A thread can Wait for a Broker Message (asynchronously) to any information, instead of subscribing, 
+    * Instead of having a `Subcrib` call, the developer will provide a `IsSubscribed` method that the kernel will use to determine if the object/thread is subscribed to a given topic.
+    * Broker uses atomicx::message to transport information. For inter process Object transport, please use atomicx::queue
 
-* ALL *WAIT* actions will be block the thread, on thread level, till the message or notification occurs.
+* ALL *WAIT* actions will block the thread, on kernel level (setting thread to a waiting state), until the notification occurs. Alternatively the notification can be transport a atomicx::message structure (tag/message)
+    * _WAIT_ and _NOTIFY_ will use *any pointer* as the signal input, virtually any valid address pointer can  be used. 
  
-* **IMPORTANT** since all threads will be executed in the "regular" stack, it will not be jailed in the stack memory page, *DO NOT USE STACK ADDRESS TO COMMUNICATE with another threads or source of information that could be read by others thread.
+* **IMPORTANT** since all threads will be executed in the "_default_" stack memory, it will not be jailed in the stack size memory page, *DO NOT USE STACK ADDRESS TO COMMUNICATE* with another threads, use only global or alloced memory pointers to communicate
 
 * **IMPORTANT** It is necessary to provide functions specialise ticks (read a tick and sleep some ticks), but with the difference that now developers can choose what is the tick granularity (real processing tick, nano seconds, milliseconds, microseconds and etc...). 
     * Since it will be provided by the developer, it gives the possibility to use external clocks, hardware sleep or lower consumptions and fine tune power and resource usages.  
