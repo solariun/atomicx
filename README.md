@@ -33,23 +33,23 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 * Full feature for IPC (_Inter Process Communication_)
     * Thread safe Queues for data/object transporting.
     * EVERY Smart Lock can transport information (atomicx::message)
-    * Message is composed by "size_t atomix::message" and a "size_t tag"
+    * Message is composed by "size_t `atomix::message` and a "size_t tag"
         * This novel concept of "tag"s for an atomicx::message gives the message meaning.
-        * Since atomicx::message uses "size_t" messages can also transport pointers
+        * Since `atomicx::message` uses `size_t` messages can also transport pointers
     * Smart Locks can Lock and Shared Lock in the same object, making
     * Full QUEUE capable to transport objects. 
 
 * Full feature for IPN (_Inter Process Notification_)
     * Thread can wait for an event to happen.
-    * On event notification a atomix::message can be sent/received
+    * On event notification a `atomix::message` can be sent/received
     
 * A message broker based on observer pattern
-    * A thread can Wait for a Broker Message (asynchronously) to any information, instead of subscribing, 
+    * A thread can use `WaitBroker Message` to wait for any specifc topic asynchronously. 
     * Instead of having a `Subcrib` call, the developer will provide a `IsSubscribed` method that the kernel will use to determine if the object/thread is subscribed to a given topic.
-    * Broker uses atomicx::message to transport information. For inter process Object transport, please use atomicx::queue
+    * Broker uses `atomicx::message` to transport information. For inter process Object transport, please use atomicx::queue.
 
-* ALL *WAIT* actions will block the thread, on kernel level (setting thread to a waiting state), until the notification occurs. Alternatively the notification can be transport a atomicx::message structure (tag/message)
-    * _WAIT_ and _NOTIFY_ will use *any pointer* as the signal input, virtually any valid address pointer can  be used. 
+* ALL *WAIT* actions will block the thread, on kernel level (setting thread to a waiting state), until the notification occurs. Alternatively the notification can be transport a `atomicx::message` structure (tag/message)
+    * _WAIT_ and _NOTIFY_ (one or all) will use *any pointer* as the signal input, virtually any valid address pointer can  be used. *IMPORTANT*: Unless you know what you are doing, do *NOT* use context pointer (execution stack memory), use a global or allocated memory instead (including `atomicx::smart_prt`)
  
 * **IMPORTANT** since all threads will be executed in the "_default_" stack memory, it will not be jailed in the stack size memory page, *DO NOT USE STACK ADDRESS TO COMMUNICATE* with another threads, use only global or alloced memory pointers to communicate
 
