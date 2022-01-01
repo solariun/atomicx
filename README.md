@@ -84,7 +84,7 @@ void ListAllThreads();
  * Define the default ticket granularity
  * to milliseconds or round tick if -DFAKE_TICKER
  * is provided on calculation
- /
+ */
 atomicx_time Atomicx_GetTick (void)
 {
 #ifndef FAKE_TIMER
@@ -105,6 +105,7 @@ atomicx_time Atomicx_GetTick (void)
  * is set to Milliseconds (if -DFAKE_TICKET provide will it will 
  * be context switch countings), the thread will sleep for 
  * the amount of time needed till next thread start.
+ */ 
 void Atomicx_SleepTick(atomicx_time nSleep)
 {
 #ifndef FAKE_TIMER
