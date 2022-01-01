@@ -31,14 +31,14 @@ uint nCounter=0;
 
 void ListAllThreads();
 
-atomic_time Atomic_GetTick (void)
+atomicx_time Atomicx_GetTick (void)
 {
 #ifndef FAKE_TIMER
     usleep (20000);
     struct timeval tp;
     gettimeofday (&tp, NULL);
 
-    return (atomic_time)tp.tv_sec * 1000 + tp.tv_usec / 1000;
+    return (atomicx_time)tp.tv_sec * 1000 + tp.tv_usec / 1000;
 #else
     nCounter++;
 
@@ -46,7 +46,7 @@ atomic_time Atomic_GetTick (void)
 #endif
 }
 
-void Atomic_SleepTick(atomic_time nSleep)
+void Atomicx_SleepTick(atomicx_time nSleep)
 {
 //    printf ("Thread: %s, type: %u, Sleeping: %u Lock: %u/%u\n", atomic::GetCurrent()->GetName(), atomic::GetCurrent()->GetStatus(), nSleep, glock.IsLocked(), glock.IsShared());
     
@@ -64,7 +64,7 @@ size_t nGlobalCount = 0;
 class ThreadEventual : public atomicx
 {
 public:
-    ThreadEventual(atomic_time nNice, const char* pszName) : stack{}, atomicx (stack), m_pszName(pszName)
+    ThreadEventual(atomicx_time nNice, const char* pszName) : stack{}, atomicx (stack), m_pszName(pszName)
     {
         std::cout << "Creating Eventual: " << pszName << ", ID: " << (size_t) this << std::endl;
         
@@ -97,7 +97,7 @@ public:
             
 //            std::cout << "SharedUnlock..." << std::endl;
 
-            std::cout << "Executing " << GetName() << ": " << (size_t) this << ", Counter: " << nCount << ", time: " << Atomic_GetTick () << ", queue size: " << q.GetSize() << ", Lock: " << (int) glock.IsLocked() << "/" << (int) glock.IsShared() << "Message: tag: " << message.tag << ":" << message.message<< std::endl;
+            std::cout << "Executing " << GetName() << ": " << (size_t) this << ", Counter: " << nCount << ", time: " << Atomicx_GetTick () << ", queue size: " << q.GetSize() << ", Lock: " << (int) glock.IsLocked() << "/" << (int) glock.IsShared() << "Message: tag: " << message.tag << ":" << message.message<< std::endl;
             
             std::cout << std::flush;
 
@@ -122,7 +122,7 @@ private:
 class Thread : public atomicx
 {
 public:
-    Thread(atomic_time nNice, const char* pszName) : stack{}, atomicx (stack), m_pszName(pszName)
+    Thread(atomicx_time nNice, const char* pszName) : stack{}, atomicx (stack), m_pszName(pszName)
     {
         SetNice(nNice);
     }

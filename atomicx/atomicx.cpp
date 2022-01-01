@@ -97,11 +97,11 @@ namespace thread
             {
                 case atypes::sleep:
                 {
-                    atomic_time nCurrent = Atomic_GetTick();
+                    atomicx_time nCurrent = Atomicx_GetTick();
 
                     if (nCurrent < ms_pCurrent->m_nTargetTime)
                     {
-                        (void) Atomic_SleepTick(ms_pCurrent->m_nTargetTime - nCurrent);
+                        (void) Atomicx_SleepTick(ms_pCurrent->m_nTargetTime - nCurrent);
                     }
                     break;
                 }
@@ -154,16 +154,16 @@ namespace thread
         return false;
     }
 
-    bool atomicx::Yield(atomic_time nSleep)
+    bool atomicx::Yield(atomicx_time nSleep)
     {
         if (m_aStatus == atypes::running)
         {
             m_aStatus = atypes::sleep;
-            m_nTargetTime=Atomic_GetTick() + (nSleep == 0 ? m_nice : nSleep);
+            m_nTargetTime=Atomicx_GetTick() + (nSleep == 0 ? m_nice : nSleep);
         }
         else
         {
-            m_nTargetTime = (atomic_time)~0;
+            m_nTargetTime = (atomicx_time)~0;
         }
 
         volatile uint8_t nStackEnd=0;
@@ -199,7 +199,7 @@ namespace thread
         return true;
     }
 
-    atomic_time atomicx::GetNice(void)
+    atomicx_time atomicx::GetNice(void)
     {
         return m_nice;
     }
@@ -252,7 +252,7 @@ namespace thread
         return "thread";
     }
 
-    void atomicx::SetNice (atomic_time nice)
+    void atomicx::SetNice (atomicx_time nice)
     {
         m_nice = nice;
     }
@@ -262,7 +262,7 @@ namespace thread
         return (size_t) this;
     }
 
-    atomic_time atomicx::GetTargetTime(void)
+    atomicx_time atomicx::GetTargetTime(void)
     {
         return m_nTargetTime;
     }
@@ -423,7 +423,7 @@ namespace thread
             m_aStatus = atypes::subscription;
             
             m_TopicId = GetTopicID(pszKey, nKeyLenght);
-            m_nTargetTime = Atomic_GetTick();
+            m_nTargetTime = Atomicx_GetTick();
                         
             m_lockMessage = {0,0};
             
@@ -445,7 +445,7 @@ namespace thread
             m_aStatus = atypes::subscription;
             
             m_TopicId = GetTopicID(pszKey, nKeyLenght);
-            m_nTargetTime = Atomic_GetTick();
+            m_nTargetTime = Atomicx_GetTick();
             
             Yield();
 
@@ -472,7 +472,7 @@ namespace thread
                     
                     thr.m_aStatus = atypes::now;
                     thr.m_TopicId = 0;
-                    thr.m_nTargetTime = Atomic_GetTick();
+                    thr.m_nTargetTime = Atomicx_GetTick();
                     thr.m_lockMessage.message = message.message;
                     thr.m_lockMessage.tag = message.tag;
                 }
@@ -506,7 +506,7 @@ namespace thread
 
                     thr.m_aStatus = atypes::now;
                     thr.m_TopicId = 0;
-                    thr.m_nTargetTime = Atomic_GetTick();
+                    thr.m_nTargetTime = Atomicx_GetTick();
                     thr.m_lockMessage = {0,0};
                 }
                 

@@ -18,13 +18,13 @@ atomicx::lock gLock;
 
 void ListAllThreads();
 
-atomicx_time atomicx_GetTick(void)
+atomicx_time Atomicx_GetTick(void)
 {    
     ::yield();
     return millis();
 }
 
-void atomicx_SleepTick(atomicx_time nSleep)
+void Atomicx_SleepTick(atomicx_time nSleep)
 {   
     ListAllThreads();
     delay(nSleep);
@@ -137,6 +137,8 @@ public:
         
         do
         {
+            gLock.Lock();
+
             Serial.print ("Executing ");
             Serial.print (GetName());
             Serial.print (": ");
@@ -151,7 +153,6 @@ public:
             Serial.println (nCount);
                                               
             Serial.println ("Lock");
-            gLock.Lock();
             
             nDataCount++; 
 

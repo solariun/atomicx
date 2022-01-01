@@ -13,13 +13,13 @@
 
 using namespace thread;
 
-atomic_time Atomic_GetTick(void)
+atomicx_time Atomicx_GetTick(void)
 {    
     ::yield();
     return millis();
 }
 
-void Atomic_SleepTick(atomic_time nSleep)
+void Atomicx_SleepTick(atomicx_time nSleep)
 {   
     //ListAllThreads();
     delay(nSleep);

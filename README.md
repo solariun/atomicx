@@ -70,7 +70,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 #include <setjmp.h>
 #include <string>
 
-#include "atomic.hpp"
+#include "atomicx.hpp"
 
 using namespace thread;
 
@@ -85,14 +85,14 @@ void ListAllThreads();
  * to milliseconds or round tick if -DFAKE_TICKER
  * is provided on calculation
  /
-atomic_time Atomic_GetTick (void)
+atomicx_time Atomicx_GetTick (void)
 {
 #ifndef FAKE_TIMER
     usleep (20000);
     struct timeval tp;
     gettimeofday (&tp, NULL);
 
-    return (atomic_time)tp.tv_sec * 1000 + tp.tv_usec / 1000;
+    return (atomicx_time)tp.tv_sec * 1000 + tp.tv_usec / 1000;
 #else
     nCounter++;
 
@@ -105,7 +105,7 @@ atomic_time Atomic_GetTick (void)
  * is set to Milliseconds (if -DFAKE_TICKET provide will it will 
  * be context switch countings), the thread will sleep for 
  * the amount of time needed till next thread start.
-void Atomic_SleepTick(atomic_time nSleep)
+void Atomicx_SleepTick(atomicx_time nSleep)
 {
 #ifndef FAKE_TIMER
     usleep ((useconds_t)nSleep * 1000);
@@ -120,7 +120,7 @@ void Atomic_SleepTick(atomic_time nSleep)
 class Thread : public atomic
 {
 public:
-    Thread(atomic_time nNice, const char* pszName) : stack{}, atomic (stack), m_pszName(pszName)
+    Thread(atomicx_time nNice, const char* pszName) : stack{}, atomic (stack), m_pszName(pszName)
     {
         SetNice(nNice);
     }

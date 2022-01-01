@@ -12,10 +12,10 @@
 #include <stdlib.h>
 #include <setjmp.h>
 
-using atomic_time = uint32_t;
+using atomicx_time = uint32_t;
 
-extern atomic_time Atomic_GetTick(void);
-extern void Atomic_SleepTick(atomic_time nSleep);
+extern atomicx_time Atomicx_GetTick(void);
+extern void Atomicx_SleepTick(atomicx_time nSleep);
 extern void yield(void);
 
 namespace thread
@@ -355,16 +355,16 @@ namespace thread
 
         size_t GetID(void);
         size_t GetStackSize(void);
-        atomic_time GetNice(void);
+        atomicx_time GetNice(void);
         size_t GetUsedStackSize(void);
-        atomic_time GetCurrentTick();
+        atomicx_time GetCurrentTick();
         virtual const char* GetName(void);
-        atomic_time GetTargetTime(void);
+        atomicx_time GetTargetTime(void);
         int GetStatus(void);
         size_t GetReferenceLock(void);
         size_t GetTagLock(void);
         
-        void SetNice (atomic_time nice);
+        void SetNice (atomicx_time nice);
         
         template<typename T, size_t N>
         atomicx(T (&stack)[N]) : m_context{}, m_stack((volatile uint8_t*) stack)
@@ -524,7 +524,7 @@ namespace thread
             return false;
         }
 
-        bool Yield(atomic_time nSleep=0);
+        bool Yield(atomicx_time nSleep=0);
         
     private:
 
@@ -555,9 +555,9 @@ namespace thread
         uint32_t m_TopicId=0;
         Message m_lockMessage = {0,0};
         
-        atomic_time m_nTargetTime=0;
-        atomic_time m_nice=0;
+        atomicx_time m_nTargetTime=0;
+        atomicx_time m_nice=0;
     };
 }
 
-#endif /* atomic_hpp */
+#endif /* atomicx_hpp */
