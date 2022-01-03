@@ -51,6 +51,8 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 * ALL *WAIT* actions will block the thread, on kernel level (setting thread to a waiting state), until the notification occurs. Alternatively the notification can be transport a `atomicx::message` structure (tag/message)
     * _WAIT_ and _NOTIFY_ (one or all) will use *any pointer* as the signal input, virtually any valid address pointer can  be used. *IMPORTANT*: Unless you know what you are doing, do *NOT* use context pointer (execution stack memory), use a global or allocated memory instead (including `atomicx::smart_prt`)
  
+* All *Notifications* or *Publish* functions will provide a Safe version, that different from the pure functions, will not trigger a context change and the function will only fully take effect onces the context is changed in the current thread where the interrupt request happened.
+
 * **IMPORTANT** since all threads will be executed in the "_default_" stack memory, it will not be jailed in the stack size memory page, *DO NOT USE STACK ADDRESS TO COMMUNICATE* with another threads, use only global or alloced memory pointers to communicate
 
 * **IMPORTANT** In order to operate with precision, specialise ticks by providing either `atomicx_time Atomicx_GetTick (void)` and `void Atomicx_SleepTick(atomicx_time nSleep)` to work within the timeframe (milleseconds, nanoseconds, seconds.. etc). Since AtomicX, also, provice, Sleep Tick functionality (to handle idle time), depending on the sleep time, to developer can redude the processor overall consuption to minimal whenever it is not necessary.
@@ -58,6 +60,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
     * Since it will be provided by the developer, it gives the possibility to use external clocks, hardware sleep or lower consumptions and fine tune power and resource usages.  
  
     * If not specialization is done, the source code will use a simple and non-deterministic loop cycle to count ticks.
+    
     
 ``` C++
 //
