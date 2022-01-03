@@ -425,7 +425,7 @@ namespace thread
             return true;
         }
 
-        template<typename T> bool Notify(size_t& nMessage, T& refVar, uint32_t nTag, bool bAll=false)
+        template<typename T> bool SafeNotify(size_t& nMessage, T& refVar, uint32_t nTag, bool bAll=false)
         {
             bool bRet = false;
 
@@ -449,12 +449,19 @@ namespace thread
                 }
             }
 
+            return bRet;
+        }
+
+        template<typename T> bool Notify(size_t& nMessage, T& refVar, uint32_t nTag, bool bAll=false)
+        {
+            bool bRet = SafeNotify (nMessage, refVar, nTag, bAll);
+
             if (bRet) Yield(0);
 
             return bRet;
         }
 
-        template<typename T> bool Notify(T& refVar, size_t nTag, bool bAll=false)
+        template<typename T> bool SafeNotify(T& refVar, size_t nTag, bool bAll=false)
         {
             bool bRet = false;
 
@@ -477,6 +484,13 @@ namespace thread
                     }
                 }
             }
+
+            return bRet;
+        }
+
+        template<typename T> bool Notify(T& refVar, size_t nTag, bool bAll=false)
+        {
+            bool bRet = SafeNotify(refVar, nTag, bAll);
 
             if (bRet) Yield(0);
 
@@ -506,7 +520,10 @@ namespace thread
         bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght);
 
         bool Publish (const char* pszKey, size_t nKeyLenght, const Message message);
+        bool SafePublish (const char* pszKey, size_t nKeyLenght, const Message message);
+        
         bool Publish (const char* pszKey, size_t nKeyLenght);
+        bool SafePublish (const char* pszKey, size_t nKeyLenght);
 
         bool HasSubscriptions (const char* pszTopic, size_t nKeyLenght);
         bool HasSubscriptions (uint32_t nKeyID);

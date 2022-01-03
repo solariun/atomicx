@@ -457,13 +457,14 @@ namespace thread
         return false;
     }
 
-    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght, const Message message)
+    bool atomicx::SafePublish (const char* pszKey, size_t nKeyLenght, const Message message)
     {
+        size_t nCounter=0;
+
         if (pszKey != nullptr && nKeyLenght > 0)
         {
             uint32_t nTagId = GetTopicID(pszKey, nKeyLenght);
-            size_t nCounter=0;
-            
+
             for (auto& thr : *this)
             {
                 if (nTagId == thr.m_TopicId)
@@ -484,19 +485,27 @@ namespace thread
                     thr.BrokerHandler(pszKey, nKeyLenght, thr.m_lockMessage);
                 }
             }
-            
-            if (nCounter) Yield();
         }
         
-        return false;
+        return nCounter ? true : false;
     }
 
-    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght)
+    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght, const Message message)
     {
+        bool nReturn = SafePublish(pszKey, nKeyLenght, message);
+
+        if (nReturn) Yield();
+
+        return nReturn;
+    }
+
+    bool atomicx::SafePublish (const char* pszKey, size_t nKeyLenght)
+    {
+        size_t nCounter=0;
+
         if (pszKey != nullptr && nKeyLenght > 0)
         {
             uint32_t nTagId = GetTopicID(pszKey, nKeyLenght);
-            size_t nCounter=0;
 
             for (auto& thr : *this)
             {
@@ -523,6 +532,16 @@ namespace thread
             if (nCounter) Yield();
         }
 
-        return false;
+        return nCounter ? true : false;
     }
+
+    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght)
+    {
+        bool nReturn = SafePublish(pszKey, nKeyLenght);
+
+        if (nReturn) Yield();
+
+        return nReturn;
+    }
+
 }
