@@ -26,7 +26,7 @@ atomicx_time Atomicx_GetTick(void)
 
 void Atomicx_SleepTick(atomicx_time nSleep)
 {   
-    ListAllThreads();
+    //ListAllThreads();
     delay(nSleep);
 }
 
@@ -34,6 +34,85 @@ constexpr size_t GetStackSize(size_t sizeRef)
 {
     return sizeRef * sizeof (size_t);  
 }
+
+
+class Eventual : public atomicx
+{
+ public:
+    Eventual(uint32_t nNice, const char* pszName) :  atomicx (m_stack), m_stack{}
+    {
+        m_threadName = pszName;
+        
+        SetNice(nNice);
+
+        started = true;
+    }
+
+    const char* GetName () override
+    {
+        return m_threadName.c_str();
+    }
+    
+    ~Eventual()
+    {
+        Serial.print("Deleting Consumer: ");
+        Serial.print (", ID: ");
+        Serial.println ((size_t) this); 
+        started = false;
+    }
+    
+    void run() noexcept override
+    {
+        int nCount=0;
+
+        Serial.println ("Starting EVENTUAL.....");
+        
+        for (nCount=0; nCount < 10; nCount ++)
+        {
+            Serial.print ("\n\n[[[[[[[[[[[[");
+            Serial.print (GetName ());
+            Serial.print (":");
+            Serial.print ((size_t) this);
+            Serial.print (" - ");
+            Serial.print (" Eventual counter ");
+            Serial.print (nCount);
+            Serial.println ("]]]]]]]]]]]\n\n");
+
+            Yield ();
+        }
+    }
+
+    void finish () noexcept override
+    {
+        Serial.println ("\n\n>>>>>>>DELETING EVENTUAL.... \n\n\n");        
+        delete this;
+    }
+    
+    void StackOverflowHandler(void) final
+    {
+        Serial.print (__FUNCTION__);
+        Serial.print ("[");
+        Serial.print (GetName ());
+        Serial.print ((size_t) this);
+        Serial.print (": Stack used ");
+        Serial.print (GetUsedStackSize());
+        Serial.print ("/");
+        Serial.println (GetStackSize());
+        Serial.flush();
+    }
+
+    static bool GetStarted()
+    {
+        return started;
+    }
+    
+private:
+    uint8_t m_stack[::GetStackSize(50)];
+    String m_threadName="";
+    static bool started;
+};
+
+bool Eventual::started = false;
 
 class Consumer : public atomicx
 {
@@ -107,7 +186,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[200];
+    uint8_t m_stack[::GetStackSize(50)];
     String m_threadName="";
 };
 
@@ -139,6 +218,17 @@ public:
         {
             gLock.Lock();
 
+            if (Eventual::GetStarted() == false)
+            {
+                Serial.println (">>>> Creating EVENTUAL thread... <<<<");
+                new Eventual (1000, "Eventual");
+            }
+            else
+            {
+                Serial.println (">>>> EVENTUAL IS TRUE... <<<<");
+                Serial.println ();
+            }
+
             Serial.print ("Executing ");
             Serial.print (GetName());
             Serial.print (": ");
@@ -148,10 +238,13 @@ public:
             Serial.print (gLock.IsLocked());
             Serial.print ("/");
             Serial.print (gLock.IsShared());
-
             Serial.print (", Counter: ");
-            Serial.println (nCount);
-                                              
+            Serial.print (nCount);                                              
+            Serial.print (", Eventual: ");
+            Serial.println (Eventual::GetStarted());
+
+            Serial.flush();
+            
             Serial.println ("Lock");
             
             nDataCount++; 
@@ -227,14 +320,13 @@ void setup()
 
   delay (2000);
       
-  Serial.println ("-----------------------------------------------\n");
+  Serial.println ("Starting UP-----------------------------------------------\n");
   
   Serial.flush(); 
 
   
   Producer T1(100, u8"Producer 1");
   Consumer E1(100, u8"Consumer 1");
-  Consumer E2(500, u8"Consumer 2");
   Consumer E4(300, u8"Consumer 3");
 
   ListAllThreads ();

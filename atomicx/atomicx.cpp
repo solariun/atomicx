@@ -72,7 +72,7 @@ namespace thread
     bool atomicx::SelectNextThread()
     {
         atomicx* pItem = ms_paFirst;
-                
+
         do
         {
             if (pItem->m_aStatus == atypes::start || pItem->m_aStatus == atypes::now)
@@ -115,7 +115,7 @@ namespace thread
                     return false;
             }
         }
-                
+
         return true;
     }
 
@@ -141,7 +141,9 @@ namespace thread
 
                         ms_pCurrent->run();
 
-                        ms_pCurrent->m_aStatus = atypes::start;
+                        ms_pCurrent->m_aStatus = atypes::stop;
+
+                        ms_pCurrent->finish ();
                     }
                     else
                     {
@@ -285,9 +287,9 @@ namespace thread
     void atomicx::lock::Lock()
     {
         auto pAtomic = atomicx::GetCurrent();
-        
+
         if(pAtomic == nullptr) return;
-        
+
         // Get exclusive lock
         while (bExclusiveLock && pAtomic->Wait(bExclusiveLock, 1));
 
@@ -300,9 +302,9 @@ namespace thread
     void atomicx::lock::Unlock()
     {
         auto pAtomic = atomicx::GetCurrent();
-        
+
         if(pAtomic == nullptr) return;
-        
+
         if (bExclusiveLock == true)
         {
             bExclusiveLock = false;
@@ -316,12 +318,12 @@ namespace thread
     void atomicx::lock::SharedLock()
     {
         auto pAtomic = atomicx::GetCurrent();
-        
+
         if(pAtomic == nullptr) return;
-        
+
         // Wait for exclusive lock
         while (bExclusiveLock > 0 && pAtomic->Wait(bExclusiveLock, 1));
-        
+
         nSharedLockCount++;
 
         // Notify Other locks procedures
@@ -331,7 +333,7 @@ namespace thread
     void atomicx::lock::SharedUnlock()
     {
         auto pAtomic = atomicx::GetCurrent();
-        
+
         if(pAtomic == nullptr) return;
 
         if (nSharedLockCount)
@@ -346,7 +348,7 @@ namespace thread
     {
         return nSharedLockCount;
     }
-    
+
     bool atomicx::lock::IsLocked()
     {
         return bExclusiveLock;
@@ -390,7 +392,7 @@ namespace thread
         if (pszKey != nullptr && nKeyLenght > 0)
         {
             uint32_t nKeyID = GetTopicID(pszKey, nKeyLenght);
-            
+
             for (auto& thr : *this)
             {
                 if (nKeyID == thr.m_TopicId || IsSubscribed (pszKey, nKeyLenght))
@@ -399,7 +401,7 @@ namespace thread
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -421,20 +423,20 @@ namespace thread
         if (pszKey != nullptr && nKeyLenght > 0)
         {
             m_aStatus = atypes::subscription;
-            
+
             m_TopicId = GetTopicID(pszKey, nKeyLenght);
             m_nTargetTime = Atomicx_GetTick();
-                        
+
             m_lockMessage = {0,0};
-            
+
             Yield();
-            
+
             message.message = m_lockMessage.message;
             message.tag = m_lockMessage.tag;
 
             return true;
         }
-        
+
         return false;
     }
 
@@ -443,10 +445,10 @@ namespace thread
         if (pszKey != nullptr && nKeyLenght > 0)
         {
             m_aStatus = atypes::subscription;
-            
+
             m_TopicId = GetTopicID(pszKey, nKeyLenght);
             m_nTargetTime = Atomicx_GetTick();
-            
+
             Yield();
 
             m_lockMessage = {0,0};
@@ -470,23 +472,23 @@ namespace thread
                 if (nTagId == thr.m_TopicId)
                 {
                     nCounter++;
-                    
+
                     thr.m_aStatus = atypes::now;
                     thr.m_TopicId = 0;
                     thr.m_nTargetTime = Atomicx_GetTick();
                     thr.m_lockMessage.message = message.message;
                     thr.m_lockMessage.tag = message.tag;
                 }
-                
+
                 if (thr.IsSubscribed(pszKey, nKeyLenght))
                 {
                     nCounter++;
-                    
+
                     thr.BrokerHandler(pszKey, nKeyLenght, thr.m_lockMessage);
                 }
             }
         }
-        
+
         return nCounter ? true : false;
     }
 
@@ -518,11 +520,11 @@ namespace thread
                     thr.m_nTargetTime = Atomicx_GetTick();
                     thr.m_lockMessage = {0,0};
                 }
-                
+
                 if (thr.IsSubscribed(pszKey, nKeyLenght))
                 {
                     nCounter++;
-                    
+
                     thr.m_lockMessage = {0,0};
                     thr.BrokerHandler(pszKey, nKeyLenght, thr.m_lockMessage);
                 }

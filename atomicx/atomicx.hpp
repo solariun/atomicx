@@ -14,15 +14,36 @@
 
 using atomicx_time = uint32_t;
 
+/**
+ * @brief Implement the custom Tick acquisition
+ *
+ * @return atomicx_time
+ */
 extern atomicx_time Atomicx_GetTick(void);
+
+/**
+ * @brief Implement a custom sleep, usually based in the same GetTick granularity
+ *
+ * @param nSleep    How long custom tick to wait
+ *
+ * @note This function is particularly special, since it give freedom to tweak the
+ *       processor power consuption if necessary
+ */
 extern void Atomicx_SleepTick(atomicx_time nSleep);
+
+/**
+ * @brief Implement a yield
+ *
+ * @note this function exists for compatibility with other OSs
+ */
 extern void yield(void);
+
 
 namespace thread
 {
     /* Official version */
-    static const int coreXVVersion[]={ 1, 0, 0 };
-    static const char coreVersionString[] = "V1.0.0 built at " __TIMESTAMP__;
+    #define COREX_VERSION "1.0.0"
+    static const char coreVersionString[] = "V" COREX_VERSION " built at " __TIMESTAMP__;
 
     class atomicx
     {
@@ -44,7 +65,7 @@ namespace thread
             sleep=100,
             stackOverflow=255
         };
-        
+
         /**
          * ------------------------------
          * ITERATOR FOR THREAD LISTING
@@ -54,6 +75,12 @@ namespace thread
         {
         public:
             aiterator() = delete;
+
+            /**
+             * @brief atomicx based contructor
+             *
+             * @param ptr
+             */
             aiterator(atomicx* ptr);
 
             atomicx& operator*() const;
@@ -66,7 +93,7 @@ namespace thread
         private:
             atomicx* m_ptr;
         };
-        
+
         /**
          * ------------------------------
          * SUPLEMENTAR SMART_PTR IMPLEMENTATION
@@ -75,16 +102,16 @@ namespace thread
         template <typename T> class smart_ptr
         {
         public:
-            
+
             smart_ptr(T* p) : pRef (new reference {p, 1})
             { }
-            
+
             smart_ptr(const smart_ptr<T>& sa)
             {
                 pRef = sa.pRef;
                 pRef->nRC++;
             }
-            
+
             smart_ptr<T>& operator=(const smart_ptr<T>& sa)
             {
                 if (pRef != nullptr && pRef->nRC > 0)
@@ -93,7 +120,7 @@ namespace thread
                 }
 
                 pRef = sa.pRef;
-                
+
                 if (pRef != nullptr)
                 {
                     pRef->nRC++;
@@ -117,7 +144,7 @@ namespace thread
                     }
                 }
             }
-            
+
             T* operator-> (void)
             {
                 return pRef->pReference;
@@ -132,48 +159,48 @@ namespace thread
             {
                 return pRef == nullptr ? false : pRef->pReference == nullptr ? false : true;
             }
-            
+
             size_t GetRefCounter(void)
             {
                 if (pRef != nullptr)
                 {
                     return pRef->nRC;
                 }
-                
+
                 return 0;
             }
 
         private:
-            
+
             smart_ptr(void){};
             struct reference
             {
                 T* pReference ;
                 size_t nRC;
             };
-            
+
             reference* pRef=nullptr;
         };
 
         aiterator begin(void);
         aiterator end(void);
-                
+
         /**
          * ------------------------------
          * QUEUE FOR IPC IMPLEMENTATION
          * ------------------------------
          */
-        
+
         template<typename T>
         class queue
         {
         public:
-            
+
             queue() = delete;
-            
+
             queue(size_t nQSize):m_nQSize(nQSize), m_nItens{0}
             {}
-            
+
             bool PushBack(T item)
             {
                 if (m_nItens >= m_nQSize)
@@ -187,9 +214,9 @@ namespace thread
                         return false;
                     }
                 }
-                
+
                 QItem* pQItem = new QItem(item);
-                
+
                 if (m_pQIStart == nullptr)
                 {
                     m_pQIStart = m_pQIEnd = pQItem;
@@ -199,9 +226,9 @@ namespace thread
                     m_pQIEnd->SetNext(*pQItem);
                     m_pQIEnd = pQItem;
                 }
-                
+
                 m_nItens++;
-                
+
                 if (atomicx::GetCurrent() != nullptr)
                 {
                     atomicx::GetCurrent()->Notify(*this,0);
@@ -225,7 +252,7 @@ namespace thread
                 }
 
                 QItem* pQItem = new QItem(item);
-                
+
                 if (m_pQIStart == nullptr)
                 {
                     m_pQIStart = m_pQIEnd = pQItem;
@@ -235,9 +262,9 @@ namespace thread
                     pQItem->SetNext(*m_pQIStart);
                     m_pQIStart = pQItem;
                 }
-                
+
                 m_nItens++;
-                
+
                 if (atomicx::GetCurrent() != nullptr)
                 {
                     atomicx::GetCurrent()->Notify    (*this,0);
@@ -245,7 +272,7 @@ namespace thread
 
                 return true;
             }
-            
+
             T Pop()
             {
                 if (m_nItens == 0)
@@ -254,46 +281,46 @@ namespace thread
                 }
 
                 T pItem = m_pQIStart->GetItem();
-                
+
                 QItem* p_tmpQItem = m_pQIStart;
-                
+
                 m_pQIStart = m_pQIStart->GetNext();
-                
+
                 delete p_tmpQItem;
-                
+
                 m_nItens--;
-                
+
                 if (atomicx::GetCurrent() != nullptr)
                 {
                     atomicx::GetCurrent()->Notify(*this,1);
                 }
-                
+
                 return pItem;
             }
-            
+
             size_t GetSize()
             {
                 return m_nItens;
             }
-            
+
         protected:
-            
+
             class QItem
             {
             public:
                 QItem () = delete;
-                
+
                 QItem(T& qItem) : m_qItem(qItem), m_pNext(nullptr)
                 {}
-                
+
                 T& GetItem()
                 {
                     return m_qItem;
                 }
-                
+
             protected:
                 friend class queue;
-                
+
                 void SetNext (QItem& qItem)
                 {
                     m_pNext = &qItem;
@@ -305,7 +332,7 @@ namespace thread
                 }
 
             private:
-                
+
                 T m_qItem;
                 QItem* m_pNext;
             };
@@ -313,12 +340,12 @@ namespace thread
         private:
             size_t m_nQSize;
             size_t m_nItens;
-            
+
             QItem* m_pQIEnd = nullptr;
             QItem* m_pQIStart = nullptr;
-            
+
         };
-        
+
         /**
          * ------------------------------
          * SMART LOCK IMPLEMENTATION
@@ -334,13 +361,13 @@ namespace thread
             void SharedUnlock();
             size_t IsShared();
             bool IsLocked();
-            
+
         protected:
         private:
             size_t nSharedLockCount=0;
             bool bExclusiveLock=false;
         };
-        
+
         /**
          * PUBLIC OBJECT METHOS
          */
@@ -350,7 +377,7 @@ namespace thread
         virtual ~atomicx(void);
 
         static atomicx* GetCurrent();
-        
+
         static bool Start(void);
 
         size_t GetID(void);
@@ -363,22 +390,28 @@ namespace thread
         int GetStatus(void);
         size_t GetReferenceLock(void);
         size_t GetTagLock(void);
-        
+
         void SetNice (atomicx_time nice);
-        
+
         template<typename T, size_t N>
         atomicx(T (&stack)[N]) : m_context{}, m_stack((volatile uint8_t*) stack)
         {
             m_stackSize = N  ;
-            
+
             AddThisThread();
         }
 
         virtual void run(void) noexcept = 0;
+
         virtual void StackOverflowHandler(void) = 0;
 
+        virtual void finish() noexcept
+        {
+            return;
+        }
+
     protected:
-        
+
         struct Message
         {
             size_t tag;
@@ -497,7 +530,7 @@ namespace thread
             return bRet;
         }
 
-        template<typename T> bool IsWaiting(T& refVar, size_t nTag, bool bAll=false)
+        template<typename T> bool IsWaiting(T& refVar, size_t nTag)
         {
             for (auto& thr : *this)
             {
@@ -515,13 +548,13 @@ namespace thread
          * SMART BROKER IMPLEMENTATION
          * ------------------------------
          */
-        
+
         bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght, Message& message);
         bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght);
 
         bool Publish (const char* pszKey, size_t nKeyLenght, const Message message);
         bool SafePublish (const char* pszKey, size_t nKeyLenght, const Message message);
-        
+
         bool Publish (const char* pszKey, size_t nKeyLenght);
         bool SafePublish (const char* pszKey, size_t nKeyLenght);
 
@@ -533,23 +566,23 @@ namespace thread
             (void) pszKey; (void) nKeyLenght; (void) message;
             return false;
         }
-        
+
         virtual bool IsSubscribed (const char* pszKey, size_t nKeyLenght)
         {
             (void) pszKey; (void) nKeyLenght;
-            
+
             return false;
         }
 
         bool Yield(atomicx_time nSleep=0);
-        
+
     private:
 
         void AddThisThread();
         void RemoveThisThread();
-        
+
         uint16_t crc16(const uint8_t* pData, size_t nSize, uint16_t nCRC);
-        
+
         static bool SelectNextThread(void);
 
         atomicx* m_paNext = nullptr;
@@ -566,14 +599,16 @@ namespace thread
         volatile uint8_t* m_pStaskStart=nullptr;
         volatile uint8_t* m_pStaskEnd=nullptr;
         size_t m_stacUsedkSize=0;
-        
+
         /* WAIT / BROKER -------- */
         uint8_t* m_pLockId=nullptr;
         uint32_t m_TopicId=0;
         Message m_lockMessage = {0,0};
-        
+
         atomicx_time m_nTargetTime=0;
         atomicx_time m_nice=0;
+
+        bool bDeleteOnExit = false;
     };
 }
 
