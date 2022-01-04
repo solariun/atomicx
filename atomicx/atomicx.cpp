@@ -141,7 +141,7 @@ namespace thread
 
                         ms_pCurrent->run();
 
-                        ms_pCurrent->m_aStatus = atypes::stop;
+                        ms_pCurrent->m_aStatus = atypes::start;
 
                         ms_pCurrent->finish ();
                     }

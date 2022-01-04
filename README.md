@@ -61,6 +61,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
     * If not specialization is done, the source code will use a simple and non-deterministic loop cycle to count ticks.
 
+* `finish()` method will be call every time `run()` is returned, this allow special cases like eventual threads to self-destroy itself, otherwise the object would be only a memory leak.... see examples on `main.cpp`
 
 ``` C++
 //
