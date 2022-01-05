@@ -489,6 +489,7 @@ namespace thread
          * ------------------------------
          */
 
+        /* The stamart mutex implementation */
         class lock
         {
         public:
@@ -541,13 +542,26 @@ namespace thread
             bool bExclusiveLock=false;
         };
 
+        /**
+         * @brief RII compliance lock/shared lock to auto unlock on destruction
+         *
+         */
         class SmartLock
         {
             public:
                 SmartLock() = delete;
+
+                /**
+                 * @brief Construct a new Smart Lock object based a existing lock
+                 *
+                 * @param lockObj the existing lock object
+                 */
                 SmartLock (lock& lockObj) : m_lock(lockObj)
                 {}
 
+                /**
+                 * @brief Destroy and release the smart lock taken
+                 */
                 ~SmartLock()
                 {
                     switch (m_lockType)
@@ -561,6 +575,11 @@ namespace thread
                     }
                 }
 
+                /**
+                 * @brief Accquire a SharedLock
+                 *
+                 * @return true if accquired, false if another accquisition was already done
+                 */
                 bool SharedLock()
                 {
                     bool bRet = false;
@@ -575,6 +594,11 @@ namespace thread
                     return bRet;
                 }
 
+                /**
+                 * @brief Accquire a exclusive Lock
+                 *
+                 * @return true if accquired, false if another accquisition was already done
+                 */
                 bool Lock()
                 {
                     bool bRet = false;
@@ -589,11 +613,21 @@ namespace thread
                     return bRet;
                 }
 
+                /**
+                 * @brief Check how many shared locks are accquired
+                 *
+                 * @return size_t   Number of threads holding shared locks
+                 */
                 size_t IsShared()
                 {
                     return m_lock.IsShared();
                 }
 
+                /**
+                 * @brief Check if a exclusive lock has been already accquired
+                 *
+                 * @return true if yes, otherwise false
+                 */
                 bool IsLocked()
                 {
                     return m_lock.IsLocked();
@@ -609,27 +643,115 @@ namespace thread
          * PUBLIC OBJECT METHOS
          */
 
-       atomicx() = delete;
 
+        atomicx() = delete;
+
+        /**
+         * @brief virtual destructor of the atomicx
+         */
         virtual ~atomicx(void);
 
+        /**
+         * @brief Get the Current thread in execution
+         *
+         * @return atomicx* thread
+         */
         static atomicx* GetCurrent();
 
+        /**
+         * @brief Once it is call the process blocks execution and start all threads
+         *
+         * @return false if it was destried by dead lock (all threads locked)
+         */
         static bool Start(void);
 
+        /**
+         * @brief Get the current thread ID
+         *
+         * @return size_t  Thread ID number
+         */
         size_t GetID(void);
+
+        /**
+         * @brief Get the Max Stack Size for the thread
+         *
+         * @return size_t size in bytes
+         */
         size_t GetStackSize(void);
+
+        /**
+         * @brief Get the Nice the current thread
+         *
+         * @return  atomicx_time the number representing the nice and based on the ported tick
+         *          granularity.
+         */
         atomicx_time GetNice(void);
+
+        /**
+         * @brief Get the Used Stack Size for the thread since the last context change cycle
+         *
+         * @return size_t size in bytes
+         */
         size_t GetUsedStackSize(void);
+
+        /**
+         * @brief Get the Current Tick using the ported tick granularity function
+         *
+         * @return atomicx_time based on the ported tick granularity
+         */
         atomicx_time GetCurrentTick();
+
+        /**
+         * @brief Get the Name object
+         *
+         * @return const char* name in plain c string
+         *
+         * @name If GetName was not overloaded by the derived thread implementation
+         *       a standard name will be returned.
+         */
         virtual const char* GetName(void);
+
+        /**
+         * @brief Get next moment in ported tick granularity the thread will be due to return
+         *
+         * @return atomicx_time based on the ported tick granularity
+         */
         atomicx_time GetTargetTime(void);
+
+        /**
+         * @brief Get the current thread status
+         *
+         * @return int use atomicx::atypes
+         */
         int GetStatus(void);
+
+        /**
+         * @brief Get the Reference Lock last used to lock the thread
+         *
+         * @return size_t the lock_id (used my wait)
+         */
         size_t GetReferenceLock(void);
+
+        /**
+         * @brief Get the last tag message posted
+         *
+         * @return size_t atomicx::message::tag value
+         */
         size_t GetTagLock(void);
 
+        /**
+         * @brief Set the Nice of the thread
+         *
+         * @param nice in atomicx_time reference based on the ported tick granularity
+         */
         void SetNice (atomicx_time nice);
 
+        /**
+         * @brief Construct a new atomicx thread
+         *
+         * @tparam T Stack memory page type
+         * @tparam N Stack memory page size
+         */
         template<typename T, size_t N>
         atomicx(T (&stack)[N]) : m_context{}, m_stack((volatile uint8_t*) stack)
         {
@@ -638,10 +760,25 @@ namespace thread
             AddThisThread();
         }
 
+        /**
+         * @brief The pure virtual function that runs the thread loop
+         *
+         * @note This function MUST be implemented and once it returns it will execute finish method
+         */
         virtual void run(void) noexcept = 0;
 
+        /**
+         * @brief Handles the StackOverflow of the current thread
+         *
+         * @note MUST be implemented
+         */
         virtual void StackOverflowHandler(void) = 0;
 
+        /**
+         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
+         *
+         * @note if not implemented a default "empty" call is used instead
+         */
         virtual void finish() noexcept
         {
             return;
@@ -655,6 +792,14 @@ namespace thread
             size_t message;
         };
 
+        /**
+         * @brief calculate the Topic ID for a given topic text
+         *
+         * @param pszTopic    Topic Text in C string
+         * @param nKeyLenght  Size, in bytes + zero terminated char
+         *
+         * @return uint32_t  The calculated topic ID
+         */
         uint32_t GetTopicID (const char* pszTopic, size_t nKeyLenght);
 
         /**
@@ -663,6 +808,16 @@ namespace thread
          * ------------------------------
          */
 
+        /**
+         * @brief Blocks/Waits a notification along with a message and tag from a specific reference pointer
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  the size_t message to be received
+         * @param refVar    the reference pointer used as a notifier
+         * @param nTag      the size_t tag that will give meaning to the the message
+         *
+         * @return true if it was successfully received.
+         */
         template<typename T> bool Wait(size_t& nMessage, T& refVar, size_t nTag)
         {
             m_TopicId = 0;
@@ -680,6 +835,15 @@ namespace thread
             return true;
         }
 
+        /**
+         * @brief Blocks/Waits a notification along with a tag from a specific reference pointer
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    the reference pointer used as a notifier
+         * @param nTag      the size_t tag that will give meaning to the the message
+         *
+         * @return true if it was successfully received.
+         */
         template<typename T> bool Wait(T& refVar, size_t nTag)
         {
             m_TopicId = 0;
@@ -695,6 +859,18 @@ namespace thread
             return true;
         }
 
+        /**
+         * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  The size_t message to be sent
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param bAll      default = fase, and only the fist available refVar Waiting thread will be notified, if true all avaliable
+         *                  refVar waiting thread will be notified.
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
         template<typename T> bool SafeNotify(size_t& nMessage, T& refVar, uint32_t nTag, bool bAll=false)
         {
             bool bRet = false;
@@ -722,6 +898,18 @@ namespace thread
             return bRet;
         }
 
+        /**
+         * @brief Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  The size_t message to be sent
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param bAll      default = fase, and only the fist available refVar Waiting thread will be notified, if true all avaliable
+         *                  refVar waiting thread will be notified.
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
         template<typename T> bool Notify(size_t& nMessage, T& refVar, uint32_t nTag, bool bAll=false)
         {
             bool bRet = SafeNotify (nMessage, refVar, nTag, bAll);
@@ -731,6 +919,17 @@ namespace thread
             return bRet;
         }
 
+        /**
+         * @brief Safely notify all Waits from a specific reference pointer without triggering context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param bAll      default = fase, and only the fist available refVar Waiting thread will be notified, if true all avaliable
+         *                  refVar waiting thread will be notified.
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
         template<typename T> bool SafeNotify(T& refVar, size_t nTag, bool bAll=false)
         {
             bool bRet = false;
@@ -758,6 +957,17 @@ namespace thread
             return bRet;
         }
 
+        /**
+         * @brief Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param bAll      default = fase, and only the fist available refVar Waiting thread will be notified, if true all avaliable
+         *                  refVar waiting thread will be notified.
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
         template<typename T> bool Notify(T& refVar, size_t nTag, bool bAll=false)
         {
             bool bRet = SafeNotify(refVar, nTag, bAll);
@@ -767,6 +977,17 @@ namespace thread
             return bRet;
         }
 
+        /**
+         * @brief Check if there are waiting threads for a given reference pointer and tag value
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         *
+         * @return true
+         *
+         * @note This is a powerfull tool since it create layers of waiting within the same reference pointer
+         */
         template<typename T> bool IsWaiting(T& refVar, size_t nTag)
         {
             for (auto& thr : *this)
@@ -781,29 +1002,144 @@ namespace thread
         }
 
         /**
+         * @brief Check if there are waiting threads for a given reference pointer, in general
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         *
+         * @return true
+         */
+        template<typename T> bool IsWaiting(T& refVar)
+        {
+            for (auto& thr : *this)
+            {
+                if (thr.m_pLockId == (void*) &refVar)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /**
          * ------------------------------
          * SMART BROKER IMPLEMENTATION
          * ------------------------------
          */
 
+        /**
+         * @brief Block and wait for message from a specific topic string
+         *
+         * @param pszKey        The Topic string
+         * @param nKeyLenght    The size of the topic string in bytes
+         * @param message       the atomicx::message structure with message and tag
+         *
+         * @return true if it was successfully received, otherwise false
+         */
         bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght, Message& message);
+
+        /**
+         * @brief Block and wait for a notification from a specific topic string
+         *
+         * @param pszKey        The Topic string
+         * @param nKeyLenght    The size of the topic string in bytes
+         *
+         * @return true if it was successfully received, otherwise false
+         */
         bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght);
 
+        /**
+         * @brief Publish a message for a specific topic string and trigger a context change if any delivered
+         *
+         * @param pszKey        The Topic string
+         * @param nKeyLenght    The size of the topic string in bytes
+         * @param message       the atomicx::message structure with message and tag
+         *
+         * @return true if at least one thread has received a message
+         */
         bool Publish (const char* pszKey, size_t nKeyLenght, const Message message);
+
+        /**
+         * @brief Safely Publish a message for a specific topic string DO NOT trigger a context change if any delivered
+         *
+         * @param pszKey        The Topic string
+         * @param nKeyLenght    The size of the topic string in bytes
+         * @param message       the atomicx::message structure with message and tag
+         *
+         * @return true if at least one thread has received a message
+         *
+         * @note Ideal for been used with interrupt request
+         */
         bool SafePublish (const char* pszKey, size_t nKeyLenght, const Message message);
 
+        /**
+         * @brief Publish a notification for a specific topic string and trigger a context change if any delivered
+         *
+         * @param pszKey        The Topic string
+         * @param nKeyLenght    The size of the topic string in bytes
+         *
+         * @return true if at least one thread has received a message
+         */
         bool Publish (const char* pszKey, size_t nKeyLenght);
+
+        /**
+         * @brief Safely Publish a notification for a specific topic string DO NOT trigger a context change if any delivered
+         *
+         * @param pszKey        The Topic string
+         * @param nKeyLenght    The size of the topic string in bytes
+         *
+         * @return true if at least one thread has received a message
+         *
+         * @note Ideal for been used with interrupt request
+         */
         bool SafePublish (const char* pszKey, size_t nKeyLenght);
 
+        /**
+         * @brief Check if there is subscryption for a specific Topic String
+         *
+         * @param pszTopic      The Topic string in C string
+         * @param nKeyLenght    The Topic C string length in bytes
+         *
+         * @return true if any substriction is found, otherwise false
+         */
         bool HasSubscriptions (const char* pszTopic, size_t nKeyLenght);
+
+        /**
+         * @brief Check if there is subscryption for a specific Topic ID
+         *
+         * @param nKeyID       The Topic ID uint32_t
+         *
+         * @return true if any substriction is found, otherwise false
+         */
         bool HasSubscriptions (uint32_t nKeyID);
 
+        /**
+         * @brief Default broker handler for a subscribed message
+         *
+         * @param pszKey        The Topic C string
+         * @param nKeyLenght    The Topic C string size in bytes
+         * @param message       The atomicx::message payload received
+         *
+         * @return true signify it was correctly processed
+         *
+         * @note Can be overloaded by the derived by the derived thread implementation and specialized,
+         *       otherwise a empty function will be called instead
+         */
         virtual bool BrokerHandler(const char* pszKey, size_t nKeyLenght, Message& message)
         {
             (void) pszKey; (void) nKeyLenght; (void) message;
             return false;
         }
 
+        /**
+         * @brief Specialize and gives power to decide if a topic is subscrybed on not
+         *
+         * @param pszKey        The Topic C String
+         * @param nKeyLenght    The Topic C String size in bytes
+         *
+         * @return true if the given topic was subscribed, otherwise false.
+         */
         virtual bool IsSubscribed (const char* pszKey, size_t nKeyLenght)
         {
             (void) pszKey; (void) nKeyLenght;
@@ -811,15 +1147,44 @@ namespace thread
             return false;
         }
 
+        /**
+         * @brief Foce the context change explicitly
+         *
+         * @param nSleep  default is 0, otherwise it will override the nice and sleep for n custom tick granularity
+         *
+         * @return true if the context came back correctly, otherwise false
+         */
         bool Yield(atomicx_time nSleep=0);
 
     private:
 
+        /**
+         * @brief Add the current thread to the global thread list
+         */
         void AddThisThread();
+
+        /**
+         * @brief Remove the current thread to the global thread list
+         */
         void RemoveThisThread();
 
+        /**
+         * @brief CRC16 used to compose a multi uint32_t for Topic ID
+         *
+         * @param pData     Data bytes to be used on calculation
+         * @param nSize     The size of the Data bytes
+         * @param nCRC      The previous CRC calculated or a specific starter (salt)
+         *
+         * @return uint16_t the CRC calculated.
+         */
         uint16_t crc16(const uint8_t* pData, size_t nSize, uint16_t nCRC);
 
+        /**
+         * @brief The scheduler used by the kernel implementation
+         *
+         * @return true it at least one thread is not blocked, if all threads a blocked
+         *          a false is returned telling to the kernel  to stop Start with false.
+         */
         static bool SelectNextThread(void);
 
         atomicx* m_paNext = nullptr;
