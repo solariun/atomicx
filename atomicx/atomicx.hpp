@@ -83,16 +83,40 @@ namespace thread
              */
             aiterator(atomicx* ptr);
 
+            /*
+             * Access operator
+             */
             atomicx& operator*() const;
             atomicx* operator->();
+
+            /*
+             * Movement operator
+             */
             aiterator& operator++();
 
+            /*
+             * Binary operators
+             */
             friend bool operator== (const aiterator& a, const aiterator& b){ return a.m_ptr == b.m_ptr;};
             friend bool operator!= (const aiterator& a, const aiterator& b){ return a.m_ptr != b.m_ptr;};
 
         private:
             atomicx* m_ptr;
         };
+
+        /**
+         * @brief Get the beggining of the list
+         *
+         * @return aiterator
+         */
+        aiterator begin(void);
+
+        /**
+         * @brief Get the end of the list
+         *
+         * @return aiterator
+         */
+        aiterator end(void);
 
         /**
          * ------------------------------
@@ -103,15 +127,32 @@ namespace thread
         {
         public:
 
+            /**
+             * @brief smart pointer constructor
+             *
+             * @param p pointer type T to be managed
+             */
             smart_ptr(T* p) : pRef (new reference {p, 1})
             { }
 
+            /**
+             * @brief smart pointer overload constructor
+             *
+             * @param sa    Smart pointer reference
+             */
             smart_ptr(const smart_ptr<T>& sa)
             {
                 pRef = sa.pRef;
                 pRef->nRC++;
             }
 
+            /**
+             * @brief Smart pointer Assignment operator
+             *
+             * @param sa    Smart poiter reference
+             *
+             * @return smart_ptr<T>&  smart pointer this reference.
+             */
             smart_ptr<T>& operator=(const smart_ptr<T>& sa)
             {
                 if (pRef != nullptr && pRef->nRC > 0)
@@ -129,6 +170,9 @@ namespace thread
                 return *this;
             }
 
+            /**
+             * @brief Smart pointer destructor
+             */
             ~smart_ptr(void)
             {
                 if (pRef != nullptr)
@@ -145,21 +189,41 @@ namespace thread
                 }
             }
 
+            /**
+             * @brief Smart pointer access operator
+             *
+             * @return T*  Pointer for the managed object T
+             */
             T* operator-> (void)
             {
                 return pRef->pReference;
             }
 
+            /**
+             * @brief Smart pointer access operator
+             *
+             * @return T*  Reference for the managed object T
+             */
             T& operator& (void)
             {
                 return *pRef->pReference;
             }
 
+            /**
+             * @brief  Check if the referece still valis
+             *
+             * @return true if the reference still not null, otherwise false
+             */
             bool IsValid(void)
             {
                 return pRef == nullptr ? false : pRef->pReference == nullptr ? false : true;
             }
 
+            /**
+             * @brief Get the Ref Counter of the managed pointer
+             *
+             * @return size_t How much active references
+             */
             size_t GetRefCounter(void)
             {
                 if (pRef != nullptr)
@@ -172,7 +236,7 @@ namespace thread
 
         private:
 
-            smart_ptr(void){};
+            smart_ptr(void) = delete;
             struct reference
             {
                 T* pReference ;
@@ -181,9 +245,6 @@ namespace thread
 
             reference* pRef=nullptr;
         };
-
-        aiterator begin(void);
-        aiterator end(void);
 
         /**
          * ------------------------------
@@ -198,9 +259,22 @@ namespace thread
 
             queue() = delete;
 
+            /**
+             * @brief Thread Safe Queue constructor
+             *
+             * @param nQSize Max number of objects to hold
+             */
             queue(size_t nQSize):m_nQSize(nQSize), m_nItens{0}
             {}
 
+            /**
+             * @brief Push an object to the end of the queue, if the queue
+             *        is full, it waits till there is a space.
+             *
+             * @param item  The object to be pushed into the queue
+             *
+             * @return true if it was able to push a object in the queue, false otherwise
+             */
             bool PushBack(T item)
             {
                 if (m_nItens >= m_nQSize)
@@ -237,6 +311,15 @@ namespace thread
                 return true;
             }
 
+
+            /**
+             * @brief Push an object to the beggining of the queue, if the queue
+             *        is full, it waits till there is a space.
+             *
+             * @param item  The object to be pushed into the queue
+             *
+             * @return true if it was able to push a object in the queue, false otherwise
+             */
             bool PushFront(T item)
             {
                 if (m_nItens >= m_nQSize)
@@ -273,6 +356,12 @@ namespace thread
                 return true;
             }
 
+            /**
+             * @brief Pop an Item from the beggining of queue. Is no object there is no
+             *        object in the queue, it waits for it.
+             *
+             * @return T return the object stored.
+             */
             T Pop()
             {
                 if (m_nItens == 0)
@@ -298,21 +387,59 @@ namespace thread
                 return pItem;
             }
 
+            /**
+             * @brief Get the number of the objects in the queue
+             *
+             * @return size_t Number of the objects in the queue
+             */
             size_t GetSize()
             {
                 return m_nItens;
             }
 
+            /**
+             * @brief Get the Max number of object in the queue can hold
+             *
+             * @return size_t   The max number of object
+             */
+            size_t GetMaxSize()
+            {
+                return m_nQSize;
+            }
+
+            /**
+             * @brief Check if the queue is full
+             *
+             * @return true for yes, otherwise false
+             */
+            bool IsFull()
+            {
+                return m_nItens >= m_nQSize;
+            }
+
         protected:
 
+            /**
+             * @brief Queue Item object
+             */
             class QItem
             {
             public:
                 QItem () = delete;
 
+                /**
+                 * @brief Queue Item constructor
+                 *
+                 * @param qItem Obj template type T
+                 */
                 QItem(T& qItem) : m_qItem(qItem), m_pNext(nullptr)
                 {}
 
+                /**
+                 * @brief Get the current object in the QItem
+                 *
+                 * @return T& The template type T object
+                 */
                 T& GetItem()
                 {
                     return m_qItem;
@@ -321,11 +448,21 @@ namespace thread
             protected:
                 friend class queue;
 
+                /**
+                 * @brief Set Next Item in the Queue list
+                 *
+                 * @param qItem QItem that holds a Queue element
+                 */
                 void SetNext (QItem& qItem)
                 {
                     m_pNext = &qItem;
                 }
 
+                /**
+                 * @brief Get the Next QItem object, if any
+                 *
+                 * @return QItem* A valid QItem pointer otherwise nullptr
+                 */
                 QItem* GetNext ()
                 {
                     return m_pNext;
@@ -355,17 +492,117 @@ namespace thread
         class lock
         {
         public:
+            /**
+             * @brief Exclusive/binary lock the smart lock
+             *
+             * @note Once Lock() methos is called, if any thread held a shared lock,
+             *       the Lock will wait for it to finish in order to acquire the exclusive
+             *       lock, and all other threads that needs to a shared lock will wait till
+             *       Lock is accquired and released.
+             */
             void Lock();
+
+            /**
+             * @brief Release the exclusive lock
+             */
             void Unlock();
+
+            /**
+             * @brief Shared Lock for the smart Lock
+             *
+             * @note Shared lock can only be accquired if no Exclusive lock is waiting or already accquired a exclusive lock,
+             *       In contrast, if at least one thread holds a shared lock, any exclusive lock can only be accquired once it
+             *       is released.
+             */
             void SharedLock();
+
+            /**
+             * @brief Release the current shared lock
+             */
             void SharedUnlock();
+
+            /**
+             * @brief Check how many shared locks are accquired
+             *
+             * @return size_t   Number of threads holding shared locks
+             */
             size_t IsShared();
+
+            /**
+             * @brief Check if a exclusive lock has been already accquired
+             *
+             * @return true if yes, otherwise false
+             */
             bool IsLocked();
 
         protected:
         private:
             size_t nSharedLockCount=0;
             bool bExclusiveLock=false;
+        };
+
+        class SmartLock
+        {
+            public:
+                SmartLock() = delete;
+                SmartLock (lock& lockObj) : m_lock(lockObj)
+                {}
+
+                ~SmartLock()
+                {
+                    switch (m_lockType)
+                    {
+                        case 'L':
+                            m_lock.Unlock();
+                            break;
+                        case 'S':
+                            m_lock.SharedUnlock();
+                            break;
+                    }
+                }
+
+                bool SharedLock()
+                {
+                    bool bRet = false;
+
+                    if (m_lockType == '\0')
+                    {
+                        m_lock.SharedLock();
+                        m_lockType = 'S';
+                        bRet = true;
+                    }
+
+                    return bRet;
+                }
+
+                bool Lock()
+                {
+                    bool bRet = false;
+
+                    if (m_lockType == '\0')
+                    {
+                        m_lock.Lock();
+                        m_lockType = 'L';
+                        bRet = true;
+                    }
+
+                    return bRet;
+                }
+
+                size_t IsShared()
+                {
+                    return m_lock.IsShared();
+                }
+
+                bool IsLocked()
+                {
+                    return m_lock.IsLocked();
+                }
+
+            private:
+
+            lock& m_lock;
+            uint8_t m_lockType = '\0';
         };
 
         /**
