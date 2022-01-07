@@ -1,10 +1,13 @@
 # AtomicX
 
-Version 2.7.0 release
+Version 1.1.0 release
 
 ![image](https://user-images.githubusercontent.com/1805792/125191254-6591cf80-e239-11eb-9e89-d7500e793cd4.png)
 
 What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
+
+## Version 1.0.0
+
 
 * **DO NOT DISPLACE STACK, IT WILL STILL AVAILABLE FOR PROCESSING**, the *Stack Page* will only hold a backup of the most necessary information needed, allowing stacks in few bites most if the time. This implementation if highly suitable for Microcontrollers like ATINY85, for example, that only has 512 bites, and you can have 5 or more threads doing things for you, only backup the most important context information.
     * *IMPORTANT*: DO NOT USE CONTEXT MEMORY POINTER to exchange information to other threads, wait/notify and etc. All threads will use the *dafault stack memory* to execute, instead use Global variables, allocated memory or atomicx_smart_ptr objects.
@@ -61,9 +64,16 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
     * If not specialization is done, the source code will use a simple and non-deterministic loop cycle to count ticks.
 
+## Version 1.1.0
+
 * `finish()` method will be call every time `run()` is returned, this allow special cases like eventual threads to self-destroy itself, otherwise the object would be only a memory leak.... see examples on `main.cpp`
 
 * `SmartLock` RAII compliance, allow lock or shared lock to be auto release on object destruction.
+
+* **IMPORTANT** Now Notifications (Wait/Notify) can be timedout. if Tick based time is given, the waiting procedure will only stay blocked during it. (NO SPIN LOCK, REAL STATE BLOCK)
+* **IMPORTANT** `LookForWaitings` block for timeout time will a wait for specific refVar/tag is available, otherwise timeout, can be used sync wait and notify availability
+* **IMPORTANT** Now `Wait/Notify` `Tags`, used to give meaning/channel to a notification can be se to "all tags" if `Tag` is zero, otherwise it will respect refVar/Tag
+   
 
 ``` C++
 //

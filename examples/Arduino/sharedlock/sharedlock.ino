@@ -54,7 +54,8 @@ class Eventual : public atomicx
     
     ~Eventual()
     {
-        Serial.print("Deleting Consumer: ");
+        Serial.print ("Deleting: ");
+        Serial.print (GetName());
         Serial.print (", ID: ");
         Serial.println ((size_t) this); 
         started = false;

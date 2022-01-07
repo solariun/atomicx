@@ -75,17 +75,22 @@ namespace thread
 
         do
         {
-            if (pItem->m_aStatus == atypes::start || pItem->m_aStatus == atypes::now)
+            if (ms_pCurrent->m_nTargetTime == 0 && pItem->m_nTargetTime > 0)
+            {
+                ms_pCurrent = pItem;
+            }
+
+            if (pItem->m_aStatus == aTypes::start || pItem->m_aStatus == aTypes::now)
             {
                 ms_pCurrent = pItem;
                 break;
             }
-            if (pItem->m_aStatus == atypes::sleep && ms_pCurrent->m_nTargetTime >= pItem->m_nTargetTime)
+            else if ((pItem->m_aStatus == aTypes::sleep || (pItem->m_aStatus == aTypes::wait && pItem->m_nTargetTime > 0)) && ms_pCurrent->m_nTargetTime >= pItem->m_nTargetTime)
             {
                 ms_pCurrent = pItem;
             }
-        } while ((pItem = pItem->m_paNext));
 
+        } while ((pItem = pItem->m_paNext));
 
         if (ms_pCurrent == nullptr)
         {
@@ -95,20 +100,29 @@ namespace thread
         {
             switch (ms_pCurrent->m_aStatus)
             {
-                case atypes::sleep:
+                case aTypes::wait:
+                    if (ms_pCurrent->m_nTargetTime > 0)
+                    {
+                        ms_pCurrent->m_aSubStatus = aSubTypes::timeout;
+                    }
+                    else
+                    {
+                        // A blocked wait should never come here if the system was not in deadlock.
+                        return false;
+                    }
+
+                case aTypes::sleep:
                 {
                     atomicx_time nCurrent = Atomicx_GetTick();
 
-                    if (nCurrent < ms_pCurrent->m_nTargetTime)
-                    {
-                        (void) Atomicx_SleepTick(ms_pCurrent->m_nTargetTime - nCurrent);
-                    }
+                    (void) Atomicx_SleepTick(nCurrent < ms_pCurrent->m_nTargetTime ? ms_pCurrent->m_nTargetTime - nCurrent : 0);
+
                     break;
                 }
 
-                case atypes::running:
-                case atypes::start:
-                case atypes::now:
+                case aTypes::running:
+                case aTypes::start:
+                case aTypes::now:
                     break;
 
                 default:
@@ -131,17 +145,17 @@ namespace thread
             {
                 if (setjmp(ms_joinContext) == 0)
                 {
-                    if (ms_pCurrent->m_aStatus == atypes::start)
+                    if (ms_pCurrent->m_aStatus == aTypes::start)
                     {
                         volatile uint8_t nStackStart=0;
 
-                        ms_pCurrent->m_aStatus = atypes::running;
+                        ms_pCurrent->m_aStatus = aTypes::running;
 
                         ms_pCurrent->m_pStaskStart = &nStackStart;
 
                         ms_pCurrent->run();
 
-                        ms_pCurrent->m_aStatus = atypes::start;
+                        ms_pCurrent->m_aStatus = aTypes::start;
 
                         ms_pCurrent->finish ();
                     }
@@ -158,10 +172,15 @@ namespace thread
 
     bool atomicx::Yield(atomicx_time nSleep)
     {
-        if (m_aStatus == atypes::running)
+        if (m_aStatus == aTypes::running)
         {
-            m_aStatus = atypes::sleep;
+            m_aStatus = aTypes::sleep;
+            m_aSubStatus = aSubTypes::ok;
             m_nTargetTime=Atomicx_GetTick() + (nSleep == 0 ? m_nice : nSleep);
+        }
+        else if (m_aStatus == aTypes::wait)
+        {
+            m_nTargetTime=nSleep > 0 ? nSleep + Atomicx_GetTick() : 0;
         }
         else
         {
@@ -175,7 +194,7 @@ namespace thread
         if (m_stacUsedkSize > m_stackSize)
         {
             (void) StackOverflowHandler();
-            m_aStatus = atypes::stackOverflow;
+            m_aStatus = aTypes::stackOverflow;
             abort();
         }
         else if (memcpy((void*)m_stack, (const void*) m_pStaskEnd, m_stacUsedkSize) != (void*) m_stack)
@@ -196,7 +215,7 @@ namespace thread
             }
         }
 
-        ms_pCurrent->m_aStatus = atypes::running;
+        ms_pCurrent->m_aStatus = aTypes::running;
 
         return true;
     }
@@ -272,6 +291,11 @@ namespace thread
     int atomicx::GetStatus(void)
     {
         return static_cast<int>(m_aStatus);
+    }
+
+    int atomicx::GetSubStatus(void)
+    {
+        return static_cast<int>(m_aSubStatus);
     }
 
     size_t atomicx::GetReferenceLock(void)
@@ -422,7 +446,7 @@ namespace thread
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {
-            m_aStatus = atypes::subscription;
+            m_aStatus = aTypes::subscription;
 
             m_TopicId = GetTopicID(pszKey, nKeyLenght);
             m_nTargetTime = Atomicx_GetTick();
@@ -444,7 +468,7 @@ namespace thread
     {
         if (pszKey != nullptr && nKeyLenght > 0)
         {
-            m_aStatus = atypes::subscription;
+            m_aStatus = aTypes::subscription;
 
             m_TopicId = GetTopicID(pszKey, nKeyLenght);
             m_nTargetTime = Atomicx_GetTick();
@@ -473,7 +497,7 @@ namespace thread
                 {
                     nCounter++;
 
-                    thr.m_aStatus = atypes::now;
+                    thr.m_aStatus = aTypes::now;
                     thr.m_TopicId = 0;
                     thr.m_nTargetTime = Atomicx_GetTick();
                     thr.m_lockMessage.message = message.message;
@@ -515,7 +539,7 @@ namespace thread
                 {
                     nCounter++;
 
-                    thr.m_aStatus = atypes::now;
+                    thr.m_aStatus = aTypes::now;
                     thr.m_TopicId = 0;
                     thr.m_nTargetTime = Atomicx_GetTick();
                     thr.m_lockMessage = {0,0};
