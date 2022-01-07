@@ -90,7 +90,7 @@ class Eventual : public atomicx
         delete this;
     }
     
-    void StackOverflowHandler(void) final
+    void StackOverflowHandler(void) noexcept final
     {
         Serial.print (__FUNCTION__);
         Serial.print ("[");
@@ -172,7 +172,7 @@ public:
         } while (Yield());
     }
 
-    void StackOverflowHandler(void) final
+    void StackOverflowHandler(void) noexcept final
     {
         Serial.print (__FUNCTION__);
         Serial.print ("[");
@@ -259,7 +259,7 @@ public:
         } while (Yield ());
     }
 
-    void StackOverflowHandler(void) final
+    void StackOverflowHandler(void) noexcept final
     {
         Serial.print (__FUNCTION__);
         Serial.print ("[");

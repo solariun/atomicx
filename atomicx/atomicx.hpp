@@ -794,7 +794,7 @@ namespace thread
          *
          * @note HIGHLY ADVISED TO BE IMPLEMENTED, if not implemented a default "empty" call is used instead
          */
-        virtual void StackOverflowHandler(void)
+        virtual void StackOverflowHandler(void) noexcept
         {
             return;
         };

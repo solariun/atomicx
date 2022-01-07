@@ -87,7 +87,7 @@ public:
         } while (Yield());
     }
 
-    void StackOverflowHandler (void) override
+    void StackOverflowHandler (void) noexcept override
     {
         std::cout << __FUNCTION__ << ":" << GetName() << "_" << (size_t) this << ": needed: " << GetUsedStackSize() << ", allocated: " << GetStackSize() << std::endl;
     }
@@ -146,7 +146,7 @@ public:
 
     }
 
-    void StackOverflowHandler (void) override
+    void StackOverflowHandler (void) noexcept override
     {
         std::cout << __FUNCTION__ << ":" << GetName() << "_" << (size_t) this << ": needed: " << GetUsedStackSize() << ", allocated: " << GetStackSize() << std::endl;
     }
