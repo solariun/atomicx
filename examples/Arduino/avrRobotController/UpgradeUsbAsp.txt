@@ -1,0 +1,26 @@
+
+Programmer Day
+8 subscribers
+SUBSCRIBE
+This video is about upgrading USBasp programmer with latest firmware .
+This upgrade will fix 'cannot set sck period' issue, unlock slow programming mode and speed up programming time.
+
+Download the USBasp firmware:
+
+Firmware webpage:
+https://www.fischl.de/usbasp/
+
+Firmware direct download:
+https://www.fischl.de/usbasp/usbasp.2011-05-28.tar.gz
+
+Unpack the package and go to the folder:
+usbasp.2011-05-28/bin/firmware
+
+Flash the firmware:
+avrdude -p m8 -c usbasp -P /dev/ttyUSB0 -b 115200 -U flash:w:usbasp.atmega8.2011-05-28.hex:i
+
+If you want to backup the USBasp programmer firmware before the upgrade you can use the following command:
+avrdude -p m8 -c usbasp -P /dev/ttyUSB0 -b 115200 -U flash:r:flash.raw:r
+
+and you can restore the backup with:
+avrdude -p m8 -c usbasp -P /dev/ttyUSB0 -b 115200 -U flash:w:flash.raw:r

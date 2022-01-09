@@ -1,6 +1,7 @@
 /*
 
 */
+
 #include "arduino.h"
 
 #include "atomicx.hpp"
@@ -25,7 +26,8 @@ atomicx_time Atomicx_GetTick(void)
 
 void Atomicx_SleepTick(atomicx_time nSleep)
 {
-    //ListAllThreads();
+    ListAllThreads();
+
     delay(nSleep);
 }
 
@@ -93,7 +95,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(50)];
+    uint8_t m_stack[::GetStackSize(20)];
 };
 
 
@@ -160,7 +162,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(50)];
+    uint8_t m_stack[::GetStackSize(20)];
 };
 
 void ListAllThreads()
@@ -170,6 +172,9 @@ void ListAllThreads()
    Serial.flush();
 
   Serial.println ("[THREAD]-----------------------------------------------");
+
+  Serial.print (">>> Free RAM: ");
+  Serial.println (freeRam());
 
   Serial.print ("Sizeof Producer:");
   Serial.println (sizeof (Producer));
@@ -204,7 +209,6 @@ void ListAllThreads()
   Serial.flush();
 }
 
-
 void setup()
 {
   Serial.begin (115200);
@@ -217,10 +221,11 @@ void setup()
 
   Serial.flush();
 
-
-  Producer T1(100);
-  Consumer E1(1);
-  Consumer E4(1);
+    Producer T1(100);
+    Consumer E1(1);
+    Consumer E2(1);
+    Consumer E3(1);
+    Consumer E4(1);
 
   ListAllThreads ();
 

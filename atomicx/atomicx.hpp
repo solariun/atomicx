@@ -792,12 +792,9 @@ namespace thread
         /**
          * @brief Handles the StackOverflow of the current thread
          *
-         * @note HIGHLY ADVISED TO BE IMPLEMENTED, if not implemented a default "empty" call is used instead
+         * @note REQUIRED
          */
-        virtual void StackOverflowHandler(void) noexcept
-        {
-            return;
-        };
+        virtual void StackOverflowHandler(void) noexcept = 0;
 
         /**
          * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
@@ -1044,13 +1041,33 @@ namespace thread
          * @param nMessage  The size_t message to be sent
          * @param refVar    The reference pointer used a a notifier
          * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param waitForWaitings wait for Wait commands compatible with the paramenters (Sync call)
          * @param bAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t Notify(size_t& nMessage, T& refVar, size_t nTag=0, bool bAll=false)
+        template<typename T> size_t Notify(size_t& nMessage, T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, bool bAll=false)
         {
+            if (waitForWaitings && LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            {
+                return 0;
+            }
+
+            size_t bRet = SafeNotify (nMessage, refVar, nTag, bAll);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        template<typename T> size_t Notify(size_t nMessage, T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, bool bAll=false)
+        {
+            if (waitForWaitings && LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            {
+                return 0;
+            }
+
             size_t bRet = SafeNotify (nMessage, refVar, nTag, bAll);
 
             if (bRet) Yield(0);
@@ -1064,6 +1081,7 @@ namespace thread
          * @tparam T        Type of the reference pointer
          * @param refVar    The reference pointer used a a notifier
          * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param waitForWaitings wait for Wait commands compatible with the paramenters (Sync call)
          * @param bAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
          *
@@ -1081,13 +1099,19 @@ namespace thread
          * @tparam T        Type of the reference pointer
          * @param refVar    The reference pointer used a a notifier
          * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param waitForWaitings wait for Wait commands compatible with the paramenters (Sync call)
          * @param bAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t Notify(T& refVar, size_t nTag=0, bool bAll=false)
+        template<typename T> size_t Notify(T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, bool bAll=false)
         {
+            if (waitForWaitings && LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            {
+                return 0;
+            }
+
             size_t bRet = SafeNotify(refVar, nTag, bAll);
 
             if (bRet) Yield(0);
