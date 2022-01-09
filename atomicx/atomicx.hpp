@@ -937,7 +937,7 @@ namespace thread
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t SafeLookNotifiers(T& refVar, size_t nTag)
+        template<typename T> size_t SafeNotifyLookWaitings(T& refVar, size_t nTag)
         {
             size_t message=0;
 
@@ -956,7 +956,7 @@ namespace thread
          */
         template<typename T> bool Wait(size_t& nMessage, T& refVar, size_t nTag=0, atomicx_time waitFor=0)
         {
-            SafeLookNotifiers(refVar, nTag);
+            SafeNotifyLookWaitings(refVar, nTag);
 
             m_TopicId = 0;
             m_pLockId = (uint8_t*)&refVar;
@@ -993,7 +993,7 @@ namespace thread
          */
         template<typename T> bool Wait(T& refVar, size_t nTag=0, atomicx_time waitFor=0)
         {
-            SafeLookNotifiers(refVar, nTag);
+            SafeNotifyLookWaitings(refVar, nTag);
 
             m_TopicId = 0;
             m_pLockId = (uint8_t*)&refVar;

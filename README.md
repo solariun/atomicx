@@ -6,6 +6,8 @@ Version 1.1.0 release
 
 What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
 
+* *PLEASE NOTE* **No Spin Lock what so ever in this Kernel**, it is working fully based on Notification event along with message transportation.
+
 * `NOTIFY` are now able to sync, if a atomicx_time is provided, Notify will wait for a specific signal to inform a `Wait` for refVar/Tag is up. This is a important feature toward using WAIT/Notify reliably, while your thread can do other stuffs on idle moment
 
 * `avrRobotController` simulator for Arduino, is introduced, to show real inter process communication, it will open a terminal and both commands are available: `system` - To show Memory, Threads and motor status and `move <flot motor A> <flot motor B> <flot motor C>`
