@@ -12,6 +12,10 @@
 #include <stdlib.h>
 #include <setjmp.h>
 
+/* Official version */
+#define ATOMICX_VERSION "1.1.1"
+#define ATOMIC_VERSION_LABEL "AtomicX v" ATOMICX_VERSION " built at " __TIMESTAMP__
+
 using atomicx_time = uint32_t;
 
 //Using defines to avoid unnecessary RAM usage
@@ -46,10 +50,6 @@ extern void yield(void);
 
 namespace thread
 {
-    /* Official version */
-    #define COREX_VERSION "1.0.0"
-    static const char coreVersionString[] = "V" COREX_VERSION " built at " __TIMESTAMP__;
-
     class atomicx
     {
     public:

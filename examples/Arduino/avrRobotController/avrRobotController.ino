@@ -684,17 +684,21 @@ void setup()
     // randomSeed() will then shuffle the random function.
     randomSeed(analogRead(0));
 
-    delay (1000);
-    Serial.println (F("\n Starting Up...."));
-    delay (500);
+    //MOTD
+    {
+        delay (1000);
+        Serial.println (F("\n\n"));
+        Serial.println (F(ATOMIC_VERSION_LABEL));
+        Serial.println (F("\n Starting Up...."));
+        delay (500);
 
-    Serial.println (F("-------------------------------------------------"));
-    Serial.println (F(" ATOMICX DEMO FOR ROBOT CONTROL SYSTEM "));
-    Serial.print (F("FREE RAM: ")); Serial.println (GetFreeRam ());
-    Serial.println (F("-----------------------------------------------\n"));
+        Serial.println (F("-------------------------------------------------"));
+        Serial.println (F(" ATOMICX DEMO FOR ROBOT CONTROL SYSTEM "));
+        Serial.print (F("FREE RAM: ")); Serial.println (GetFreeRam ());
+        Serial.println (F("-----------------------------------------------\n"));
 
-    Serial.flush();
-
+        Serial.flush();
+    }
 
     System systemThread (100);
 
