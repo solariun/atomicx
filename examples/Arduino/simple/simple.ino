@@ -84,7 +84,7 @@ public:
         Serial.print ("[");
         Serial.print (GetName ());
         Serial.print ((size_t) this);
-        Serial.print (": Stack used ");
+        Serial.print ("] Stack used ");
         Serial.print (GetUsedStackSize());
         Serial.print ("/");
         Serial.println (GetStackSize());
@@ -92,7 +92,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(20)];
+    uint8_t m_stack[::GetStackSize(30)];
 };
 
 
@@ -150,13 +150,13 @@ public:
         Serial.print ("[");
         Serial.print (GetName ());
         Serial.print ((size_t) this);
-        Serial.print (": Stack used ");
+        Serial.print ("] Stack used ");
         Serial.println (GetUsedStackSize());
         Serial.flush();
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(20)];
+    uint8_t m_stack[::GetStackSize(30)];
 };
 
 void ListAllThreads()
