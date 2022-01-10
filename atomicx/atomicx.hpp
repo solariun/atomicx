@@ -13,7 +13,7 @@
 #include <setjmp.h>
 
 /* Official version */
-#define ATOMICX_VERSION "1.1.1"
+#define ATOMICX_VERSION "1.1.2"
 #define ATOMIC_VERSION_LABEL "AtomicX v" ATOMICX_VERSION " built at " __TIMESTAMP__
 
 using atomicx_time = uint32_t;
@@ -1041,15 +1041,45 @@ namespace thread
          * @param nMessage  The size_t message to be sent
          * @param refVar    The reference pointer used a a notifier
          * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
-         * @param waitForWaitings wait for Wait commands compatible with the paramenters (Sync call)
          * @param bAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t Notify(size_t& nMessage, T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, bool bAll=false)
+        template<typename T> size_t Notify(size_t& nMessage, T& refVar, size_t nTag=0, bool bAll=false)
         {
-            if (waitForWaitings && LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            size_t bRet = SafeNotify (nMessage, refVar, nTag, bAll);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        template<typename T> size_t Notify(size_t&& nMessage, T& refVar, size_t nTag=0, bool bAll=false)
+        {
+            size_t bRet = SafeNotify (nMessage, refVar, nTag, bAll);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        /**
+         * @brief SYNC Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  The size_t message to be sent
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param waitForWaitings default=0 (waiting for Waiting calls) othersize wait for Wait commands compatible with the paramenters (Sync call).
+         * @param bAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SyncNotify(size_t& nMessage, T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, bool bAll=false)
+        {
+            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
             {
                 return 0;
             }
@@ -1061,9 +1091,9 @@ namespace thread
             return bRet;
         }
 
-        template<typename T> size_t Notify(size_t nMessage, T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, bool bAll=false)
+        template<typename T> size_t SyncNotify(size_t&& nMessage, T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, bool bAll=false)
         {
-            if (waitForWaitings && LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
             {
                 return 0;
             }
@@ -1081,7 +1111,6 @@ namespace thread
          * @tparam T        Type of the reference pointer
          * @param refVar    The reference pointer used a a notifier
          * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
-         * @param waitForWaitings wait for Wait commands compatible with the paramenters (Sync call)
          * @param bAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
          *
@@ -1094,24 +1123,43 @@ namespace thread
         }
 
         /**
-         * @brief Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
+         * @brief SYNC Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
          *
          * @tparam T        Type of the reference pointer
          * @param refVar    The reference pointer used a a notifier
          * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
-         * @param waitForWaitings wait for Wait commands compatible with the paramenters (Sync call)
+         * @param waitForWaitings default=0 (waiting for Waiting calls) othersize wait for Wait commands compatible with the paramenters (Sync call).
          * @param bAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t Notify(T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, bool bAll=false)
+        template<typename T> size_t SyncNotify(T& refVar, size_t nTag, atomicx_time waitForWaitings=0, bool bAll=false)
         {
-            if (waitForWaitings && LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
             {
                 return 0;
             }
 
+            size_t bRet = SafeNotify(refVar, nTag, bAll);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        /**
+         * @brief Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param bAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t Notify(T& refVar, size_t nTag=0, bool bAll=false)
+        {
             size_t bRet = SafeNotify(refVar, nTag, bAll);
 
             if (bRet) Yield(0);

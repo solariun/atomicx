@@ -6,6 +6,10 @@ Version 1.1.0 release
 
 What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
 
+## Version 1.1.2
+
+* **Important* `Notify` was split into `Notify` and `SyncNotify` to avoid compilation ambiguity reported for some boards, all the examples have been migrated to use one of those accordingly and tested against all supported processors.
+
 ## Version 1.1.1
 
 * *PLEASE NOTE* **No Spin Lock what so ever in this Kernel**, it is working fully based on Notification event along with message transportation.

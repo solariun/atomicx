@@ -19,20 +19,20 @@ atomicx::lock gLock;
 void ListAllThreads();
 
 atomicx_time Atomicx_GetTick(void)
-{    
+{
     ::yield();
     return millis();
 }
 
 void Atomicx_SleepTick(atomicx_time nSleep)
-{   
+{
    //ListAllThreads();
     delay(nSleep);
 }
 
 constexpr size_t GetStackSize(size_t sizeRef)
 {
-    return sizeRef * sizeof (size_t);  
+    return sizeRef * sizeof (size_t);
 }
 
 class Eventual : public atomicx
@@ -41,7 +41,7 @@ class Eventual : public atomicx
     Eventual(uint32_t nNice, const char* pszName) :  atomicx (m_stack), m_stack{}
     {
         m_threadName = pszName;
-        
+
         SetNice(nNice);
 
         started = true;
@@ -51,22 +51,22 @@ class Eventual : public atomicx
     {
         return m_threadName.c_str();
     }
-    
+
     ~Eventual()
     {
         Serial.print ("Deleting: ");
         Serial.print (GetName());
         Serial.print (", ID: ");
-        Serial.println ((size_t) this); 
+        Serial.println ((size_t) this);
         started = false;
     }
-    
+
     void run() noexcept override
     {
         int nCount=0;
 
         Serial.println ("Starting EVENTUAL.....");
-        
+
         for (nCount=0; nCount < 10; nCount ++)
         {
             Serial.print ("\n\n[[[[[[[[[[[[");
@@ -78,18 +78,16 @@ class Eventual : public atomicx
             Serial.print (nCount);
             Serial.println ("]]]]]]]]]]]\n\n");
 
-            ListAllThreads();
-            
             Yield ();
         }
     }
 
     void finish () noexcept override
     {
-        Serial.println ("\n\n>>>>>>>DELETING EVENTUAL.... \n\n\n");        
+        Serial.println ("\n\n>>>>>>>DELETING EVENTUAL.... \n\n\n");
         delete this;
     }
-    
+
     void StackOverflowHandler(void) noexcept final
     {
         Serial.print (__FUNCTION__);
@@ -107,7 +105,7 @@ class Eventual : public atomicx
     {
         return started;
     }
-    
+
 private:
     uint8_t m_stack[::GetStackSize(30)];
     String m_threadName="";
@@ -122,7 +120,7 @@ public:
     Consumer(uint32_t nNice, const char* pszName) :  atomicx (m_stack), m_stack{}
     {
         m_threadName = pszName;
-        
+
         SetNice(nNice);
     }
 
@@ -130,29 +128,33 @@ public:
     {
         return m_threadName.c_str();
     }
-    
+
     ~Consumer()
     {
         Serial.print("Deleting Consumer: ");
         Serial.print (", ID: ");
-        Serial.println ((size_t) this); 
+        Serial.println ((size_t) this);
     }
-    
+
     void run() noexcept override
     {
         size_t nCount=0;
-        
+
         do
         {
-            Serial.println ("SharedLock");
+            Serial.println ("Wait for SharedLock");
             SmartLock sLock(gLock);
             sLock.SharedLock ();
-            
+
+            Serial.println (">>> SheredLock accquired...");
+
             nCount = nDataCount;
 
-            Yield();            
+            ListAllThreads();
+
+            Yield();
             // --------------------------------------
-            
+
             Serial.print ("Executing Consumer ");
             Serial.print (GetName());
             Serial.print (": ");
@@ -165,7 +167,7 @@ public:
             Serial.print (gLock.IsShared());
             Serial.print (", Counter: ");
             Serial.println (nCount);
-                        
+
             Serial.flush();
 
             Serial.println ("SharedUlocking");
@@ -203,23 +205,25 @@ public:
     {
         return m_threadName.c_str();
     }
-    
+
     ~Producer()
     {
         Serial.print("Deleting ");
         Serial.println ((size_t) this);
     }
-    
+
     void run() noexcept override
     {
         size_t nCount=0;
-        
+
         do
         {
-            Serial.println ("Lock");
+            Serial.println ("Wait for Lock");
 
             SmartLock sLock(gLock);
             sLock.Lock();
+
+            Serial.println (">>> Locked...");
 
             if (Eventual::GetStarted() == false)
             {
@@ -244,18 +248,20 @@ public:
             Serial.print ("/");
             Serial.print (gLock.IsShared());
             Serial.print (", Counter: ");
-            Serial.print (nCount);                                              
+            Serial.print (nCount);
             Serial.print (", Eventual: ");
             Serial.println (Eventual::GetStarted());
 
             Serial.flush();
-                        
-            nDataCount++; 
+
+            nDataCount++;
+
+            Yield (5000);
 
             Serial.println ("Unlocking");
-                       
+
             //atomicx::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
-                        
+
         } while (Yield ());
     }
 
@@ -279,7 +285,7 @@ void ListAllThreads()
 {
   size_t nCount=0;
 
-   Serial.flush();    
+   Serial.flush();
 
   Serial.println ("[THREAD]-----------------------------------------------");
   Serial.print ("IsLocked: ");
@@ -317,7 +323,7 @@ void ListAllThreads()
       Serial.print (th.GetStatus());
       Serial.print (", Ref Lock: ");
       Serial.println (th.GetTagLock());
-      Serial.flush();    
+      Serial.flush();
   }
 
   Serial.println ("---------------------------------------------------------");
@@ -325,19 +331,19 @@ void ListAllThreads()
 }
 
 
-void setup() 
+void setup()
 {
   Serial.begin (115200);
 
   while (! Serial) delay (100);
 
   delay (2000);
-      
-  Serial.println ("Starting UP-----------------------------------------------\n");
-  
-  Serial.flush(); 
 
-  
+  Serial.println ("Starting UP-----------------------------------------------\n");
+
+  Serial.flush();
+
+
   Producer T1(100, u8"Producer 1");
   Consumer E1(100, u8"Consumer 1");
   Consumer E4(300, u8"Consumer 3");
@@ -352,5 +358,5 @@ void setup()
 }
 
 void loop() {
-    
+
 }

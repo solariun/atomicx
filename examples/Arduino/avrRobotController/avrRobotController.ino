@@ -25,17 +25,19 @@ void ListAllThreads();
         Serial.print (__FUNCTION__); \
         Serial.print ("["); \
         Serial.print (GetName ()); \
+        Serial.print (F("/")); \
         Serial.print ((size_t) this); \
-        Serial.print (", StackSize: "); \
+        Serial.print ("]:  StackSize: ["); \
         Serial.print (GetStackSize ()); \
-        Serial.print (": Stack used "); \
-        Serial.println (GetUsedStackSize()); \
+        Serial.print ("]. Stack used ["); \
+        Serial.print (GetUsedStackSize()); \
+        Serial.println (F("]")); \
         Serial.flush(); \
 
 
 // -------------------------------------------------------------------------------------------
 
-int GetFreeRam () {
+size_t GetFreeRam () {
   extern int __heap_start, *__brkval;
   int v;
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
@@ -113,7 +115,7 @@ uint8_t ParseOption (const String& commandLine, uint8_t nCommandIndex, String& r
                 if (chChar == '\\')
                 {
                     boolScape = true;
-                    strBuffer = "";
+                    strBuffer.remove(0, strBuffer.length());
                     continue;
                 }
             }
@@ -129,7 +131,7 @@ uint8_t ParseOption (const String& commandLine, uint8_t nCommandIndex, String& r
                     break;
                 }
 
-                returnText = "";
+                returnText.remove(0,returnText.length());
             }
             else
             {
@@ -145,7 +147,7 @@ uint8_t ParseOption (const String& commandLine, uint8_t nCommandIndex, String& r
                         if (strBuffer.length () > 0)
                         {
                             returnText.concat (static_cast<char> (atoi (strBuffer.c_str ())));
-                            strBuffer = "";
+                            strBuffer.remove(0, strBuffer.length());
                         }
                         else
                         {
@@ -185,7 +187,7 @@ struct MotorData
 
     float encoder;
     float movement;
-    uint8_t volts;
+    float volts;
 
     MotorStatus status;
 };
@@ -232,7 +234,7 @@ public:
                      // Processing Motor A
                     Serial.print (F("Thread "));
                     Serial.print (GetID ());
-                    Serial.print (F("Moving motor "));
+                    Serial.print (F(": Moving motor "));
                     Serial.print (m_motorLetter);
                     Serial.print (F(" from: "));
                     Serial.print (m_motor.encoder);
@@ -245,9 +247,9 @@ public:
                     m_motor.encoder +=  m_motor.movement;
                 }
 
-                Yield (random (100, 500));
+                Yield (random (100, 2000));
 
-                if (Notify (m_motor, (size_t) MotorStatus::response, 30000) == false)
+                if (SyncNotify (m_motor, (size_t) MotorStatus::response, 30000) == false)
                 {
                     Serial.print (F("ERROR Motor "));
                     Serial.print (m_motorLetter);
@@ -258,7 +260,7 @@ public:
             }
 
             // Maintenance procedures
-            m_motor.volts = random (21, 27);
+            m_motor.volts = static_cast<float>(random (2000, 2700)) / 100.0;
 
         } while (Yield ());
     }
@@ -404,8 +406,8 @@ public:
             {
                 nDataCount++;
 
-                // Notify System to execute a command
-                if ((nNotified = Notify ((size_t) terminalStatus::command, readCommand, 1, 1000)) == 0)
+                // SyncNotify System to execute a command
+                if ((nNotified = SyncNotify ((size_t) terminalStatus::command, readCommand, 1, 1000)) == 0)
                 {
                     Serial.println (F("Terminal: System is BUSY, please try again."));
                 }
@@ -483,7 +485,7 @@ public:
             ParseOption (readCommand, 1, strParam);
             motorA.movement = strParam.toFloat();
 
-            if (Notify ((size_t) MotorStatus::moveRequest, motorA, (size_t) MotorStatus::request, 1000) == false)
+            if (SyncNotify ((size_t) MotorStatus::moveRequest, motorA, (size_t) MotorStatus::request, 1000) == false)
             {
                 Serial.println (F("ERROR, failed send command to MotorA"));
                 return;
@@ -492,7 +494,7 @@ public:
             ParseOption (readCommand, 2, strParam);
             motorB.movement = strParam.toFloat();
 
-            if (Notify ((size_t) MotorStatus::moveRequest, motorB, (size_t) MotorStatus::request, 1000) == false)
+            if (SyncNotify ((size_t) MotorStatus::moveRequest, motorB, (size_t) MotorStatus::request, 1000) == false)
             {
                 Serial.println (F("ERROR, failed send command to MotorA"));
                 return;
@@ -501,7 +503,7 @@ public:
             ParseOption (readCommand, 3, strParam);
             motorC.movement = strParam.toFloat();
 
-            if (Notify ((size_t) MotorStatus::moveRequest, motorC, (size_t) MotorStatus::request, 1000) == false)
+            if (SyncNotify ((size_t) MotorStatus::moveRequest, motorC, (size_t) MotorStatus::request, 1000) == false)
             {
                 Serial.println (F("ERROR, failed send command to MotorA"));
                 return;
@@ -602,7 +604,7 @@ public:
                         Serial.println (F(", is not valid."));
                     }
 
-                    if (Notify (readCommand, (size_t) terminalStatus::done, 1000) == 0)
+                    if (SyncNotify (readCommand, (size_t) terminalStatus::done, 1000) == 0)
                     {
                         Serial.println (F("Error, Terminal not responding. Please check."));
                     }
@@ -713,6 +715,7 @@ void setup()
     Serial.println (F("Full lock detected..."));
 
     ListAllThreads ();
+
 }
 
 void loop() {

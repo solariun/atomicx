@@ -20,14 +20,11 @@ void ListAllThreads();
 
 atomicx_time Atomicx_GetTick(void)
 {
-    ::yield();
     return millis();
 }
 
 void Atomicx_SleepTick(atomicx_time nSleep)
 {
-    ListAllThreads();
-
     delay(nSleep);
 }
 
@@ -63,7 +60,7 @@ public:
 
         do
         {
-            if (Wait (nMessage, nDataCount, 1, 1000) == false)
+            if (Wait (nMessage, nDataCount, 1, 10000) == false)
             {
                 Serial.print ("Consumer ID:");
                 Serial.print (GetID());
@@ -124,25 +121,22 @@ public:
 
         do
         {
-            if (LookForWaitings(nDataCount, 1, 1000) == false)
+            nDataCount++;
+
+            Serial.println (F("Notifying...."));
+            Serial.println ();
+
+            if ((nNotified = SyncNotify (nDataCount, nDataCount, 1, 500, true)) == 0)
             {
+                Serial.println ("Consumer: WARNING... Failed to notify any thread.");
                 Serial.println ("Producer: All consumer threads BUSY, trying again...");
             }
             else
             {
-                nDataCount++;
-
-                if ((nNotified = Notify (nDataCount, nDataCount, 1, atomicx_notify_all)) == 0)
-                {
-                    Serial.println ("Consumer: WARNING... Failed to notify any thread.");
-                }
-                else
-                {
-                    Serial.println ("--------------------------------------");
-                    Serial.print ("All messages dispatched to ");
-                    Serial.println (nNotified);
-                    Serial.println ("--------------------------------------");
-                }
+                Serial.println ("--------------------------------------");
+                Serial.print ("All messages dispatched to ");
+                Serial.println (nNotified);
+                Serial.println ("--------------------------------------");
             }
 
             Serial.flush ();
@@ -172,9 +166,6 @@ void ListAllThreads()
    Serial.flush();
 
   Serial.println ("[THREAD]-----------------------------------------------");
-
-  Serial.print (">>> Free RAM: ");
-  Serial.println (freeRam());
 
   Serial.print ("Sizeof Producer:");
   Serial.println (sizeof (Producer));
@@ -221,7 +212,7 @@ void setup()
 
   Serial.flush();
 
-    Producer T1(100);
+    Producer T1(500);
     Consumer E1(1);
     Consumer E2(1);
     Consumer E3(1);
