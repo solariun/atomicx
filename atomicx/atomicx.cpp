@@ -14,10 +14,12 @@
 #include <stdint.h>
 #include <setjmp.h>
 
-void yield(void);
-#pragma weak yield
-void yield(void)
-{}
+extern "C"
+{
+    #pragma weak yield
+    void yield(void)
+    {}
+}
 
 namespace thread
 {
@@ -568,6 +570,11 @@ namespace thread
         if (nReturn) Yield();
 
         return nReturn;
+    }
+
+    atomicx_time atomicx::GetCurrentTick(void)
+    {
+        return Atomicx_GetTick ();
     }
 
 }

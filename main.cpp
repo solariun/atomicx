@@ -139,7 +139,7 @@ public:
                     std::cout << "Executing " << GetName() << "::" << GetID () << ": "<< "Message has been successfully consumed by "  << nNofieds << "." << std::endl;
                 }
 
-                
+
                 nCounter++;
             }
         }  while (Yield());
@@ -174,6 +174,8 @@ void ListAllThreads()
     std::cout << "-------------------------------------------------------" << std::endl;
 }
 
+Thread t1(500, "Producer 1");
+
 int main()
 {
     q.PushBack(1);
@@ -192,7 +194,7 @@ int main()
 
    // while (q.GetSize()) std::cout << "push: " << q.pop() << std::endl;
 
-    Thread t1(500, "Producer 1");
+
     ThreadConsummer e1(100, "Consumer 1");
     ThreadConsummer e2(500, "Consumer 2");
     ThreadConsummer e3(300, "Consumer 3");

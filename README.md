@@ -153,7 +153,7 @@ void Atomicx_SleepTick(atomicx_time nSleep)
 /*
  * Object that implements thread
  */
-class Thread : public atomic
+class Thread : public atomicx
 {
 public:
     Thread(atomicx_time nNice, const char* pszName) : atomic (stack), m_pszName(pszName)

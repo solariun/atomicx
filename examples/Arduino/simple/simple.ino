@@ -200,6 +200,8 @@ void ListAllThreads()
   Serial.flush();
 }
 
+Producer T1(500);
+
 void setup()
 {
   Serial.begin (115200);
@@ -212,7 +214,6 @@ void setup()
 
   Serial.flush();
 
-    Producer T1(500);
     Consumer E1(1);
     Consumer E2(1);
     Consumer E3(1);

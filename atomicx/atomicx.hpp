@@ -22,6 +22,10 @@ using atomicx_time = uint32_t;
 #define  atomicx_notify_one false
 #define  atomicx_notify_all true
 
+extern "C"
+{
+    extern void yield(void);
+}
 
 /**
  * @brief Implement the custom Tick acquisition
@@ -39,14 +43,6 @@ extern atomicx_time Atomicx_GetTick(void);
  *       processor power consuption if necessary
  */
 extern void Atomicx_SleepTick(atomicx_time nSleep);
-
-/**
- * @brief Implement a yield
- *
- * @note this function exists for compatibility with other OSs
- */
-extern void yield(void);
-
 
 namespace thread
 {
@@ -714,7 +710,7 @@ namespace thread
          *
          * @return atomicx_time based on the ported tick granularity
          */
-        atomicx_time GetCurrentTick();
+        atomicx_time GetCurrentTick(void);
 
         /**
          * @brief Get the Name object
@@ -1014,7 +1010,7 @@ namespace thread
             m_lockMessage = {0,0};
             m_aSubStatus = aSubTypes::ok;
 
-            return true;
+            return bRet;
         }
 
         /**
