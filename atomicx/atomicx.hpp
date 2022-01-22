@@ -1351,8 +1351,6 @@ namespace thread
 
         atomicx_time m_nTargetTime=0;
         atomicx_time m_nice=0;
-
-        bool bDeleteOnExit = false;
     };
 }
 

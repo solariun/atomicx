@@ -78,7 +78,7 @@ MAIN = demo_atomix.bin
 .PHONY: depend clean
 
 all:    $(MAIN)
-	@echo  CorePartition has beem compilled
+	@echo  AtomicX binary $(MAIN) has beem compilled
 
 $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)

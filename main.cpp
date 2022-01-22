@@ -175,6 +175,7 @@ void ListAllThreads()
 }
 
 Thread t1(500, "Producer 1");
+ThreadConsummer e1(100, "Consumer 1");
 
 int main()
 {
@@ -195,7 +196,6 @@ int main()
    // while (q.GetSize()) std::cout << "push: " << q.pop() << std::endl;
 
 
-    ThreadConsummer e1(100, "Consumer 1");
     ThreadConsummer e2(500, "Consumer 2");
     ThreadConsummer e3(300, "Consumer 3");
 
