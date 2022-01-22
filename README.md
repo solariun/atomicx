@@ -1,6 +1,6 @@
 # AtomicX
 
-Version 1.1.0 release
+Version 1.1.3 release
 
 ![image](https://user-images.githubusercontent.com/1805792/125191254-6591cf80-e239-11eb-9e89-d7500e793cd4.png)
 
@@ -8,7 +8,11 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 # Backlog and updates
 
+## Version 1.1.3
+
 * Added a Thermal Camera Demo ported from CorePartition but now fully object oriented
+
+* **POWERFUL**: Now `Wait`\`Notify` will accept a new parameter called subType, the name gives no clue but it is really powerfull it allows developer to create custom Types of notifications, that same stratage is used to when you use syncNotify that will block anting timeout occur or a wait is issue.
 
 ## Version 1.1.2
 

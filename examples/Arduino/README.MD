@@ -23,7 +23,7 @@ arduino-cli board listall avr
 arduino-cli compile -b arduino:avr:nano:cpu=atmega328  --upload -p "$1" "$2"
 
 # upload AVR using USB-ASP
-arduino-cli compile -b arduino:avr:nano:cpu=atmega328  --uploas --upload -P usbasp  "$1"
+arduino-cli compile -b arduino:avr:nano:cpu=atmega328  --upload -P usbasp  "$1"
 
 # upload using avrisp XSP
 arduino-cli compile -b arduino:avr:nano:cpu=atmega328  --upload -P avrisp -p "$1" "$2"
@@ -702,6 +702,27 @@ This feature was added in Arduino IDE 1.6.9.
 
 - [Sketch build process documentation](sketch-build-process.md)
 - [Style guide for example sketches](https://www.arduino.cc/en/Reference/StyleGuide)
+
+## Boards
+
+gustavocampos@GUSTAVOs-MBP .ssh % arduino-cli core list
+ID              Installed Latest Name
+arduino:avr     1.8.3     1.8.4  Arduino AVR Boards
+arduino:megaavr 1.8.7     1.8.7  Arduino megaAVR Boards
+arduino:sam     1.6.12    1.6.12 Arduino SAM Boards (32-bits ARM Cortex-M3)
+arduino:samd    1.8.11    1.8.12 Arduino SAMD Boards (32-bits ARM Cortex-M0+)
+esp32:esp32     1.0.6     1.0.6  ESP32 Arduino
+esp8266:esp8266 3.0.2     3.0.2  ESP8266 Boards (3.0.2)
+Maixduino:k210  0.3.11    0.3.11 Maixduino
+
+## repos
+
+https://raw.githubusercontent.com/sparkfun/Arduino_Boards/master/IDE_Board_Manager/package_sparkfun_index.json
+https://dl.espressif.com/dl/package_esp32_index.json
+http://arduino.esp8266.com/stable/package_esp8266com_index.json
+https://raw.githubusercontent.com/stm32duino/BoardManagerFiles/master/package_stmicroelectronics_index.json
+https://raw.githubusercontent.com/damellis/attiny/ide-1.6.x-boards-manager/package_damellis_attiny_index.json
+http://dl.sipeed.com/MAIX/Maixduino/package_Maixduino_k210_index.json
 
 
 ## Full TODAY's boards
