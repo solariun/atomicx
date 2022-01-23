@@ -383,8 +383,8 @@ namespace thread
             bExclusiveLock = false;
 
             // Notify Other locks procedures
-            pAtomic->Notify(nSharedLockCount, 2, true);
-            pAtomic->Notify(bExclusiveLock, 1, false);
+            pAtomic->Notify(nSharedLockCount, 2, NotifyType::all);
+            pAtomic->Notify(bExclusiveLock, 1, NotifyType::one);
         }
     }
 
@@ -400,7 +400,7 @@ namespace thread
         nSharedLockCount++;
 
         // Notify Other locks procedures
-        pAtomic->Notify (nSharedLockCount, 2, false);
+        pAtomic->Notify (nSharedLockCount, 2, NotifyType::one);
     }
 
     void atomicx::lock::SharedUnlock()
@@ -413,7 +413,7 @@ namespace thread
         {
             nSharedLockCount--;
 
-            pAtomic->Notify(nSharedLockCount, 2, false);
+            pAtomic->Notify(nSharedLockCount, 2, NotifyType::one);
         }
     }
 
