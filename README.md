@@ -176,7 +176,7 @@ void Atomicx_SleepTick(atomicx_time nSleep)
 }
 
 /*
- * Object that implements thread
+ * Object that implements thread with self-managed (dynamic) stack size
  */
 class SelfManagedThread : public atomicx
 {
@@ -217,7 +217,7 @@ public:
 };
 
 /*
- * Object that implements thread with self-managed (dynamic) stack size
+ * Object that implements thread
  */
 class Thread : public atomicx
 {
