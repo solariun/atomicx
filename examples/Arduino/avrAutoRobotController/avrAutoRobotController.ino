@@ -169,6 +169,22 @@ uint8_t ParseOption (const String& commandLine, uint8_t nCommandIndex, String& r
 
 // -------------------------------------------------------------------------------------------
 
+// ==================== MOTOR DEFINITIONS ====================
+const int stepX = 2;
+const int dirX  = 5;
+
+const int stepY = 3;
+const int dirY  = 6;
+
+const int stepZ = 4;
+const int dirZ  = 7;
+
+const int stepA = 12;
+const int dirA = 13;
+
+const int enPin = 8;
+//=============================================================
+
 enum class MotorStatus
 {
     ready,
@@ -177,8 +193,11 @@ enum class MotorStatus
     disabled,
     response,
     request,
-    moveRequest
+    moveRequest,
+    moveComplete
 };
+
+const uint8_t motorsContext = 4;
 
 struct MotorData
 {
@@ -190,11 +209,8 @@ struct MotorData
     float volts;
 
     MotorStatus status;
-};
+} g_motors [motorsContext];
 
-MotorData motorA;
-MotorData motorB;
-MotorData motorC;
 
 /**
  * @brief SERIAL COMM
@@ -203,9 +219,17 @@ MotorData motorC;
 class Motor : public atomicx
 {
 public:
-    Motor(uint32_t nNice, char motorLetter, MotorData& motor) : atomicx (), m_motorLetter(motorLetter), m_motor(motor)
+    Motor(uint32_t nNice, char motorLetter, MotorData& motor, int dirPin, int stepperPin) : atomicx (), m_motor(motor), m_directionPin(dirPin), m_stepperPin(stepperPin)
     {
         SetNice(nNice);
+
+        // Setup output pins to control motor driver
+        pinMode(stepperPin,OUTPUT);
+        pinMode(dirPin,OUTPUT);
+
+        // Set Initial direction
+        digitalWrite(dirPin,HIGH);
+
     }
 
     const char* GetName () override
@@ -222,20 +246,24 @@ public:
     void run() noexcept override
     {
         size_t nNotified=0;
+        uint8_t nCurrentMotor = ((size_t)&m_motor - (size_t)&g_motors) / sizeof (MotorData);
 
         do
         {
             size_t nMessage = 0;
 
-            if (Wait (nMessage, m_motor, (size_t) MotorStatus::request, 100))
+            if (Wait (nMessage, motorsContext, (size_t) MotorStatus::request))
             {
-                if ((MotorStatus) nMessage == MotorStatus::moveRequest)
+                Serial.print ("Motor "); Serial.print ((char) ('A' + nCurrentMotor));
+                Serial.println (":Notification received.");
+
+                if ((MotorStatus) nMessage == MotorStatus::moveRequest && m_motor.movement > 0)
                 {
-                     // Processing Motor A
+                    // Processing Motor
                     Serial.print (F("Thread "));
                     Serial.print (GetID ());
                     Serial.print (F(": Moving motor "));
-                    Serial.print (m_motorLetter);
+                    Serial.print (m_motor.movement);
                     Serial.print (F(" from: "));
                     Serial.print (m_motor.encoder);
                     Serial.print (F(", to: "));
@@ -244,23 +272,20 @@ public:
                     Serial.println (m_motor.movement);
                     Serial.flush();
 
+                    Yield (random (100, 2000));
+
                     m_motor.encoder +=  m_motor.movement;
                 }
 
-                Yield (random (100, 2000));
-
-                if (SyncNotify (m_motor, (size_t) MotorStatus::response, 30000) == false)
+                if (SyncNotify ((size_t) nCurrentMotor, motorsContext, (size_t) MotorStatus::response, 1000) == 0)
                 {
                     Serial.print (F("ERROR Motor "));
-                    Serial.print (m_motorLetter);
+                    Serial.print ((char) ('A' + nCurrentMotor));
                     Serial.println (F(": System was not notified.\n"));
                 }
 
                 Serial.flush ();
             }
-
-            // Maintenance procedures
-            m_motor.volts = static_cast<float>(random (2000, 2700)) / 100.0;
 
         } while (Yield ());
     }
@@ -271,8 +296,9 @@ public:
     }
 
 private:
-    char m_motorLetter;
     MotorData& m_motor;
+    int m_directionPin;
+    int m_stepperPin;
 };
 
 
@@ -355,7 +381,7 @@ public:
 
         readCommand = "";
 
-        while (WaitForSerialData (readCommand.length() ? 1 : 100) == true)
+        while (WaitForSerialData (readCommand.length() ? 0 : 100) == true)
         {
             Serial.readBytes (&chChar, 1);
             // Serial.printf ("Read: (%u)-> [%c]\n\r", chChar, chChar >= 32 && chChar < 127 ? chChar : '.');
@@ -465,80 +491,75 @@ public:
     inline void ExecuteSystemCommand (String& strCommand)
     {
         ListAllThreads ();
+        uint8_t nMotors = (sizeof (g_motors)/sizeof(MotorData));
+
         Serial.println (F("[Motors] ---------------------------------"));
-        Serial.print (F("Motor A: Enc: ")); Serial.print (motorA.encoder); Serial.print (F(", Mv: ")); Serial.print (motorA.movement); Serial.print (F(", Volts: ")); Serial.print (motorA.volts); Serial.print (F("v, Sts:")); Serial.println ((size_t) motorA.status);
-        Serial.print (F("Motor B: Enc: ")); Serial.print (motorB.encoder); Serial.print (F(", Mv: ")); Serial.print (motorB.movement); Serial.print (F(", Volts: ")); Serial.print (motorB.volts); Serial.print (F("v, Sts:")); Serial.println ((size_t) motorB.status);
-        Serial.print (F("Motor C: Enc: ")); Serial.print (motorC.encoder); Serial.print (F(", Mv: ")); Serial.print (motorC.movement); Serial.print (F(", Volts: ")); Serial.print (motorC.volts); Serial.print (F("v, Sts:")); Serial.println ((size_t) motorC.status);
+        Serial.println (nMotors);
+
+        for (int nCount=0; nCount < nMotors; nCount++)
+        {
+            g_motors[nCount].volts = static_cast<float>(random (2000, 2700)) / 100.0;
+
+            Serial.print (F("Motor ")); Serial.print ((char) ('A' + nCount));
+            Serial.print (F(": Enc: ")); Serial.print (g_motors[nCount].encoder);
+            Serial.print (F(", Mv: ")); Serial.print (g_motors[nCount].movement);
+            Serial.print (F(", Volts: ")); Serial.print (g_motors[nCount].volts);
+            Serial.print (F("v, Sts:")); Serial.println ((size_t) g_motors[nCount].status);
+        }
     }
 
     inline void ExecuteMoveCommand (String& strCommand)
     {
         String strParam = F("");
         uint8_t nParams = ParseOption (readCommand, 1, strParam, true);
+        size_t nNofied = 0;
 
-        if (nParams == 4)
+        if (nParams == 5)
         {
             ParseOption (readCommand, 1, strParam);
-            motorA.movement = strParam.toFloat();
-
-            if (SyncNotify ((size_t) MotorStatus::moveRequest, motorA, (size_t) MotorStatus::request, 1000) == false)
-            {
-                Serial.println (F("ERROR, failed send command to MotorA"));
-                return;
-            }
+            g_motors[0].movement = strParam.toFloat();
 
             ParseOption (readCommand, 2, strParam);
-            motorB.movement = strParam.toFloat();
-
-            if (SyncNotify ((size_t) MotorStatus::moveRequest, motorB, (size_t) MotorStatus::request, 1000) == false)
-            {
-                Serial.println (F("ERROR, failed send command to MotorA"));
-                return;
-            }
+            g_motors[1].movement = strParam.toFloat();
 
             ParseOption (readCommand, 3, strParam);
-            motorC.movement = strParam.toFloat();
+            g_motors[2].movement = strParam.toFloat();
 
-            if (SyncNotify ((size_t) MotorStatus::moveRequest, motorC, (size_t) MotorStatus::request, 1000) == false)
+            ParseOption (readCommand, 4, strParam);
+            g_motors[3].movement = strParam.toFloat();
+
+            if ((nNofied = SyncNotify ((size_t) MotorStatus::moveRequest, motorsContext, (size_t) MotorStatus::request, 1000, NotifyType::all)) == false)
             {
-                Serial.println (F("ERROR, failed send command to MotorA"));
+                Serial.println (F("ERROR, failed send command to MotorD"));
                 return;
             }
+
+            Serial.print (F("\n\nNotified motors: "));
+            Serial.println (nNofied);
+            Serial.flush ();
 
             // ------------------------------------------------
             //Asynchronously wait for the motors to finish
             // ------------------------------------------------
 
-            if (Wait (motorA, (size_t) MotorStatus::response, 10000) == false)
-            {
-                Serial.println (F("ERROR, MotorA failed to report completion."));
-            }
-            else
-            {
-                Serial.println (F("MotorA Successfully reported completion."));
-            }
+            uint8_t nRspCounter=0;
+            size_t nMotorResponse=0;
 
-            if (Wait (motorB, (size_t) MotorStatus::response, 10000) == false)
+            while (nRspCounter < motorsContext)
             {
-                Serial.println (F("ERROR, MotorB failed to report completion."));
-            }
-            else
-            {
-                Serial.println (F("MotorB Successfully reported completion."));
-            }
+                if (Wait (nMotorResponse, motorsContext, (size_t) MotorStatus::response, 0))
+                {
+                    Serial.print (F(">> Motor ")); Serial.print ((char)('A' + (char) nMotorResponse));
+                    Serial.println (F(": Reported completion. "));
+                    Serial.flush ();
 
-            if (Wait (motorC, (size_t) MotorStatus::response, 10000) == false)
-            {
-                Serial.println (F("ERROR, MotorC failed to report completion."));
-            }
-            else
-            {
-                Serial.println (F("MotorC Successfully reported completion."));
+                    nRspCounter++;
+                }
             }
         }
         else
         {
-            Serial.println (F("MOVE: Please use move motorA motorB motorC"));
+            Serial.println (F("MOVE: Please use move motorA motorB motorC motorD"));
             Serial.println (F("ERROR"));
         }
     }
@@ -616,6 +637,7 @@ public:
     {
         PrintStackOverflow ();
     }
+
 };
 
 
@@ -649,7 +671,6 @@ void ListAllThreads()
         Serial.print (F("\t| Nice: "));
         Serial.print (th.GetNice());
         Serial.print (F("\t| Stack: "));
-        Serial.print (th.IsStackSelfManaged() ? 'A' : ' ');
         Serial.print (th.GetStackSize());
         Serial.print ("\t| UsedStack: ");
         Serial.print (th.GetUsedStackSize());
@@ -698,11 +719,12 @@ void setup()
 
     System systemThread (100);
 
-    Terminal terminalThread (100);
+    Terminal terminalThread (0);
 
-    Motor motorsThreadA (200, 'A', motorA);
-    Motor motorsThreadB (200, 'B', motorB);
-    Motor motorsThreadC (200, 'C', motorC);
+    Motor motorsThreadA (200, 'A', g_motors[0], dirA, stepA);
+    Motor motorsThreadB (200, 'B', g_motors[1], dirX, stepX);
+    Motor motorsThreadC (200, 'C', g_motors[2], dirY, stepY);
+    Motor motorsThreadD (200, 'D', g_motors[3], dirZ, stepZ);
 
     atomicx::Start();
 
