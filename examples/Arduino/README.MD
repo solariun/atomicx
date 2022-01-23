@@ -32,10 +32,20 @@ arduino-cli compile -u -p "$1"  -b esp32:esp32:heltec_wifi_kit_32  "$2"
 
 arduino-cli compile -u  -p "$1" -b Arduino_STM32:STM32F1:genericSTM32F103C:upload_method=jlinkMethod,opt=o3std "$2"
 
+arduino-cli compile -v -b esp8266:esp8266:wifi_kit_8:baud=921600 -upload -p "<serial>" "<arduino>"
+
 ```
 
 Despite the lack of feature parity at the moment, Arduino CLI provides many of the features you can find in the Arduino
 IDE. Let's see some examples.
+
+### LIST CPUS and other options from a board
+
+````
+arduino-cli board details -b STMicroelectronics:stm32:GenF1
+
+arduino-cli board details -b arduino:avr:nano
+````
 
 ## Before you start
 
@@ -946,3 +956,13 @@ XinaBox CW01                        esp8266:esp8266:cw01
 XinaBox CW02                        esp32:esp32:cw02
 u-blox NINA-W10 series (ESP32)      esp32:esp32:nina_w10
 ```
+
+## Hints for bluepill STM32F103
+
+Exemple compilation/upload:
+
+`arduino-cli compile -v -b STMicroelectronics:stm32:GenF1:pnum=BLUEPILL_F103C8,usb=CDCgen -upload -p "." .`
+
+If you see the error: `Error during Upload: Property 'upload.tool.serial' is undefined`
+please, Add the following line anywhere in the STM32 boards.txt file, otherwise:
+`GenF1.menu.upload_method.swdMethod.upload.tool.default=stm32CubeProg`

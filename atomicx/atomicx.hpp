@@ -13,7 +13,7 @@
 #include <setjmp.h>
 
 /* Official version */
-#define ATOMICX_VERSION "1.1.3"
+#define ATOMICX_VERSION "1.2.0"
 #define ATOMIC_VERSION_LABEL "AtomicX v" ATOMICX_VERSION " built at " __TIMESTAMP__
 
 using atomicx_time = uint32_t;
@@ -654,9 +654,6 @@ namespace thread
          * PUBLIC OBJECT METHOS
          */
 
-
-        atomicx() = delete;
-
         /**
          * @brief virtual destructor of the atomicx
          */
@@ -773,10 +770,17 @@ namespace thread
         template<typename T, size_t N>
         atomicx(T (&stack)[N]) : m_context{}, m_stack((volatile uint8_t*) stack)
         {
+            m_flags.autoStack = false;
+
             m_stackSize = N  ;
 
             AddThisThread();
         }
+
+        /**
+         * @brief Construct a new atomicx thread for auto-stack
+         */
+        atomicx();
 
         /**
          * @brief The pure virtual function that runs the thread loop
@@ -801,6 +805,11 @@ namespace thread
         {
             return;
         }
+
+        /**
+         * @brief Return if the current thread's stack memory is automatic
+         */
+        bool IsStackSelfManaged(void);
 
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
@@ -970,7 +979,7 @@ namespace thread
         {
             SafeNotifyLookWaitings(refVar, nTag);
 
-            SetWaitParammeters (refVar, nTag, aSubTypes::wait);
+            SetWaitParammeters (refVar, nTag, asubType);
 
             m_lockMessage.tag = nTag;
 
@@ -1007,7 +1016,7 @@ namespace thread
         {
             SafeNotifyLookWaitings(refVar, nTag);
 
-            SetWaitParammeters (refVar, nTag, aSubTypes::wait);
+            SetWaitParammeters (refVar, nTag, asubType);
 
             m_lockMessage.tag = nTag;
 
@@ -1354,29 +1363,38 @@ namespace thread
          */
         static bool SelectNextThread(void);
 
+        /**
+         * Thread related controll variable
+         */
+
         atomicx* m_paNext = nullptr;
         atomicx* m_paPrev = nullptr;
-
-        aTypes  m_aStatus = aTypes::start;
-        aSubTypes m_aSubStatus = aSubTypes::ok;
 
         jmp_buf m_context;
 
         size_t m_stackSize;
-
-        volatile uint8_t* m_stack;
-
-        volatile uint8_t* m_pStaskStart=nullptr;
-        volatile uint8_t* m_pStaskEnd=nullptr;
         size_t m_stacUsedkSize=0;
 
-        /* WAIT / BROKER -------- */
-        uint8_t* m_pLockId=nullptr;
-        uint32_t m_TopicId=0;
         Message m_lockMessage = {0,0};
 
         atomicx_time m_nTargetTime=0;
         atomicx_time m_nice=0;
+
+        uint32_t m_TopicId=0;
+
+        aTypes  m_aStatus = aTypes::start;
+        aSubTypes m_aSubStatus = aSubTypes::ok;
+
+        volatile uint8_t* m_stack;
+        volatile uint8_t* m_pStaskStart=nullptr;
+        volatile uint8_t* m_pStaskEnd=nullptr;
+
+        uint8_t* m_pLockId=nullptr;
+
+        struct
+        {
+            bool autoStack : 1;
+        } m_flags = {};
     };
 }
 

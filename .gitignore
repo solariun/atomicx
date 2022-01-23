@@ -2,3 +2,4 @@
 *.o
 */xcshareddata/*
 *.xcuserdatad
+.DS_Store

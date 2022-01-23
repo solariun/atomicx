@@ -203,7 +203,7 @@ MotorData motorC;
 class Motor : public atomicx
 {
 public:
-    Motor(uint32_t nNice, char motorLetter, MotorData& motor) : atomicx (m_stack), m_stack{}, m_motorLetter(motorLetter), m_motor(motor)
+    Motor(uint32_t nNice, char motorLetter, MotorData& motor) : atomicx (), m_motorLetter(motorLetter), m_motor(motor)
     {
         SetNice(nNice);
     }
@@ -271,7 +271,6 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(30)];
     char m_motorLetter;
     MotorData& m_motor;
 };
@@ -319,7 +318,7 @@ uint8_t ConvertStrCommand (String& strCommand)
 class Terminal : public atomicx
 {
 public:
-    Terminal(uint32_t nNice) : atomicx (m_stack), m_stack{}
+    Terminal(uint32_t nNice) : atomicx ()
     {
         SetNice(nNice);
     }
@@ -434,9 +433,6 @@ public:
     {
         PrintStackOverflow ();
     }
-
-private:
-    uint8_t m_stack[::GetStackSize(25)];
 };
 
 
@@ -450,7 +446,7 @@ private:
 class System : public atomicx
 {
 public:
-    System(uint32_t nNice) :  atomicx (m_stack), m_stack{}
+    System(uint32_t nNice) :  atomicx ()
     {
         SetNice(nNice);
     }
@@ -620,9 +616,6 @@ public:
     {
         PrintStackOverflow ();
     }
-
-private:
-    uint8_t m_stack[::GetStackSize(40)];
 };
 
 

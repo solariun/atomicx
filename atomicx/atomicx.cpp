@@ -14,6 +14,8 @@
 #include <stdint.h>
 #include <setjmp.h>
 
+#include <stdlib.h>
+
 extern "C"
 {
     #pragma weak yield
@@ -193,13 +195,45 @@ namespace thread
         m_pStaskEnd = &nStackEnd;
         m_stacUsedkSize = (size_t) (m_pStaskStart - m_pStaskEnd);
 
+
         if (m_stacUsedkSize > m_stackSize)
         {
-            (void) StackOverflowHandler();
-            m_aStatus = aTypes::stackOverflow;
-            abort();
+            /*
+            * Controll the auto-stack memory
+            * Note: Due to some small microcontroller
+            *   does not have try/catch/throw by default
+            *   I decicde to use malloc/free instead
+            *   to control errors
+            */
+            if (m_flags.autoStack == true)
+            {
+                if (m_stack != nullptr)
+                {
+                    free ((void*) m_stack);
+                }
+
+                if ((m_stack = (uint8_t*) malloc (m_stacUsedkSize)) != nullptr)
+                {
+                    m_stackSize = m_stacUsedkSize;
+                }
+                else
+                {
+                    m_aStatus = aTypes::stackOverflow;
+                }
+            }
+            else
+            {
+                m_aStatus = aTypes::stackOverflow;
+            }
+
+            if (m_aStatus == aTypes::stackOverflow)
+            {
+                (void) StackOverflowHandler();
+                abort();
+            }
         }
-        else if (memcpy((void*)m_stack, (const void*) m_pStaskEnd, m_stacUsedkSize) != (void*) m_stack)
+
+        if (m_aStatus != aTypes::stackOverflow && memcpy((void*)m_stack, (const void*) m_pStaskEnd, m_stacUsedkSize) != (void*) m_stack)
         {
             return false;
         }
@@ -265,9 +299,22 @@ namespace thread
         }
     }
 
+    atomicx::atomicx() : m_context{}, m_stack(nullptr)
+    {
+        m_flags.autoStack = true;
+        m_stackSize = 0;
+        AddThisThread();
+    }
+
+
     atomicx::~atomicx()
     {
         RemoveThisThread();
+
+        if (m_flags.autoStack == true && m_stack != nullptr)
+        {
+            free((void*)m_stack);
+        }
     }
 
     const char* atomicx::GetName(void)
@@ -577,4 +624,8 @@ namespace thread
         return Atomicx_GetTick ();
     }
 
+    bool atomicx::IsStackSelfManaged(void)
+    {
+        return m_flags.autoStack;
+    }
 }

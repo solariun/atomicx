@@ -1,18 +1,35 @@
 # AtomicX
 
-Version 1.1.3 release
+Version 1.2.0 release
 
 ![image](https://user-images.githubusercontent.com/1805792/125191254-6591cf80-e239-11eb-9e89-d7500e793cd4.png)
 
 What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
 
 # Backlog and updates
+## Version 1.2.0
+
+* **INTRODUCING** Self managed stack, now it is possible to have self-managed stack memory for any threads, no need to define stack size... (although use it with care) just by no providing a stack memory, AtomicX will automatically switch the tread to self-managed, to do just use atomicx() default constructor instead.
+
+   *Notes*:
+        * It will only entries the stack enough to hold what is needed if the used stack is greater than the stack memory managed.
+        * No decrease of the stack size was added to this release.
+        * In case your thread is not able to resize the stack, if it needs more, StackOverflowHandle is called.
+
+
+*Examples:*
+    - Ardunino/Simple
+    - avrAutoRobotController
+
+* Explicitly added the pc example shown here to to examples/pc as simple along with makefile for it.
+   Also updated it to have an example of Self-managed stack memory as well.
 
 ## Version 1.1.3
 
 * Added a Thermal Camera Demo ported from CorePartition but now fully object oriented
 
-* **POWERFUL**: Now `Wait`\`Notify` will accept a new parameter called subType, the name gives no clue but it is really powerfull it allows developer to create custom Types of notifications, that same stratage is used to when you use syncNotify that will block anting timeout occur or a wait is issue.
+
+* **POWERFUL**: Now `Wait`\`Notify` will accept a new parameter called subType, the name gives no clue but it is really powerfull it allows developer to create custom Types of notifications, that same strategy is used when syncNotify is called and get blocked until a timeout occur or a wait functions is used by another thread.
 
 ## Version 1.1.2
 
@@ -161,10 +178,51 @@ void Atomicx_SleepTick(atomicx_time nSleep)
 /*
  * Object that implements thread
  */
+class SelfManagedThread : public atomicx
+{
+public:
+    SelfManagedThread(atomicx_time nNice) : atomicx()
+    {
+        SetNice(nNice);
+    }
+
+    ~SelfManagedThread()
+    {
+        std::cout << "Deleting " << GetName() << ": " << (size_t) this << std::endl;
+    }
+
+    void run() noexcept override
+    {
+        size_t nCount=0;
+
+        do
+        {
+            std::cout << __FUNCTION__ << ", Executing " << GetName() << ": " << (size_t) this << ", Counter: " << nCount << std::endl << std::flush;
+
+            nCount++;
+
+        }  while (Yield());
+
+    }
+
+    void StackOverflowHandler (void) noexcept override
+    {
+        std::cout << __FUNCTION__ << ":" << GetName() << "_" << (size_t) this << ": needed: " << GetUsedStackSize() << ", allocated: " << GetStackSize() << std::endl;
+    }
+
+    const char* GetName (void) override
+    {
+        return "Self-Managed Thread";
+    }
+};
+
+/*
+ * Object that implements thread
+ */
 class Thread : public atomicx
 {
 public:
-    Thread(atomicx_time nNice, const char* pszName) : atomic (stack), m_pszName(pszName)
+    Thread(atomicx_time nNice) : atomicx(stack)
     {
         SetNice(nNice);
     }
@@ -180,7 +238,7 @@ public:
 
         do
         {
-            std::cout << __FUNCTION__ << ", Executing " << GetName() << ": " << (size_t) this << ", Counter: " << nCount << std::endl << std::flush
+            std::cout << __FUNCTION__ << ", Executing " << GetName() << ": " << (size_t) this << ", Counter: " << nCount << std::endl << std::flush;
 
             nCount++;
 
@@ -195,36 +253,35 @@ public:
 
     const char* GetName (void) override
     {
-        return m_pszName;
+        return "Thread";
     }
 
 private:
     uint8_t stack[1024]=""; //Static initialization to avoid initialization order problem
-    const char* m_pszName;
 };
 
 
 int main()
 {
-    Thread t1(200, "Producer 1");
-    Thread t2(500, "Producer 2");
+    Thread t1(200);
+    Thread t2(500);
 
-
-    std::cout << "Start contexts for thread 3" << std::endl;
+    SelfManagedThread st1(200);
 
     // This must creates threads and destroy on leaving {} context
     {
-        Thread t3_1(0, "Eventual 3.1");
-        Thread t3_2(0, "Eventual 3.2");
-        Thread t3_3(0, "Eventual 3.3");
+        Thread t3_1(0);
+        Thread t3_2(0);
+        Thread t3_3(0);
+
+        // since those objects will be destroied here
+        // they should never start and AtomicX should
+        // transparently clean it from the execution list
     }
 
+    Thread t4(1000);
 
-    std::cout << "end context" << std::endl;
-
-    Thread t4(1000, "Producer 4");
-
-    atomic::Start();
+    atomicx::Start();
 }
 
 ```

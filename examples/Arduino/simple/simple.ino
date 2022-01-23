@@ -99,7 +99,7 @@ private:
 class Producer : public atomicx
 {
 public:
-    Producer(uint32_t nNice) : atomicx (m_stack), m_stack{}
+    Producer(uint32_t nNice) : atomicx ()
     {
         SetNice(nNice);
     }
@@ -125,6 +125,8 @@ public:
 
             Serial.println (F("Notifying...."));
             Serial.println ();
+
+            ListAllThreads();
 
             if ((nNotified = SyncNotify (nDataCount, nDataCount, 1, 500, true)) == 0)
             {
@@ -156,7 +158,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(30)];
+    // Using auto-stack instead
 };
 
 void ListAllThreads()
@@ -186,6 +188,7 @@ void ListAllThreads()
       Serial.print (", Nice: ");
       Serial.print (th.GetNice());
       Serial.print (", Stack: ");
+      Serial.print (th.IsStackSelfManaged() ? 'A' : ' ');
       Serial.print (th.GetStackSize());
       Serial.print (", UsedStack: ");
       Serial.print(th.GetUsedStackSize());

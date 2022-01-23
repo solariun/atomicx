@@ -107,7 +107,7 @@ private:
 class Thread : public atomicx
 {
 public:
-    Thread(atomicx_time nNice, const char* pszName) : atomicx (stack), m_pszName(pszName)
+    Thread(atomicx_time nNice, const char* pszName) : atomicx(), m_pszName(pszName)
     {
         SetNice(nNice);
     }
@@ -156,7 +156,6 @@ public:
         return m_pszName;
     }
 private:
-    uint8_t stack[1024]="";
     const char* m_pszName;
 };
 
