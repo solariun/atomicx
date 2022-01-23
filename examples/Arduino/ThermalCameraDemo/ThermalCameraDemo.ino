@@ -180,8 +180,6 @@ String strMatrixText;
 class TextScroller : public thread::atomicx
 {
 private:
-    uint8_t stack [80]={};
-
     int nNumberDigits = 15;
     uint8_t nOffset   = 0;
     int nIndex        = nNumberDigits * (-1);
@@ -250,7 +248,7 @@ protected:
     }
 
 public:
-    TextScroller (atomicx_time nNice) : atomicx(stack), nNumberDigits (MAX_LED_MATRIX), nOffset (0), nSpeed (2)
+    TextScroller (atomicx_time nNice) : atomicx(), nNumberDigits (MAX_LED_MATRIX), nOffset (0), nSpeed (2)
     {
         nIndex = (nSpeed == 0) ? nNumberDigits * (-1) : 0;
         SetNice (nNice);
@@ -326,7 +324,7 @@ float pixels[AMG88xx_PIXEL_ARRAY_SIZE]={};
 class ThermalCam : public thread::atomicx
 {
 public:
-    ThermalCam (atomicx_time nNice) : atomicx(stack)
+    ThermalCam (atomicx_time nNice) : atomicx()
     {
         SetNice (nNice);
     }
@@ -387,6 +385,7 @@ protected:
             }
 
             termCmds = TermCommands::ThermalCam_Update;
+
             SyncNotify (termCmds, 1, 1000);
 
         } while (Yield ());
@@ -400,7 +399,6 @@ protected:
 private:
     Adafruit_AMG88xx amg;
 
-    uint8_t stack[50];
     bool isStarted = false;
 
     float fMin=0, fMax=~0;
@@ -413,7 +411,7 @@ private:
 class Terminal : public thread::atomicx
 {
 public:
-    Terminal(atomicx_time nNice) : atomicx(stack)
+    Terminal(atomicx_time nNice) : atomicx()
     {
     }
 
@@ -478,7 +476,6 @@ protected:
 
 
 private:
-    uint8_t stack[50]={};
     char szPixel[15] = "";
 } terminal(10);
 
@@ -489,7 +486,7 @@ private:
 class System : public thread::atomicx
 {
 public:
-    System (atomicx_time nNice) : atomicx(stack)
+    System (atomicx_time nNice) : atomicx()
     {
         Serial.println (F("Starting up System..."));
         Serial.flush ();
@@ -552,7 +549,7 @@ protected:
             {
                 termCmds = TermCommands::ThreadList_Update;
 
-                Notify (termCmds, 1, 100);
+                SyncNotify (termCmds, 1, 100);
 
                 last = GetCurrentTick ();
             }
@@ -563,9 +560,6 @@ protected:
     {
         PrintStackOverflow();
     }
-
-private:
-    uint8_t stack[50]= {};
 };
 
 void ListAllThreads()
@@ -596,6 +590,7 @@ void ListAllThreads()
         Serial.print (F("\t| Nice: "));
         Serial.print (th.GetNice());
         Serial.print (F("\t| Stack: "));
+        Serial.print ((char) th.IsStackSelfManaged () ? 'A' : ' ');
         Serial.print (th.GetStackSize());
         Serial.print ("\t| UsedStack: ");
         Serial.print (th.GetUsedStackSize());

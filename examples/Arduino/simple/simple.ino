@@ -128,7 +128,7 @@ public:
 
             ListAllThreads();
 
-            if ((nNotified = SyncNotify (nDataCount, nDataCount, 1, 500, true)) == 0)
+            if ((nNotified = SyncNotify (nDataCount, nDataCount, 1, 500, NotifyType::all)) == 0)
             {
                 Serial.println ("Consumer: WARNING... Failed to notify any thread.");
                 Serial.println ("Producer: All consumer threads BUSY, trying again...");
