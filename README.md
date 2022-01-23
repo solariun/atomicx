@@ -9,7 +9,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 # Backlog and updates
 ## Version 1.2.0
 
-* **INTRODUCING** Self managed stack, now it is possible to have self-managed stack memory for any threads, no need to define stack size... (although use it with care) just by no providing a stack memory, AtomicX will automatically switch the tread to self-managed, to do just use atomicx() default constructor instead.
+* **INTRODUCING** Self managed stack, now it is possible to have self-managed stack memory for any threads, no need to define stack size... (although use it with care) just by not providing a stack memory, AtomicX will automatically switch the tread to self-managed, to do just use atomicx() default constructor instead.
 
    *Notes*:
         * It will only entries the stack enough to hold what is needed if the used stack is greater than the stack memory managed.
