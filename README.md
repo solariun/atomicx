@@ -217,7 +217,7 @@ public:
 };
 
 /*
- * Object that implements thread
+ * Object that implements thread with self-managed (dynamic) stack size
  */
 class Thread : public atomicx
 {
