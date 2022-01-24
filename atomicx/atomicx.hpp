@@ -823,6 +823,13 @@ namespace thread
         bool Yield(atomicx_time nSleep=0);
 
         /**
+         * @brief Get the Last Execution of User Code
+         *
+         * @return atomicx_time
+         */
+        atomicx_time GetLastUserExecTime();
+
+        /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */
     private:
@@ -1411,6 +1418,8 @@ namespace thread
 
         atomicx_time m_nTargetTime=0;
         atomicx_time m_nice=0;
+        atomicx_time m_LastUserExecTime=0;
+        atomicx_time m_lastResumeUserTime=0;
 
         uint32_t m_TopicId=0;
 

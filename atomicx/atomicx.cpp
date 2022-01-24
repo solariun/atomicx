@@ -157,6 +157,8 @@ namespace thread
 
                         ms_pCurrent->m_pStaskStart = &nStackStart;
 
+                        ms_pCurrent->m_lastResumeUserTime = Atomicx_GetTick ();
+
                         ms_pCurrent->run();
 
                         ms_pCurrent->m_aStatus = aTypes::start;
@@ -176,6 +178,8 @@ namespace thread
 
     bool atomicx::Yield(atomicx_time nSleep)
     {
+        m_LastUserExecTime = GetCurrentTick () - m_lastResumeUserTime;
+
         if (m_aStatus == aTypes::running)
         {
             m_aStatus = aTypes::sleep;
@@ -250,6 +254,8 @@ namespace thread
                 return false;
             }
         }
+
+        m_lastResumeUserTime = GetCurrentTick ();
 
         ms_pCurrent->m_aStatus = aTypes::running;
 
@@ -627,5 +633,10 @@ namespace thread
     bool atomicx::IsStackSelfManaged(void)
     {
         return m_flags.autoStack;
+    }
+
+    atomicx_time atomicx::GetLastUserExecTime()
+    {
+        return m_LastUserExecTime;
     }
 }
