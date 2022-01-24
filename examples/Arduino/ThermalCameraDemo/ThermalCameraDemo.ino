@@ -248,7 +248,7 @@ protected:
     }
 
 public:
-    TextScroller (atomicx_time nNice) : atomicx(), nNumberDigits (MAX_LED_MATRIX), nOffset (0), nSpeed (2)
+    TextScroller (atomicx_time nNice) : atomicx(m_stack), nNumberDigits (MAX_LED_MATRIX), nOffset (0), nSpeed (2)
     {
         nIndex = (nSpeed == 0) ? nNumberDigits * (-1) : 0;
         SetNice (nNice);
@@ -312,6 +312,9 @@ public:
 
         return true;
     }
+private:
+    uint8_t m_stack [80]={};
+
 } Matrix (10);
 
 /*
