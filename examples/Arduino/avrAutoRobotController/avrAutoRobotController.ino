@@ -212,6 +212,16 @@ struct MotorData
 } g_motors [motorsContext];
 
 
+void MoveMotor (struct MotorData& motor, size_t nDistance)
+{
+    (void) motor;
+
+    while (nDistance--)
+    {
+        atomicx::GetCurrent()->Yield(10);
+    }
+}
+
 /**
  * @brief SERIAL COMM
  *
@@ -246,7 +256,7 @@ public:
     void run() noexcept override
     {
         size_t nNotified=0;
-        uint8_t nCurrentMotor = ((size_t)&m_motor - (size_t)&g_motors) / sizeof (MotorData);
+        uint8_t nCurrentMotor = ((size_t)&m_motor - (size_t)&g_motors) / sizeof (struct MotorData);
 
         do
         {
@@ -272,7 +282,7 @@ public:
                     Serial.println (m_motor.movement);
                     Serial.flush();
 
-                    Yield (random (100, 2000));
+                    MoveMotor (m_motor, m_motor.movement);
 
                     m_motor.encoder +=  m_motor.movement;
                 }
@@ -296,7 +306,7 @@ public:
     }
 
 private:
-    MotorData& m_motor;
+    struct MotorData& m_motor;
     int m_directionPin;
     int m_stepperPin;
 };
@@ -491,15 +501,11 @@ public:
     inline void ExecuteSystemCommand (String& strCommand)
     {
         ListAllThreads ();
-        uint8_t nMotors = (sizeof (g_motors)/sizeof(MotorData));
 
         Serial.println (F("[Motors] ---------------------------------"));
-        Serial.println (nMotors);
 
-        for (int nCount=0; nCount < nMotors; nCount++)
+        for (int nCount=0; nCount < motorsContext; nCount++)
         {
-            g_motors[nCount].volts = static_cast<float>(random (2000, 2700)) / 100.0;
-
             Serial.print (F("Motor ")); Serial.print ((char) ('A' + nCount));
             Serial.print (F(": Enc: ")); Serial.print (g_motors[nCount].encoder);
             Serial.print (F(", Mv: ")); Serial.print (g_motors[nCount].movement);
@@ -583,6 +589,14 @@ public:
         return;
     }
 
+    void UpdateMotorVoltages(void)
+    {
+        for (int nCount=0; nCount < motorsContext; nCount++)
+        {
+            g_motors[nCount].volts = static_cast<float>(random (2000, 2700)) / 100.0;
+        }
+    }
+
     void run() noexcept override
     {
         size_t nCount=0;
@@ -590,7 +604,7 @@ public:
 
         do
         {
-            if (Wait (nMessage, readCommand, 1, GetNice()))
+            if (Wait (nMessage, readCommand, 1, GetNice ()))
             {
                 if (nMessage == (size_t) terminalStatus::command)
                 {
@@ -627,10 +641,13 @@ public:
                     }
                 }
 
+                Serial.flush ();
             }
 
-            Serial.flush ();
-        } while (Yield());
+            // Update Motors voltage
+            UpdateMotorVoltages ();
+
+        } while (true);
     }
 
     void StackOverflowHandler(void) noexcept final
@@ -677,7 +694,10 @@ void ListAllThreads()
         Serial.print (F("\t\t| Stat: "));
         Serial.print (th.GetStatus());
         Serial.print (F("\t| SStat: "));
-        Serial.println (th.GetSubStatus());
+        Serial.print (th.GetSubStatus());
+        Serial.print (F("\t| LstExecTime: "));
+        Serial.print (th.GetLastUserExecTime());
+        Serial.println (F("ms"));
         Serial.flush();
     }
 
