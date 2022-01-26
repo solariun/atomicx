@@ -944,9 +944,11 @@ namespace thread
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag=0, atomicx_time waitFor=0)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag=0, atomicx_time waitFor=0, size_t hasAtleast=1)
         {
-            if (IsWaiting(refVar, nTag) == false)
+            atomicx_time nNow = GetCurrentTick ();
+
+            while ((waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) && IsWaiting(refVar, nTag, hasAtleast) == false)
             {
                 SetWaitParammeters (refVar, nTag, aSubTypes::look);
 
@@ -960,7 +962,7 @@ namespace thread
                 }
             }
 
-            return true;
+            return (waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) ? true : false;
         }
 
         /**
@@ -976,13 +978,18 @@ namespace thread
          *
          * @note This is a powerful tool since it create layers of waiting within the same reference pointer
          */
-        template<typename T> bool IsWaiting(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> bool IsWaiting(T& refVar, size_t nTag=0, size_t hasAtleast = 1, aSubTypes asubType = aSubTypes::wait)
         {
+            hasAtleast = hasAtleast == 0 ? 1 : hasAtleast;
+
             for (auto& thr : *this)
             {
-                if (thr.m_aSubStatus == asubType && thr.m_aStatus == aTypes::wait && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && (thr.m_lockMessage.tag == nTag))
+                if (thr.m_aSubStatus == asubType && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && (thr.m_lockMessage.tag == nTag))
                 {
-                    return true;
+                    if ((--hasAtleast) == 0)
+                    {
+                        return true;
+                    }
                 }
             }
 
