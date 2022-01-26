@@ -107,7 +107,7 @@ private:
 class Thread : public atomicx
 {
 public:
-    Thread(atomicx_time nNice, const char* pszName) : atomicx(), m_pszName(pszName)
+    Thread(atomicx_time nNice, const char* pszName) : atomicx(1024, 250), m_pszName(pszName)
     {
         SetNice(nNice);
     }
@@ -130,7 +130,7 @@ public:
             }
             else
             {
-                if ((nNofieds = Notify (nCounter, nCounter, (uint32_t) 1, atomicx_notify_all)) == 0)
+                if ((nNofieds = Notify (nCounter, nCounter, (uint32_t) 1, NotifyType::all)) == 0)
                 {
                     std::cout << "Executing " << GetName() << "::" << GetID () << ": "<< "No thread has been notified." << std::endl;
                 }
@@ -167,7 +167,7 @@ void ListAllThreads()
 
     for (auto& th : *(atomicx::GetCurrent()))
     {
-        std::cout << (atomicx::GetCurrent() == &th ? "*  " : "   ") << th.GetID() << "\t" << th.GetName() << "\t, Nice: " << th.GetNice() << "\t, Stack: " << th.GetStackSize() << ", UsedStack: " << th.GetUsedStackSize() << "\t, Status: " << th.GetStatus() << "/" << th.GetSubStatus() << " TargetTime: " << th.GetTargetTime () << "  LockReference: " << th.GetTagLock() << std::endl;
+        std::cout << (atomicx::GetCurrent() == &th ? "*  " : "   ") << th.GetID() << "\t" << th.GetName() << "\t, Nc: " << th.GetNice() << "\t, Stk: " << (th.IsStackSelfManaged() ? 'A' : ' ') << th.GetStackSize() << "/i:" << th.GetStackIncreasePace() << ", UsedStk: " << th.GetUsedStackSize() << "\t, St: " << th.GetStatus() << "/" << th.GetSubStatus() << " TTime: " << th.GetTargetTime () << ", t:" << th.GetLastUserExecTime() << "ms" << std::endl;
     }
 
     std::cout << "-------------------------------------------------------" << std::endl;

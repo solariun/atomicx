@@ -770,19 +770,20 @@ namespace thread
          * @tparam N Stack memory page size
          */
         template<typename T, size_t N>
-        atomicx(T (&stack)[N]) : m_context{}, m_stack((volatile uint8_t*) stack)
+        atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
         {
             m_flags.autoStack = false;
-
-            m_stackSize = N  ;
 
             AddThisThread();
         }
 
         /**
-         * @brief Construct a new atomicx thread for auto-stack
+         * @brief Construct a new atomicx object and set initial auto stack and increase pace
+         *
+         * @param nStackSize            Initial Size of the stack
+         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
          */
-        atomicx();
+        atomicx(size_t nStackSize=0, int nStackIncreasePace=1);
 
         /**
          * @brief The pure virtual function that runs the thread loop
@@ -828,6 +829,11 @@ namespace thread
          * @return atomicx_time
          */
         atomicx_time GetLastUserExecTime();
+
+        /**
+         * @brief Get the Stack Increase Pace value
+         */
+        size_t GetStackIncreasePace(void);
 
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
@@ -1371,6 +1377,13 @@ namespace thread
             return false;
         }
 
+        /**
+         * @brief Set the Stack Increase Pace object
+         *
+         * @param nIncreasePace The new stack increase pace value
+         */
+        void SetStackIncreasePace(size_t nIncreasePace);
+
     private:
 
         /**
@@ -1411,8 +1424,9 @@ namespace thread
 
         jmp_buf m_context;
 
-        size_t m_stackSize;
+        size_t m_stackSize=0;
         size_t m_stacUsedkSize=0;
+        size_t m_stackIncreasePace=1;
 
         Message m_lockMessage = {0,0};
 

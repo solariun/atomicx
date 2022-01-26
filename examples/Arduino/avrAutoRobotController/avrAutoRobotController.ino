@@ -229,7 +229,7 @@ void MoveMotor (struct MotorData& motor, size_t nDistance)
 class Motor : public atomicx
 {
 public:
-    Motor(uint32_t nNice, char motorLetter, MotorData& motor, int dirPin, int stepperPin) : atomicx (), m_motor(motor), m_directionPin(dirPin), m_stepperPin(stepperPin)
+    Motor(uint32_t nNice, char motorLetter, MotorData& motor, int dirPin, int stepperPin) : atomicx (0, 10), m_motor(motor), m_directionPin(dirPin), m_stepperPin(stepperPin)
     {
         SetNice(nNice);
 
@@ -354,7 +354,7 @@ uint8_t ConvertStrCommand (String& strCommand)
 class Terminal : public atomicx
 {
 public:
-    Terminal(uint32_t nNice) : atomicx ()
+    Terminal(uint32_t nNice) : atomicx (0, 10)
     {
         SetNice(nNice);
     }
