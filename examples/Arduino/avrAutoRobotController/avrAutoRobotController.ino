@@ -540,7 +540,7 @@ public:
              * @brief   Instead of using SyncNotify que look for at least 1 Wait call blocked, it uses
              *          LookForWaitings to block until at least 4 threads are blocked Waiting
              */
-            if (LookForWaitings (motorsContext, (size_t) MotorStatus::request, 10000, 4))
+            if (LookForWaitings (motorsContext, (size_t) MotorStatus::request, 4, 10000))
             {
                 if ((nNofied = Notify ((size_t) MotorStatus::moveRequest, motorsContext, (size_t) MotorStatus::request, NotifyType::all)) == false)
                 {

@@ -941,10 +941,11 @@ namespace thread
          * @param refVar    The reference pointer
          * @param nTag      The notification meaning, if nTag == 0 means wait all refVar regardless
          * @param waitFor   default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times
+         * @param hasAtleast define how minimal Wait calls to report true
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag=0, atomicx_time waitFor=0, size_t hasAtleast=1)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, atomicx_time waitFor=0)
         {
             atomicx_time nNow = GetCurrentTick ();
 
@@ -963,6 +964,35 @@ namespace thread
             }
 
             return (waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) ? true : false;
+        }
+
+        /**
+         * @brief Sync with thread call for a wait (refVar,nTag)
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer
+         * @param nTag      The notification meaning, if nTag == 0 means wait all refVar regardless
+         * @param waitFor   default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times
+         *
+         * @return true There is thread waiting for the given refVar/nTag
+         */
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag=0, atomicx_time waitFor=0)
+        {
+            if (IsWaiting(refVar, nTag) == false)
+            {
+                SetWaitParammeters (refVar, nTag, aSubTypes::look);
+
+                Yield(waitFor);
+
+                m_lockMessage = {0,0};
+
+                if (m_aSubStatus == aSubTypes::timeout)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /**
