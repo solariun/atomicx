@@ -227,7 +227,7 @@ protected:
     {
         begin();
 
-        while (Yield ())
+        while (true)
         {
             if (! show (strMatrixText.c_str(), strMatrixText.length()))
             {
@@ -600,7 +600,11 @@ void ListAllThreads()
         Serial.print (F("\t\t| Stat: "));
         Serial.print (th.GetStatus());
         Serial.print (F("\t| SStat: "));
-        Serial.println (th.GetSubStatus());
+        Serial.print (th.GetSubStatus());
+        Serial.print (F("\t| execT: "));
+        Serial.print (th.GetLastUserExecTime());
+        Serial.println (F("ms"));
+
         Serial.flush();
     }
 

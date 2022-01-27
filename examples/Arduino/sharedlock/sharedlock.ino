@@ -54,9 +54,9 @@ class Eventual : public atomicx
 
     ~Eventual()
     {
-        Serial.print ("Deleting: ");
+        Serial.print (F("Deleting: "));
         Serial.print (GetName());
-        Serial.print (", ID: ");
+        Serial.print (F(", ID: "));
         Serial.println ((size_t) this);
         started = false;
     }
@@ -65,18 +65,18 @@ class Eventual : public atomicx
     {
         int nCount=0;
 
-        Serial.println ("Starting EVENTUAL.....");
+        Serial.println (F("Starting EVENTUAL....."));
 
         for (nCount=0; nCount < 10; nCount ++)
         {
-            Serial.print ("\n\n[[[[[[[[[[[[");
+            Serial.print (F("\n\n[[[[[[[[[[[["));
             Serial.print (GetName ());
-            Serial.print (":");
+            Serial.print (F(":"));
             Serial.print ((size_t) this);
-            Serial.print (" - ");
-            Serial.print (" Eventual counter ");
+            Serial.print (F(" - "));
+            Serial.print (F(" Eventual counter "));
             Serial.print (nCount);
-            Serial.println ("]]]]]]]]]]]\n\n");
+            Serial.println (F("]]]]]]]]]]]\n\n"));
 
             Yield ();
         }
@@ -84,19 +84,19 @@ class Eventual : public atomicx
 
     void finish () noexcept override
     {
-        Serial.println ("\n\n>>>>>>>DELETING EVENTUAL.... \n\n\n");
+        Serial.println (F("\n\n>>>>>>>DELETING EVENTUAL.... \n\n\n"));
         delete this;
     }
 
     void StackOverflowHandler(void) noexcept final
     {
         Serial.print (__FUNCTION__);
-        Serial.print ("[");
+        Serial.print (F("["));
         Serial.print (GetName ());
         Serial.print ((size_t) this);
-        Serial.print (": Stack used ");
+        Serial.print (F(": Stack used "));
         Serial.print (GetUsedStackSize());
-        Serial.print ("/");
+        Serial.print (F("/"));
         Serial.println (GetStackSize());
         Serial.flush();
     }
@@ -107,7 +107,7 @@ class Eventual : public atomicx
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(30)];
+    uint8_t m_stack[::GetStackSize(40)];
     String m_threadName="";
     static bool started;
 };
@@ -131,8 +131,8 @@ public:
 
     ~Consumer()
     {
-        Serial.print("Deleting Consumer: ");
-        Serial.print (", ID: ");
+        Serial.print (F("Deleting Consumer: "));
+        Serial.print (F(", ID: "));
         Serial.println ((size_t) this);
     }
 
@@ -142,11 +142,11 @@ public:
 
         do
         {
-            Serial.println ("Wait for SharedLock");
+            Serial.println (F("Wait for SharedLock"));
             SmartLock sLock(gLock);
             sLock.SharedLock ();
 
-            Serial.println (">>> SheredLock accquired...");
+            Serial.println (F(">>> SheredLock accquired..."));
 
             nCount = nDataCount;
 
@@ -155,40 +155,40 @@ public:
             Yield();
             // --------------------------------------
 
-            Serial.print ("Executing Consumer ");
+            Serial.print (F("Executing Consumer "));
             Serial.print (GetName());
-            Serial.print (": ");
+            Serial.print (F(": "));
             Serial.print ((size_t) this);
-            Serial.print (": Stack used: ");
+            Serial.print (F(": Stack used: "));
             Serial.print (GetUsedStackSize());
-            Serial.print (", locks/shared:");
+            Serial.print (F(", locks/shared:"));
             Serial.print (gLock.IsLocked());
-            Serial.print ("/");
+            Serial.print (F("/"));
             Serial.print (gLock.IsShared());
-            Serial.print (", Counter: ");
+            Serial.print (F(", Counter: "));
             Serial.println (nCount);
 
             Serial.flush();
 
-            Serial.println ("SharedUlocking");
+            Serial.println (F("SharedUlocking"));
         } while (Yield());
     }
 
     void StackOverflowHandler(void) noexcept final
     {
         Serial.print (__FUNCTION__);
-        Serial.print ("[");
+        Serial.print (F("["));
         Serial.print (GetName ());
         Serial.print ((size_t) this);
-        Serial.print (": Stack used ");
+        Serial.print (F(": Stack used "));
         Serial.print (GetUsedStackSize());
-        Serial.print ("/");
+        Serial.print (F("/"));
         Serial.println (GetStackSize());
         Serial.flush();
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(50)];
+    uint8_t m_stack[::GetStackSize(45)];
     String m_threadName="";
 };
 
@@ -218,38 +218,41 @@ public:
 
         do
         {
-            Serial.println ("Wait for Lock");
+            Serial.println (F("Wait for Lock"));
 
             SmartLock sLock(gLock);
             sLock.Lock();
 
-            Serial.println (">>> Locked...");
+            Serial.println (F(">>> Locked..."));
+
+            Serial.flush ();
 
             if (Eventual::GetStarted() == false)
             {
-                Serial.println (">>>> Creating EVENTUAL thread... <<<<");
+                Serial.println (F(">>>> Creating EVENTUAL thread... <<<<"));
+                Serial.flush();
                 new Eventual (1000, "Eventual");
             }
             else
             {
-                Serial.println (">>>> EVENTUAL IS TRUE... <<<<");
+                Serial.println (F(">>>> EVENTUAL IS TRUE... <<<<"));
                 Serial.println ();
             }
 
-            Serial.print ("Executing ");
+            Serial.print (F("Executing "));
             Serial.print (GetName());
-            Serial.print (": ");
+            Serial.print (F(": "));
             Serial.print (GetName ());
             Serial.print ((size_t) this);
-            Serial.print (", locks/shared:");
+            Serial.print (F(", locks/shared:"));
             Serial.print (gLock.IsLocked());
-            Serial.print (", ");
+            Serial.print (F(", "));
             Serial.print (sLock.IsLocked());
-            Serial.print ("/");
+            Serial.print (F("/"));
             Serial.print (gLock.IsShared());
-            Serial.print (", Counter: ");
+            Serial.print (F(", Counter: "));
             Serial.print (nCount);
-            Serial.print (", Eventual: ");
+            Serial.print (F(", Eventual: "));
             Serial.println (Eventual::GetStarted());
 
             Serial.flush();
@@ -258,7 +261,7 @@ public:
 
             Yield (5000);
 
-            Serial.println ("Unlocking");
+            Serial.println (F("Unlocking"));
 
             //atomicx::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
 
@@ -268,16 +271,16 @@ public:
     void StackOverflowHandler(void) noexcept final
     {
         Serial.print (__FUNCTION__);
-        Serial.print ("[");
+        Serial.print (F("["));
         Serial.print (GetName ());
         Serial.print ((size_t) this);
-        Serial.print (": Stack used ");
+        Serial.print (F(": Stack used "));
         Serial.println (GetUsedStackSize());
         Serial.flush();
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(50)];
+    uint8_t m_stack[::GetStackSize(40)];
     String m_threadName;
 };
 
@@ -287,46 +290,46 @@ void ListAllThreads()
 
    Serial.flush();
 
-  Serial.println ("[THREAD]-----------------------------------------------");
-  Serial.print ("IsLocked: ");
+  Serial.println (F("[THREAD]-----------------------------------------------"));
+  Serial.print (F("IsLocked: "));
   Serial.print ((int) gLock.IsLocked());
-  Serial.print (", IsShared: ");
+  Serial.print (F(", IsShared: "));
   Serial.println ((int) gLock.IsShared());
-  Serial.println ("---------------------------------------------------------");
+  Serial.println (F("---------------------------------------------------------"));
 
-  Serial.print ("Sizeof Producer:");
+  Serial.print (F("Sizeof Producer:"));
   Serial.println (sizeof (Producer));
 
-  Serial.print ("Sizeof Consumer:");
+  Serial.print (F("Sizeof Consumer:"));
   Serial.println (sizeof (Consumer));
 
-  Serial.print ("Sizeof Eventual:");
+  Serial.print (F("Sizeof Eventual:"));
   Serial.println (sizeof (Eventual));
 
-  Serial.println ("---------------------------------------------------------");
+  Serial.println (F("---------------------------------------------------------"));
 
   for (auto& th : *(atomicx::GetCurrent()))
   {
       Serial.print (atomicx::GetCurrent() == &th ? "*  " : "   ");
       Serial.print (++nCount);
-      Serial.print (":'");
+      Serial.print (F(":'"));
       Serial.print (th.GetName());
-      Serial.print ("' ");
+      Serial.print (F("' "));
       Serial.print ((size_t) &th);
-      Serial.print (", Nice: ");
+      Serial.print (F(", Nice: "));
       Serial.print (th.GetNice());
-      Serial.print (", Stack: ");
+      Serial.print (F(", Stack: "));
       Serial.print (th.GetStackSize());
-      Serial.print (", UsedStack: ");
+      Serial.print (F(", UsedStack: "));
       Serial.print(th.GetUsedStackSize());
-      Serial.print (", Status: ");
+      Serial.print (F(", Status: "));
       Serial.print (th.GetStatus());
-      Serial.print (", Ref Lock: ");
+      Serial.print (F(", Ref Lock: "));
       Serial.println (th.GetTagLock());
       Serial.flush();
   }
 
-  Serial.println ("---------------------------------------------------------");
+  Serial.println (F("---------------------------------------------------------"));
   Serial.flush();
 }
 
@@ -339,7 +342,7 @@ void setup()
 
   delay (2000);
 
-  Serial.println ("Starting UP-----------------------------------------------\n");
+  Serial.println (F("Starting UP-----------------------------------------------\n"));
 
   Serial.flush();
 
@@ -352,7 +355,7 @@ void setup()
 
   atomicx::Start();
 
-  Serial.println ("Full lock detected...");
+  Serial.println (F("Full lock detected..."));
 
    ListAllThreads ();
 }
