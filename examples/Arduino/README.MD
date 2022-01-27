@@ -19,7 +19,8 @@ arduino-cli board listall avr
 
 ## Compiling and uploading
 
-```
+```bash
+
 arduino-cli compile -b arduino:avr:nano:cpu=atmega328  --upload -p "$1" "$2"
 
 # upload AVR using USB-ASP
@@ -33,6 +34,11 @@ arduino-cli compile -u -p "$1"  -b esp32:esp32:heltec_wifi_kit_32  "$2"
 arduino-cli compile -u  -p "$1" -b Arduino_STM32:STM32F1:genericSTM32F103C:upload_method=jlinkMethod,opt=o3std "$2"
 
 arduino-cli compile -v -b esp8266:esp8266:wifi_kit_8:baud=921600 -upload -p "<serial>" "<arduino>"
+
+arduino-cli compile -b arduino:mbed_nano:nano33ble -upload -p "<serial>" "<arduino>"
+
+# Using ST-LINK
+arduino-cli compile -v -b STMicroelectronics:stm32:GenF1:pnum=BLUEPILL_F103C8,usb=CDCgen -upload -p "." "<arduino>"
 
 ```
 

@@ -10,9 +10,9 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
-# Backlog and updates
+* Introducing `atomicx::Timeout`, this will help tracking a timeout over time, using methods `IsTimedOut` and `GetRemaining` and `GetDurationSince`. Special use case, if the timeout value is zero, IsTimedOut will always return false.
 
-## Implementations from Work on progress
+* **IMPORTAT NOTIFICATION** `atomicx::lock` has been renamed to `atomicx::mutex` for consistency, all methods are the same.
 
 * **Improvement** Added a contructor for self-manager start to define a start size and increase pace. For example: a thread starts with 150 bytes and increase pace of 10, but used stack was 200, the kernel will do 200 + 10 (increase pace) to give it room to work. The default value is (1)
 ```cpp
@@ -65,7 +65,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 * `finish()` method will be call every time `run()` is returned, this allow special cases like eventual threads to self-destroy itself, otherwise the object would be only a memory leak.... see examples on `main.cpp`
 
-* `SmartLock` RAII compliance, allow lock or shared lock to be auto release on object destruction.
+* `SmartLock` RAII compliance, allow mutex or shared mutex to be auto release on object destruction.
 
 * **IMPORTANT** Now Notifications (Wait/Notify) can be timedout. if Tick based time is given, the waiting procedure will only stay blocked during it. (NO SPIN LOCK, REAL STATE BLOCK)
 * **IMPORTANT** `LookForWaitings` block for timeout time will a wait for specific refVar/tag is available, otherwise timeout, can be used sync wait and notify availability

@@ -14,19 +14,19 @@
 using namespace thread;
 
 atomicx_time Atomicx_GetTick(void)
-{    
+{
     ::yield();
     return millis();
 }
 
 void Atomicx_SleepTick(atomicx_time nSleep)
-{   
+{
     //ListAllThreads();
     delay(nSleep);
 }
 
 size_t nDataCount=0;
-atomicx::lock gLock;
+atomicx::mutex gLock;
 
 String strTopic = "message/topic";
 
@@ -42,7 +42,7 @@ public:
     {
         return pszName;
     }
-    
+
     ~Consumer()
     {
         Serial.print("Deleting Consumer: ");
@@ -55,7 +55,7 @@ public:
         Serial.print (__FUNCTION__);
         Serial.print (":");
         Serial.print (pszKey);
-        
+
         if (strncmp (pszKey, strTopic.c_str(), nKeyLenght) == 0)
         {
            Serial.println (":Has Subscriptions.....");
@@ -66,7 +66,7 @@ public:
         }
 
         Serial.flush();
-        
+
         return true;
     }
 
@@ -81,20 +81,20 @@ public:
         Serial.print (message.message);
         Serial.println (": async Handling topic ....");
         Serial.flush();
-        
-        return true;  
+
+        return true;
     }
-    
+
     void run() noexcept override
     {
         Message message={0,0};
-        
+
         do
-        {            
+        {
             WaitBrokerMessage (strTopic.c_str(), strTopic.length(), message);
-    
+
             // --------------------------------------
-            
+
             Serial.print ("Executing Consumer ");
             Serial.print (GetName());
             Serial.print (": ");
@@ -109,9 +109,9 @@ public:
             Serial.print (message.tag);
             Serial.print (", Message: ");
             Serial.println (message.message);
-            
+
             Serial.flush();
-            
+
         } while (Yield());
     }
 
@@ -146,18 +146,18 @@ public:
     {
         return pszName;
     }
-    
+
     ~Producer()
     {
         Serial.print("Deleting ");
         Serial.println ((size_t) this);
     }
-    
+
     void run() noexcept override
     {
         size_t nCount=0;
         size_t nTag = GetID ();
-        
+
         do
         {
             Serial.print ("Executing ");
@@ -172,13 +172,13 @@ public:
 
             Serial.print (", Counter: ");
             Serial.println (nCount++);
-            
+
             Serial.flush();
-                        
+
             Publish (strTopic.c_str(), strTopic.length(), {nTag, nCount});
-                        
+
             //atomicx::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
-                        
+
         } while (Yield ());
     }
 
@@ -197,10 +197,10 @@ public:
    {
       size_t nCount=0;
 
-      Serial.print ("Context: "); 
+      Serial.print ("Context: ");
       Serial.print (sizeof (atomicx));
       Serial.println ("---------------------------------");
-      
+
       for (auto& th : *this)
       {
           Serial.print (++nCount);
@@ -226,20 +226,20 @@ private:
     const char* pszName;
 };
 
-void setup() 
+void setup()
 {
   Serial.begin (115200);
 
   while (! Serial) delay (100);
 
   delay (2000);
-      
+
   Serial.println ("-----------------------------------------------\n");
   Serial.println ("Starting up...");
   Serial.println ("-----------------------------------------------\n");
-  Serial.flush(); 
+  Serial.flush();
 
-  
+
   Producer T1(100, "Thread 1");
   Consumer E1(100, "Consumer 1");
   Consumer E2(250, "Consumer 2");
@@ -255,5 +255,5 @@ void setup()
 }
 
 void loop() {
-    
+
 }

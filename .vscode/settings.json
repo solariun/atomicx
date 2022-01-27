@@ -2,6 +2,11 @@
     "files.associations": {
         "*.ino": "cpp",
         "stdexcept": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "__availability": "cpp",
+        "__mutex_base": "cpp",
+        "atomic": "cpp",
+        "memory": "cpp",
+        "mutex": "cpp"
     }
 }

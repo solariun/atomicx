@@ -80,6 +80,55 @@ namespace thread
         };
 
         /**
+         * @brief Timeout Check object
+         */
+
+        class Timeout
+        {
+            public:
+                Timeout () = delete;
+
+                /**
+                 * @brief Construct a new Timeout object
+                 *
+                 * @param nTimoutValue  Timeout value to be calculated
+                 *
+                 * @note    To decrease the amount of memory, Timeout does not save
+                 *          the start time.
+                 *          Special use case: if nTimeoutValue == 0, IsTimedOut is always false.
+                 */
+                Timeout (atomicx_time nTimoutValue);
+
+                /**
+                 * @brief Check wether it has timeout
+                 *
+                 * @return true if it timeout otherwise 0
+                 */
+                bool IsTimedOut();
+
+                /**
+                 * @brief Get the remaining time till timeout
+                 *
+                 * @return atomicx_time Remaining time till timeout, otherwise 0;
+                 */
+                atomicx_time GetRemaining();
+
+                /**
+                 * @brief Get the Time Since specific point in time
+                 *
+                 * @param startTime     The specific point in time
+                 *
+                 * @return atomicx_time How long since the point in time
+                 *
+                 * @note    To decrease the amount of memory, Timeout does not save
+                 *          the start time.
+                 */
+                atomicx_time GetDurationSince(atomicx_time startTime);
+
+            private:
+                atomicx_time m_timeoutValue = 0;
+        };
+        /**
          * ------------------------------
          * ITERATOR FOR THREAD LISTING
          * ------------------------------
@@ -503,7 +552,7 @@ namespace thread
          */
 
         /* The stamart mutex implementation */
-        class lock
+        class mutex
         {
         public:
             /**
@@ -569,7 +618,7 @@ namespace thread
                  *
                  * @param lockObj the existing lock object
                  */
-                SmartLock (lock& lockObj) : m_lock(lockObj)
+                SmartLock (mutex& lockObj) : m_lock(lockObj)
                 {}
 
                 /**
@@ -648,7 +697,7 @@ namespace thread
 
             private:
 
-            lock& m_lock;
+            mutex& m_lock;
             uint8_t m_lockType = '\0';
         };
 
@@ -945,11 +994,11 @@ namespace thread
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, atomicx_time waitFor=0)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, atomicx_time waitFor)
         {
-            atomicx_time nNow = GetCurrentTick ();
+            Timeout timeout (waitFor);
 
-            while ((waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) && IsWaiting(refVar, nTag, hasAtleast) == false)
+            while ((waitFor == 0 || timeout.IsTimedOut () == false) && IsWaiting(refVar, nTag, hasAtleast) == false)
             {
                 SetWaitParammeters (refVar, nTag, aSubTypes::look);
 
@@ -961,9 +1010,15 @@ namespace thread
                 {
                     return false;
                 }
+
+                // Decrease the timeout time to slice the remaining time otherwise break it
+                if (waitFor  == 0 || (waitFor = timeout.GetRemaining ()) == 0)
+                {
+                    break;
+                }
             }
 
-            return (waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) ? true : false;
+            return (timeout.IsTimedOut ()) ? false : true;
         }
 
         /**
@@ -976,7 +1031,7 @@ namespace thread
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag=0, atomicx_time waitFor=0)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, atomicx_time waitFor)
         {
             if (IsWaiting(refVar, nTag) == false)
             {
