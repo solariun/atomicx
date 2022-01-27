@@ -6,16 +6,9 @@ Version 1.2.0 release
 
 What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
 
-* **Improvement** Added a contructor for self-manager start to define a start size and increase pace. For example: a thread starts with 150 bytes and increase pace of 10, but used stack was 200, the kernel will do 200 + 10 (increase pace) to give it room to work. The default value is (1)
-```cpp
-        /**
-         * @brief Construct a new atomicx object and set initial auto stack and increase pace
-         *
-         * @param nStackSize            Initial Size of the stack
-         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
-         */
-        atomicx(size_t nStackSize, int nStackIncreasePace=1);
-```
+# Backlog and updates
+
+## Implementations from Work on progress
 
 # Backlog and updates
 
