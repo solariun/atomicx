@@ -31,6 +31,23 @@ namespace thread
     static jmp_buf ms_joinContext{};
     static atomicx* ms_pCurrent=nullptr;
 
+    atomicx::Timeout::Timeout (atomicx_time nTimeoutValue) : m_timeoutValue (0)
+    {
+        m_timeoutValue = nTimeoutValue + Atomicx_GetTick ();
+    }
+
+    bool atomicx::Timeout::IsTimedOut()
+    {
+        return (Atomicx_GetTick () < m_timeoutValue) ? false : true;
+    }
+
+    atomicx_time atomicx::Timeout::GetRemaining()
+    {
+        auto nNow = Atomicx_GetTick ();
+
+        return (nNow < m_timeoutValue) ? m_timeoutValue - nNow : 0;
+    }
+
     atomicx::aiterator::aiterator(atomicx* ptr) : m_ptr(ptr)
     {}
 

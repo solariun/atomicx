@@ -122,13 +122,9 @@ public:
         nCounter = 10;
         size_t nNofieds = 0;
 
-        do
+        while (Yield ())
         {
-            if (LookForWaitings (nCounter, 1, 1000) == false)
-            {
-                std::cout << "Executing " << GetName() << "::" << GetID () << ": " << "All Consumers seams to be Busy, no Waiting threads at this moment" << std::endl;
-            }
-            else
+            if (LookForWaitings (nCounter, 1, 4, 1000))
             {
                 if ((nNofieds = Notify (nCounter, nCounter, (uint32_t) 1, NotifyType::all)) == 0)
                 {
@@ -139,10 +135,15 @@ public:
                     std::cout << "Executing " << GetName() << "::" << GetID () << ": "<< "Message has been successfully consumed by "  << nNofieds << "." << std::endl;
                 }
 
-
                 nCounter++;
+
+                ListAllThreads ();
             }
-        }  while (Yield());
+            else
+            {
+                std::cout << "Executing " << GetName() << "::" << GetID () << ": " << "Some Consumers seams to be Busy, no Waiting threads at this moment, Waits: " <<  HasWaitings (nCounter, 1) << std::endl;
+            }
+        }
 
     }
 
@@ -167,7 +168,7 @@ void ListAllThreads()
 
     for (auto& th : *(atomicx::GetCurrent()))
     {
-        std::cout << (atomicx::GetCurrent() == &th ? "*  " : "   ") << th.GetID() << "\t" << th.GetName() << "\t, Nc: " << th.GetNice() << "\t, Stk: " << (th.IsStackSelfManaged() ? 'A' : ' ') << th.GetStackSize() << "/i:" << th.GetStackIncreasePace() << ", UsedStk: " << th.GetUsedStackSize() << "\t, St: " << th.GetStatus() << "/" << th.GetSubStatus() << " TTime: " << th.GetTargetTime () << ", t:" << th.GetLastUserExecTime() << "ms" << std::endl;
+        std::cout << (atomicx::GetCurrent() == &th ? "*  " : "   ") << th.GetID() << "\t" << th.GetName() << "\t, Nc: " << th.GetNice() << "\t, Stk: " << (th.IsStackSelfManaged() ? 'A' : ' ') << th.GetStackSize() << "/i:" << th.GetStackIncreasePace() << "\t, UsedStk: " << th.GetUsedStackSize() << "\t, St: " << th.GetStatus() << "/" << th.GetSubStatus() << " TTime: " << th.GetTargetTime () << ", t:" << th.GetLastUserExecTime() << "ms" << std::endl;
     }
 
     std::cout << "-------------------------------------------------------" << std::endl;
@@ -197,6 +198,7 @@ int main()
 
     ThreadConsummer e2(500, "Consumer 2");
     ThreadConsummer e3(300, "Consumer 3");
+    ThreadConsummer e4(300, "Consumer 4");
 
     std::cout << "end context" << std::endl;
 

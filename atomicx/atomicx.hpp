@@ -80,6 +80,39 @@ namespace thread
         };
 
         /**
+         * @brief Timeout Check object
+         */
+
+        class Timeout
+        {
+            public:
+                Timeout () = delete;
+
+                /**
+                 * @brief Construct a new Timeout object
+                 *
+                 * @param nTimoutValue  Timeout value to be calculated
+                 */
+                Timeout (atomicx_time nTimoutValue);
+
+                /**
+                 * @brief Check wether it has timeout
+                 *
+                 * @return true if it timeout otherwise 0
+                 */
+                bool IsTimedOut();
+
+                /**
+                 * @brief Get the remaining time till timeout
+                 *
+                 * @return atomicx_time Remaining time till timeout, otherwise 0;
+                 */
+                atomicx_time GetRemaining();
+
+            private:
+                atomicx_time m_timeoutValue = 0;
+        };
+        /**
          * ------------------------------
          * ITERATOR FOR THREAD LISTING
          * ------------------------------
@@ -945,11 +978,11 @@ namespace thread
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, atomicx_time waitFor=0)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, atomicx_time waitFor)
         {
-            atomicx_time nNow = GetCurrentTick ();
+            Timeout timeout (waitFor);
 
-            while ((waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) && IsWaiting(refVar, nTag, hasAtleast) == false)
+            while ((waitFor == 0 || timeout.IsTimedOut () == false) && IsWaiting(refVar, nTag, hasAtleast) == false)
             {
                 SetWaitParammeters (refVar, nTag, aSubTypes::look);
 
@@ -961,9 +994,15 @@ namespace thread
                 {
                     return false;
                 }
+
+                // Decrease the timeout time to slice the remaining time otherwise break it
+                if (waitFor  == 0 || (waitFor -= (waitFor - timeout.GetRemaining ())) == 0)
+                {
+                    break;
+                }
             }
 
-            return (waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) ? true : false;
+            return (timeout.IsTimedOut ()) ? false : true;
         }
 
         /**
@@ -976,7 +1015,7 @@ namespace thread
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag=0, atomicx_time waitFor=0)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, atomicx_time waitFor)
         {
             if (IsWaiting(refVar, nTag) == false)
             {
