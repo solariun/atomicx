@@ -200,7 +200,7 @@ namespace thread
         m_stacUsedkSize = (size_t) (m_pStaskStart - m_pStaskEnd);
 
 
-        if (m_stacUsedkSize > m_stackSize)
+        if (m_stacUsedkSize > m_stackSize || m_stack == nullptr)
         {
             /*
             * Controll the auto-stack memory
@@ -209,6 +209,7 @@ namespace thread
             *   I decicde to use malloc/free instead
             *   to control errors
             */
+
             if (m_flags.autoStack == true)
             {
                 if (m_stack != nullptr)
@@ -216,11 +217,12 @@ namespace thread
                     free ((void*) m_stack);
                 }
 
-                if ((m_stack = (uint8_t*) malloc (m_stacUsedkSize)) != nullptr)
+                if (m_stacUsedkSize > m_stackSize)
                 {
-                    m_stackSize = m_stacUsedkSize;
+                    m_stackSize = m_stacUsedkSize + m_stackIncreasePace;
                 }
-                else
+
+                if ((m_stack = (uint8_t*) malloc (m_stacUsedkSize)) == nullptr)
                 {
                     m_aStatus = aTypes::stackOverflow;
                 }
@@ -255,7 +257,7 @@ namespace thread
             }
         }
 
-        m_lastResumeUserTime = GetCurrentTick ();
+        ms_pCurrent->m_lastResumeUserTime = GetCurrentTick ();
 
         ms_pCurrent->m_aStatus = aTypes::running;
 
@@ -305,13 +307,12 @@ namespace thread
         }
     }
 
-    atomicx::atomicx() : m_context{}, m_stack(nullptr)
+    atomicx::atomicx(size_t nStackSize, int nStackIncreasePace) : m_context{}, m_stackSize(nStackSize), m_stackIncreasePace(nStackIncreasePace), m_stack(nullptr)
     {
         m_flags.autoStack = true;
-        m_stackSize = 0;
+
         AddThisThread();
     }
-
 
     atomicx::~atomicx()
     {
@@ -639,4 +640,15 @@ namespace thread
     {
         return m_LastUserExecTime;
     }
+
+    void atomicx::SetStackIncreasePace(size_t nIncreasePace)
+    {
+        m_stackIncreasePace = nIncreasePace;
+    }
+
+    size_t atomicx::GetStackIncreasePace(void)
+    {
+        return m_stackIncreasePace;
+    }
+
 }

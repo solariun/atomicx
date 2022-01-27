@@ -36,7 +36,7 @@ constexpr size_t GetStackSize(size_t sizeRef)
 class Consumer : public atomicx
 {
 public:
-    Consumer(uint32_t nNice) :  atomicx (m_stack), m_stack{}
+    Consumer(uint32_t nNice) :  atomicx (::GetStackSize(10), 10), m_stack{}
     {
         SetNice(nNice);
     }
@@ -92,7 +92,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(30)];
+    uint8_t m_stack[];
 };
 
 
@@ -128,17 +128,25 @@ public:
 
             ListAllThreads();
 
-            if ((nNotified = SyncNotify (nDataCount, nDataCount, 1, 500, NotifyType::all)) == 0)
+            if (LookForWaitings (nDataCount, 1, 500, 3))
             {
-                Serial.println ("Consumer: WARNING... Failed to notify any thread.");
-                Serial.println ("Producer: All consumer threads BUSY, trying again...");
+                if ((nNotified = Notify (nDataCount, nDataCount, 1, NotifyType::all)) == 0)
+                {
+                    Serial.println ("Consumer: WARNING... Failed to notify any thread.");
+                    Serial.println ("Producer: All consumer threads BUSY, trying again...");
+                }
+                else
+                {
+                    Serial.println ("--------------------------------------");
+                    Serial.print ("All messages dispatched to ");
+                    Serial.println (nNotified);
+                    Serial.println ("--------------------------------------");
+                }
             }
             else
             {
-                Serial.println ("--------------------------------------");
-                Serial.print ("All messages dispatched to ");
-                Serial.println (nNotified);
-                Serial.println ("--------------------------------------");
+                Serial.print (HasWaitings (nDataCount, 1));
+                Serial.println (F(" waits: At least 3 consumer must be notified"));
             }
 
             Serial.flush ();

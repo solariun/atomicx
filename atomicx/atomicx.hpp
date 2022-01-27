@@ -770,19 +770,20 @@ namespace thread
          * @tparam N Stack memory page size
          */
         template<typename T, size_t N>
-        atomicx(T (&stack)[N]) : m_context{}, m_stack((volatile uint8_t*) stack)
+        atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
         {
             m_flags.autoStack = false;
-
-            m_stackSize = N  ;
 
             AddThisThread();
         }
 
         /**
-         * @brief Construct a new atomicx thread for auto-stack
+         * @brief Construct a new atomicx object and set initial auto stack and increase pace
+         *
+         * @param nStackSize            Initial Size of the stack
+         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
          */
-        atomicx();
+        atomicx(size_t nStackSize=0, int nStackIncreasePace=1);
 
         /**
          * @brief The pure virtual function that runs the thread loop
@@ -828,6 +829,11 @@ namespace thread
          * @return atomicx_time
          */
         atomicx_time GetLastUserExecTime();
+
+        /**
+         * @brief Get the Stack Increase Pace value
+         */
+        size_t GetStackIncreasePace(void);
 
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
@@ -938,9 +944,11 @@ namespace thread
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag=0, atomicx_time waitFor=0)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag=0, atomicx_time waitFor=0, size_t hasAtleast=1)
         {
-            if (IsWaiting(refVar, nTag) == false)
+            atomicx_time nNow = GetCurrentTick ();
+
+            while ((waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) && IsWaiting(refVar, nTag, hasAtleast) == false)
             {
                 SetWaitParammeters (refVar, nTag, aSubTypes::look);
 
@@ -954,7 +962,7 @@ namespace thread
                 }
             }
 
-            return true;
+            return (waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) ? true : false;
         }
 
         /**
@@ -970,13 +978,18 @@ namespace thread
          *
          * @note This is a powerful tool since it create layers of waiting within the same reference pointer
          */
-        template<typename T> bool IsWaiting(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> bool IsWaiting(T& refVar, size_t nTag=0, size_t hasAtleast = 1, aSubTypes asubType = aSubTypes::wait)
         {
+            hasAtleast = hasAtleast == 0 ? 1 : hasAtleast;
+
             for (auto& thr : *this)
             {
-                if (thr.m_aSubStatus == asubType && thr.m_aStatus == aTypes::wait && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && (thr.m_lockMessage.tag == nTag))
+                if (thr.m_aSubStatus == asubType && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && (thr.m_lockMessage.tag == nTag))
                 {
-                    return true;
+                    if ((--hasAtleast) == 0)
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -996,7 +1009,7 @@ namespace thread
          *
          * @note This is a powerful tool since it create layers of waiting within the same reference pointer
          */
-        template<typename T> size_t HasWaiting(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t HasWaitings(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
         {
             size_t nCounter = 0;
 
@@ -1135,7 +1148,7 @@ namespace thread
         }
 
         /**
-         * @brief SYNC Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified
+         * @brief SYNC Waits for at least one Wait call for a given reference pointer along with a message and trigger context change
          *
          * @tparam T        Type of the reference pointer
          * @param nMessage  The size_t message to be sent
@@ -1197,7 +1210,7 @@ namespace thread
         }
 
         /**
-         * @brief SYNC Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
+         * @brief SYNC Waits for at least one Wait call for a given reference pointer and trigger context change
          *
          * @tparam T        Type of the reference pointer
          * @param refVar    The reference pointer used a a notifier
@@ -1371,6 +1384,13 @@ namespace thread
             return false;
         }
 
+        /**
+         * @brief Set the Stack Increase Pace object
+         *
+         * @param nIncreasePace The new stack increase pace value
+         */
+        void SetStackIncreasePace(size_t nIncreasePace);
+
     private:
 
         /**
@@ -1411,8 +1431,9 @@ namespace thread
 
         jmp_buf m_context;
 
-        size_t m_stackSize;
+        size_t m_stackSize=0;
         size_t m_stacUsedkSize=0;
+        size_t m_stackIncreasePace=1;
 
         Message m_lockMessage = {0,0};
 

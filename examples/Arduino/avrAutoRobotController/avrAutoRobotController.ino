@@ -229,7 +229,7 @@ void MoveMotor (struct MotorData& motor, size_t nDistance)
 class Motor : public atomicx
 {
 public:
-    Motor(uint32_t nNice, char motorLetter, MotorData& motor, int dirPin, int stepperPin) : atomicx (), m_motor(motor), m_directionPin(dirPin), m_stepperPin(stepperPin)
+    Motor(uint32_t nNice, char motorLetter, MotorData& motor, int dirPin, int stepperPin) : atomicx (0, 10), m_motor(motor), m_directionPin(dirPin), m_stepperPin(stepperPin)
     {
         SetNice(nNice);
 
@@ -262,7 +262,7 @@ public:
         {
             size_t nMessage = 0;
 
-            if (Wait (nMessage, motorsContext, (size_t) MotorStatus::request))
+            if (Wait (nMessage, motorsContext, (size_t) MotorStatus::request, 100))
             {
                 Serial.print ("Motor "); Serial.print ((char) ('A' + nCurrentMotor));
                 Serial.println (":Notification received.");
@@ -297,7 +297,9 @@ public:
                 Serial.flush ();
             }
 
-        } while (Yield ());
+            m_motor.volts = static_cast<float>(random (2000, 2700)) / 100.0;
+
+        } while (true);
     }
 
     void StackOverflowHandler(void) noexcept final
@@ -354,7 +356,7 @@ uint8_t ConvertStrCommand (String& strCommand)
 class Terminal : public atomicx
 {
 public:
-    Terminal(uint32_t nNice) : atomicx ()
+    Terminal(uint32_t nNice) : atomicx (0, 10)
     {
         SetNice(nNice);
     }
@@ -534,14 +536,23 @@ public:
             ParseOption (readCommand, 4, strParam);
             g_motors[3].movement = strParam.toFloat();
 
-            if ((nNofied = SyncNotify ((size_t) MotorStatus::moveRequest, motorsContext, (size_t) MotorStatus::request, 1000, NotifyType::all)) == false)
+            /**
+             * @brief   Instead of using SyncNotify que look for at least 1 Wait call blocked, it uses
+             *          LookForWaitings to block until at least 4 threads are blocked Waiting
+             */
+            if (LookForWaitings (motorsContext, (size_t) MotorStatus::request, 10000, 4))
             {
-                Serial.println (F("ERROR, failed send command to MotorD"));
-                return;
+                if ((nNofied = Notify ((size_t) MotorStatus::moveRequest, motorsContext, (size_t) MotorStatus::request, NotifyType::all)) == false)
+                {
+                    Serial.println (F("ERROR, failed send command to all Motors"));
+                    return;
+                }
             }
 
             Serial.print (F("\n\nNotified motors: "));
-            Serial.println (nNofied);
+            Serial.print (nNofied);
+            Serial.print (F(", has:"));
+            Serial.println (IsWaiting (motorsContext, (size_t) MotorStatus::request));
             Serial.flush ();
 
             // ------------------------------------------------
@@ -551,16 +562,23 @@ public:
             uint8_t nRspCounter=0;
             size_t nMotorResponse=0;
 
-            while (nRspCounter < motorsContext)
+            if (nNofied == motorsContext)
             {
-                if (Wait (nMotorResponse, motorsContext, (size_t) MotorStatus::response, 0))
+                while (nRspCounter < motorsContext)
                 {
-                    Serial.print (F(">> Motor ")); Serial.print ((char)('A' + (char) nMotorResponse));
-                    Serial.println (F(": Reported completion. "));
-                    Serial.flush ();
+                    if (Wait (nMotorResponse, motorsContext, (size_t) MotorStatus::response, 1000))
+                    {
+                        Serial.print (F(">> Motor ")); Serial.print ((char)('A' + (char) nMotorResponse));
+                        Serial.println (F(": Reported completion. "));
+                        Serial.flush ();
 
-                    nRspCounter++;
+                        nRspCounter++;
+                    }
                 }
+            }
+            else
+            {
+                ListAllThreads ();
             }
         }
         else
@@ -643,10 +661,6 @@ public:
 
                 Serial.flush ();
             }
-
-            // Update Motors voltage
-            UpdateMotorVoltages ();
-
         } while (true);
     }
 

@@ -248,7 +248,7 @@ protected:
     }
 
 public:
-    TextScroller (atomicx_time nNice) : atomicx(m_stack), nNumberDigits (MAX_LED_MATRIX), nOffset (0), nSpeed (2)
+    TextScroller (atomicx_time nNice) : atomicx(90, 10), nNumberDigits (MAX_LED_MATRIX), nOffset (0), nSpeed (2)
     {
         nIndex = (nSpeed == 0) ? nNumberDigits * (-1) : 0;
         SetNice (nNice);
@@ -313,7 +313,6 @@ public:
         return true;
     }
 private:
-    uint8_t m_stack [80]={};
 
 } Matrix (10);
 
@@ -600,7 +599,11 @@ void ListAllThreads()
         Serial.print (F("\t\t| Stat: "));
         Serial.print (th.GetStatus());
         Serial.print (F("\t| SStat: "));
-        Serial.println (th.GetSubStatus());
+        Serial.print (th.GetSubStatus());
+        Serial.print (F("\t| execT: "));
+        Serial.print (th.GetLastUserExecTime());
+        Serial.println (F("ms"));
+
         Serial.flush();
     }
 
