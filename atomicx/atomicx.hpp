@@ -941,6 +941,38 @@ namespace thread
          * @param refVar    The reference pointer
          * @param nTag      The notification meaning, if nTag == 0 means wait all refVar regardless
          * @param waitFor   default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times
+         * @param hasAtleast define how minimal Wait calls to report true
+         *
+         * @return true There is thread waiting for the given refVar/nTag
+         */
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, atomicx_time waitFor=0)
+        {
+            atomicx_time nNow = GetCurrentTick ();
+
+            while ((waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) && IsWaiting(refVar, nTag, hasAtleast) == false)
+            {
+                SetWaitParammeters (refVar, nTag, aSubTypes::look);
+
+                Yield(waitFor);
+
+                m_lockMessage = {0,0};
+
+                if (m_aSubStatus == aSubTypes::timeout)
+                {
+                    return false;
+                }
+            }
+
+            return (waitFor == 0 || (GetCurrentTick () - nNow) <= waitFor) ? true : false;
+        }
+
+        /**
+         * @brief Sync with thread call for a wait (refVar,nTag)
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer
+         * @param nTag      The notification meaning, if nTag == 0 means wait all refVar regardless
+         * @param waitFor   default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
@@ -976,13 +1008,18 @@ namespace thread
          *
          * @note This is a powerful tool since it create layers of waiting within the same reference pointer
          */
-        template<typename T> bool IsWaiting(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> bool IsWaiting(T& refVar, size_t nTag=0, size_t hasAtleast = 1, aSubTypes asubType = aSubTypes::wait)
         {
+            hasAtleast = hasAtleast == 0 ? 1 : hasAtleast;
+
             for (auto& thr : *this)
             {
-                if (thr.m_aSubStatus == asubType && thr.m_aStatus == aTypes::wait && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && (thr.m_lockMessage.tag == nTag))
+                if (thr.m_aSubStatus == asubType && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && (thr.m_lockMessage.tag == nTag))
                 {
-                    return true;
+                    if ((--hasAtleast) == 0)
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -1002,7 +1039,7 @@ namespace thread
          *
          * @note This is a powerful tool since it create layers of waiting within the same reference pointer
          */
-        template<typename T> size_t HasWaiting(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t HasWaitings(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
         {
             size_t nCounter = 0;
 
@@ -1141,7 +1178,7 @@ namespace thread
         }
 
         /**
-         * @brief SYNC Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified
+         * @brief SYNC Waits for at least one Wait call for a given reference pointer along with a message and trigger context change
          *
          * @tparam T        Type of the reference pointer
          * @param nMessage  The size_t message to be sent
@@ -1203,7 +1240,7 @@ namespace thread
         }
 
         /**
-         * @brief SYNC Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
+         * @brief SYNC Waits for at least one Wait call for a given reference pointer and trigger context change
          *
          * @tparam T        Type of the reference pointer
          * @param refVar    The reference pointer used a a notifier
