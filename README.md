@@ -10,7 +10,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
-* Introducing `atomicx::Timeout`, this will help tracking a timeout over time, using methods `IsTimedout` and `GetRemaining`
+* Introducing `atomicx::Timeout`, this will help tracking a timeout over time, using methods `IsTimedOut` and `GetRemaining` and `GetDurationSince`. Special use case, if the timeout value is zero, IsTimedOut will always return false.
 
 * **IMPORTAT NOTIFICATION** `atomicx::lock` has been renamed to `atomicx::mutex` for consistency, all methods are the same.
 

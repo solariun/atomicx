@@ -92,6 +92,10 @@ namespace thread
                  * @brief Construct a new Timeout object
                  *
                  * @param nTimoutValue  Timeout value to be calculated
+                 *
+                 * @note    To decrease the amount of memory, Timeout does not save
+                 *          the start time.
+                 *          Special use case: if nTimeoutValue == 0, IsTimedOut is always false.
                  */
                 Timeout (atomicx_time nTimoutValue);
 
@@ -108,6 +112,18 @@ namespace thread
                  * @return atomicx_time Remaining time till timeout, otherwise 0;
                  */
                 atomicx_time GetRemaining();
+
+                /**
+                 * @brief Get the Time Since specific point in time
+                 *
+                 * @param startTime     The specific point in time
+                 *
+                 * @return atomicx_time How long since the point in time
+                 *
+                 * @note    To decrease the amount of memory, Timeout does not save
+                 *          the start time.
+                 */
+                atomicx_time GetDurationSince(atomicx_time startTime);
 
             private:
                 atomicx_time m_timeoutValue = 0;
@@ -996,7 +1012,7 @@ namespace thread
                 }
 
                 // Decrease the timeout time to slice the remaining time otherwise break it
-                if (waitFor  == 0 || (waitFor -= (waitFor - timeout.GetRemaining ())) == 0)
+                if (waitFor  == 0 || (waitFor = timeout.GetRemaining ()) == 0)
                 {
                     break;
                 }

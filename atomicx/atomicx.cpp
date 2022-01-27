@@ -33,12 +33,12 @@ namespace thread
 
     atomicx::Timeout::Timeout (atomicx_time nTimeoutValue) : m_timeoutValue (0)
     {
-        m_timeoutValue = nTimeoutValue + Atomicx_GetTick ();
+        m_timeoutValue = nTimeoutValue ? nTimeoutValue + Atomicx_GetTick () : 0;
     }
 
     bool atomicx::Timeout::IsTimedOut()
     {
-        return (Atomicx_GetTick () < m_timeoutValue) ? false : true;
+        return (m_timeoutValue == 0 || Atomicx_GetTick () < m_timeoutValue) ? false : true;
     }
 
     atomicx_time atomicx::Timeout::GetRemaining()
@@ -46,6 +46,11 @@ namespace thread
         auto nNow = Atomicx_GetTick ();
 
         return (nNow < m_timeoutValue) ? m_timeoutValue - nNow : 0;
+    }
+
+    atomicx_time atomicx::Timeout::GetDurationSince(atomicx_time startTime)
+    {
+        return startTime - GetRemaining ();
     }
 
     atomicx::aiterator::aiterator(atomicx* ptr) : m_ptr(ptr)
