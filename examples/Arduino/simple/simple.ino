@@ -36,7 +36,7 @@ constexpr size_t GetStackSize(size_t sizeRef)
 class Consumer : public atomicx
 {
 public:
-    Consumer(uint32_t nNice) :  atomicx (::GetStackSize(10), 10), m_stack{}
+    Consumer(uint32_t nNice) :  atomicx (::GetStackSize(10), 10)
     {
         SetNice(nNice);
     }
@@ -92,7 +92,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[];
+
 };
 
 
