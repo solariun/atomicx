@@ -1009,7 +1009,7 @@ namespace thread
          *
          * @note This is a powerful tool since it create layers of waiting within the same reference pointer
          */
-        template<typename T> size_t HasWaiting(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t HasWaitings(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
         {
             size_t nCounter = 0;
 
@@ -1148,7 +1148,7 @@ namespace thread
         }
 
         /**
-         * @brief SYNC Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified
+         * @brief SYNC Waits for at least one Wait call for a given reference pointer along with a message and trigger context change
          *
          * @tparam T        Type of the reference pointer
          * @param nMessage  The size_t message to be sent
@@ -1210,7 +1210,7 @@ namespace thread
         }
 
         /**
-         * @brief SYNC Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
+         * @brief SYNC Waits for at least one Wait call for a given reference pointer and trigger context change
          *
          * @tparam T        Type of the reference pointer
          * @param refVar    The reference pointer used a a notifier
