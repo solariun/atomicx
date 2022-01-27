@@ -61,7 +61,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 * `finish()` method will be call every time `run()` is returned, this allow special cases like eventual threads to self-destroy itself, otherwise the object would be only a memory leak.... see examples on `main.cpp`
 
-* `SmartLock` RAII compliance, allow lock or shared lock to be auto release on object destruction.
+* `SmartLock` RAII compliance, allow mutex or shared mutex to be auto release on object destruction.
 
 * **IMPORTANT** Now Notifications (Wait/Notify) can be timedout. if Tick based time is given, the waiting procedure will only stay blocked during it. (NO SPIN LOCK, REAL STATE BLOCK)
 * **IMPORTANT** `LookForWaitings` block for timeout time will a wait for specific refVar/tag is available, otherwise timeout, can be used sync wait and notify availability

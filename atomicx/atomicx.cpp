@@ -381,13 +381,13 @@ namespace thread
         return (size_t) m_lockMessage.tag;
     }
 
-    void atomicx::lock::Lock()
+    void atomicx::mutex::Lock()
     {
         auto pAtomic = atomicx::GetCurrent();
 
         if(pAtomic == nullptr) return;
 
-        // Get exclusive lock
+        // Get exclusive mutex
         while (bExclusiveLock && pAtomic->Wait(bExclusiveLock, 1));
 
         bExclusiveLock = true;
@@ -396,7 +396,7 @@ namespace thread
         while (nSharedLockCount && pAtomic->Wait(nSharedLockCount,2));
     }
 
-    void atomicx::lock::Unlock()
+    void atomicx::mutex::Unlock()
     {
         auto pAtomic = atomicx::GetCurrent();
 
@@ -412,13 +412,13 @@ namespace thread
         }
     }
 
-    void atomicx::lock::SharedLock()
+    void atomicx::mutex::SharedLock()
     {
         auto pAtomic = atomicx::GetCurrent();
 
         if(pAtomic == nullptr) return;
 
-        // Wait for exclusive lock
+        // Wait for exclusive mutex
         while (bExclusiveLock > 0 && pAtomic->Wait(bExclusiveLock, 1));
 
         nSharedLockCount++;
@@ -427,7 +427,7 @@ namespace thread
         pAtomic->Notify (nSharedLockCount, 2, NotifyType::one);
     }
 
-    void atomicx::lock::SharedUnlock()
+    void atomicx::mutex::SharedUnlock()
     {
         auto pAtomic = atomicx::GetCurrent();
 
@@ -441,12 +441,12 @@ namespace thread
         }
     }
 
-    size_t atomicx::lock::IsShared()
+    size_t atomicx::mutex::IsShared()
     {
         return nSharedLockCount;
     }
 
-    bool atomicx::lock::IsLocked()
+    bool atomicx::mutex::IsLocked()
     {
         return bExclusiveLock;
     }

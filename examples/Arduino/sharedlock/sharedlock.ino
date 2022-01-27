@@ -14,7 +14,7 @@
 using namespace thread;
 
 size_t nDataCount=0;
-atomicx::lock gLock;
+atomicx::mutex gLock;
 
 void ListAllThreads();
 

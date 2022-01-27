@@ -536,7 +536,7 @@ namespace thread
          */
 
         /* The stamart mutex implementation */
-        class lock
+        class mutex
         {
         public:
             /**
@@ -602,7 +602,7 @@ namespace thread
                  *
                  * @param lockObj the existing lock object
                  */
-                SmartLock (lock& lockObj) : m_lock(lockObj)
+                SmartLock (mutex& lockObj) : m_lock(lockObj)
                 {}
 
                 /**
@@ -681,7 +681,7 @@ namespace thread
 
             private:
 
-            lock& m_lock;
+            mutex& m_lock;
             uint8_t m_lockType = '\0';
         };
 
