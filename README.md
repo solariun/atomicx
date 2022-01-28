@@ -79,7 +79,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 * Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads.
 
-* CoreX **DO NOT DISPLACE STACK**, yes, it will use a novel technique that allow you to use full stack memory freely, and once done, just call `Yield()` to switch the context.
+* CoreX **DOES NOT DISPLACE STACK**, yes, it will use a novel technique that allow you to use full stack memory freely, and once done, just call `Yield()` to switch the context.
     1. Allow you to use all your stack during thread execution and only switch once back to an appropriate place
     ```
         Stack memory
