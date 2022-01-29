@@ -392,6 +392,13 @@ namespace thread
         return true;
     }
 
+    void atomicx::YieldNow ()
+    {
+        m_aStatus = aTypes::now;
+        m_aSubStatus = aSubTypes::ok;
+        Yield ();
+    }
+
     atomicx_time atomicx::GetNice(void)
     {
         return m_nice;

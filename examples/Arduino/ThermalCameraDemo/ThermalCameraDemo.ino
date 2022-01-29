@@ -438,7 +438,7 @@ protected:
             {
                 vt100::ResetColor ();
                 Serial.flush ();
-                Yield(0);
+                Yield (0);
                 vt100::SetLocation (12-((i) / 8), 1);
                 Serial.print (F("\e[K"));
                 Serial.flush ();

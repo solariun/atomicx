@@ -10,6 +10,8 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+* Added `YieldNow()` the higher priority context change, it will allow other threads to work, but will, also return faster than others
+
 * **`smartSemaphore`**, Used to compliance with RII, once used in the thread context, it takes a semaphore to be initialized and expose the same methods, although it manages the local context, and ones it it gets out of context, due to leaving  {} or a functions, for example the semaphore shared context is released if ever taken during the smartSemaphore instantiated object life cycle. The same is available done for `mutex`, called `smartMutex`, follows the same principle.
 
 * **IMPORTANT**, Introducing Semaphores, `atomicx::semaphore(<How many shared>)`, now you can use methods (`acquire()` or `acquire(timeout)`) and `release()` along with `GetCount`, `GetMaxAcquired`, `GetWaitCount` and static method `GetMax` to return the maximum shared you can use to instantiate.  Examples for Arduino and PC where also introduced and fully tested.
