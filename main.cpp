@@ -73,7 +73,9 @@ public:
     {
         while (Yield ())
         {
-            if (sem.acquire (0))
+            smartSemaphore ssem (sem);
+
+            if (ssem.acquire (0))
             {
                 std::cout << GetName () << ":" << (size_t) this << " ACQUIRED, Max: " << sem.GetMaxAcquired () << ", Acquired: " << sem.GetCount () << ", Waiting: " << sem.GetWaitCount () << std::endl << std::flush;
                 std::cout << GetName () << ":" << (size_t) this << " GlobalCounter: " << nGlobalCount << std::endl << std::flush;
@@ -84,8 +86,6 @@ public:
             }
 
             Yield ();
-
-            sem.release();
         }
     }
 

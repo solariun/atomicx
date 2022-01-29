@@ -140,10 +140,12 @@ public:
     {
         size_t nCount=0;
 
-        do
+        for (;;)
         {
+            Yield ();
+
             Serial.println (F("Wait for SharedLock"));
-            SmartLock sLock(gLock);
+            smartMutex sLock(gLock);
             sLock.SharedLock ();
 
             Serial.println (F(">>> SheredLock accquired..."));
@@ -171,7 +173,7 @@ public:
             Serial.flush();
 
             Serial.println (F("SharedUlocking"));
-        } while (Yield());
+        }
     }
 
     void StackOverflowHandler(void) noexcept final
@@ -216,11 +218,13 @@ public:
     {
         size_t nCount=0;
 
-        do
+        for (;;)
         {
+            Yield();
+
             Serial.println (F("Wait for Lock"));
 
-            SmartLock sLock(gLock);
+            smartMutex sLock(gLock);
             sLock.Lock();
 
             Serial.println (F(">>> Locked..."));
@@ -265,7 +269,7 @@ public:
 
             //atomicx::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
 
-        } while (Yield ());
+        }
     }
 
     void StackOverflowHandler(void) noexcept final

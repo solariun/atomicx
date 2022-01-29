@@ -258,8 +258,10 @@ public:
         size_t nNotified=0;
         uint8_t nCurrentMotor = ((size_t)&m_motor - (size_t)&g_motors) / sizeof (struct MotorData);
 
-        do
+        for (;;)
         {
+            Yield ();
+
             size_t nMessage = 0;
 
             if (Wait (nMessage, motorsContext, (size_t) MotorStatus::request, 100))
@@ -299,7 +301,7 @@ public:
 
             m_motor.volts = static_cast<float>(random (2000, 2700)) / 100.0;
 
-        } while (true);
+        }
     }
 
     void StackOverflowHandler(void) noexcept final
@@ -372,31 +374,25 @@ public:
         Serial.println ((size_t) this);
     }
 
-    bool WaitForSerialData (atomicx_time nTime)
+    int WaitForSerialData (atomicx_time nTime)
     {
-        do
-        {
-            Yield (nTime);
+        int nChars = 0;
 
-            if (! Serial)
-            {
-                return false;
-            }
-        } while (Serial.available () == 0);
+        for (;(nChars = Serial.available ()) == 0; Yield (nTime));
 
-        return true;
+        return nChars;
     }
 
     bool ReadCommandLine (String& readCommand)
     {
         uint8_t chChar = 0;
+        int nChars = 0;
 
         readCommand = "";
 
-        while (WaitForSerialData (readCommand.length() ? 0 : 100) == true)
+        while (nChars || (nChars = WaitForSerialData (readCommand.length() ? 0 : 10)) > 0)
         {
             Serial.readBytes (&chChar, 1);
-            // Serial.printf ("Read: (%u)-> [%c]\n\r", chChar, chChar >= 32 && chChar < 127 ? chChar : '.');
 
             if (chChar == TERMINAL_BS && readCommand.length () > 0)
             {
@@ -413,9 +409,11 @@ public:
             }
             else if (chChar >= 32 && chChar < 127)
             {
-                Serial.print ((char)chChar);
+                Serial.print ((char)chChar); Serial.flush ();
                 readCommand.concat ((char) chChar);
             }
+
+            nChars--;
         }
 
         if (! Serial)
@@ -432,8 +430,10 @@ public:
     {
         size_t nNotified=0;
 
-        do
+        for (;;)
         {
+            Yield ();
+
             Serial.print (F("free:"));
             Serial.print (GetFreeRam ());
             Serial.print (F(" bytes, Robot>"));
@@ -464,7 +464,7 @@ public:
 
             Serial.flush ();
 
-        } while (Yield ());
+        };
     }
 
     void StackOverflowHandler(void) noexcept final
@@ -620,8 +620,10 @@ public:
         size_t nCount=0;
         size_t nMessage = 0;
 
-        do
+        for (;;)
         {
+            Yield ();
+
             if (Wait (nMessage, readCommand, 1, GetNice ()))
             {
                 if (nMessage == (size_t) terminalStatus::command)
@@ -661,7 +663,7 @@ public:
 
                 Serial.flush ();
             }
-        } while (true);
+        }
     }
 
     void StackOverflowHandler(void) noexcept final
@@ -681,19 +683,20 @@ void ListAllThreads()
 
     Serial.flush();
 
-    Serial.println (F("[THREAD]-----------------------------------------------"));
+    Serial.println (F("\e[K[THREAD]-----------------------------------------------"));
 
-    Serial.print (F(">>> Free RAM: ")); Serial.println (GetFreeRam());
-    Serial.print (F("AtomicX context size: ")); Serial.println (sizeof (atomicx));
-    Serial.print (F("Terminal Context:")); Serial.println (sizeof (Terminal));
-    Serial.print (F("Motor Context:")); Serial.println (sizeof (Motor));
-    Serial.print (F("System Context:")); Serial.println (sizeof (System));
+    Serial.print (F("\e[K>>> Free RAM: ")); Serial.println (GetFreeRam());
+    Serial.print (F("\e[KAtomicX context size: ")); Serial.println (sizeof (atomicx));
+    Serial.print (F("\e[KTerminal Context:")); Serial.println (sizeof (Terminal));
+    Serial.print (F("\e[KMotor Context:")); Serial.println (sizeof (Motor));
+    Serial.print (F("\e[KSystem Context:")); Serial.println (sizeof (System));
 
-    Serial.println ("---------------------------------------------------------");
+    Serial.println ("\e[K---------------------------------------------------------");
 
     for (auto& th : *(atomicx::GetCurrent()))
     {
-        Serial.print (atomicx::GetCurrent() == &th ? "*  " : "   ");
+        Serial.print (F("\e[K"));
+        Serial.print (atomicx::GetCurrent() == &th ? F("*  ") : F("   "));
         Serial.print (++nCount);
         Serial.print (F(":'"));
         Serial.print (th.GetName());
@@ -712,10 +715,10 @@ void ListAllThreads()
         Serial.print (F("\t| LstExecTime: "));
         Serial.print (th.GetLastUserExecTime());
         Serial.println (F("ms"));
-        Serial.flush();
+        Serial.flush(); Serial.flush();
     }
 
-    Serial.println ("---------------------------------------------------------");
+    Serial.println ("\e[K---------------------------------------------------------");
     Serial.flush();
 }
 

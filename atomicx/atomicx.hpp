@@ -95,16 +95,23 @@ namespace thread
                  *
                  * @note    To decrease the amount of memory, Timeout does not save
                  *          the start time.
-                 *          Special use case: if nTimeoutValue == 0, IsTimedOut is always false.
+                 *          Special use case: if nTimeoutValue == 0, IsTimedout is always false.
                  */
                 Timeout (atomicx_time nTimoutValue);
+
+                /**
+                 * @brief Set a timeout from now
+                 *
+                 * @param nTimoutValue timeout in atomicx_time
+                 */
+                void Set(atomicx_time nTimoutValue);
 
                 /**
                  * @brief Check wether it has timeout
                  *
                  * @return true if it timeout otherwise 0
                  */
-                bool IsTimedOut();
+                bool IsTimedout();
 
                 /**
                  * @brief Get the remaining time till timeout
@@ -272,7 +279,7 @@ namespace thread
             }
 
             /**
-             * @brief  Check if the referece still valis
+             * @brief  Check if the referece still valid
              *
              * @return true if the reference still not null, otherwise false
              */
@@ -608,6 +615,75 @@ namespace thread
                 size_t m_maxShared;
         };
 
+        class smartSemaphore
+        {
+            public:
+                /**
+                 * @brief Acquire and managed the semaphore
+                 *
+                 * @param sem   base semaphore
+                 */
+                smartSemaphore (atomicx::semaphore& sem);
+                smartSemaphore () = delete;
+                /**
+                 * @brief Destroy the smart Semaphore while releasing it
+                 */
+                ~smartSemaphore();
+
+                /**
+                 * @brief Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout
+                 *
+                 * @param nTimeout  default = 0 (indefinitely), How long to wait of accquiring
+                 *
+                 * @return true if it acquired the context, otherwise timeout returns false
+                 */
+                bool acquire(atomicx_time nTimeout = 0);
+
+                /**
+                 * @brief Releases one shared lock
+                 */
+                void release();
+
+                /**
+                 * @brief Get How many shared locks at a given moment
+                 *
+                 * @return size_t   Number of shared locks
+                 */
+                size_t GetCount();
+
+                /**
+                 * @brief Get how many waiting threads for accquiring context
+                 *
+                 * @return size_t   Number of waiting threads
+                 */
+                size_t GetWaitCount();
+
+                /**
+                 * @brief Get the Max Acquired Number
+                 *
+                 * @return size_t   The max acquired context number
+                 */
+                size_t GetMaxAcquired();
+
+                /**
+                 * @brief Get the maximun accquired context possible
+                 *
+                 * @return size_t
+                 */
+                static size_t GetMax ();
+
+                /**
+                 * @brief  Report if the smartSemaphore has acquired a shared context
+                 *
+                 * @return true if it has successfully acquired a shared context otherwise false
+                 */
+                bool IsAcquired ();
+
+            private:
+            semaphore& m_sem;
+            bool bAcquired = false;
+        };
+
         /**
          * ------------------------------
          * SMART LOCK IMPLEMENTATION
@@ -671,92 +747,50 @@ namespace thread
          * @brief RII compliance lock/shared lock to auto unlock on destruction
          *
          */
-        class SmartLock
+        class smartMutex
         {
             public:
-                SmartLock() = delete;
+                smartMutex() = delete;
 
                 /**
                  * @brief Construct a new Smart Lock object based a existing lock
                  *
                  * @param lockObj the existing lock object
                  */
-                SmartLock (mutex& lockObj) : m_lock(lockObj)
-                {}
+                smartMutex (mutex& lockObj);
 
                 /**
                  * @brief Destroy and release the smart lock taken
                  */
-                ~SmartLock()
-                {
-                    switch (m_lockType)
-                    {
-                        case 'L':
-                            m_lock.Unlock();
-                            break;
-                        case 'S':
-                            m_lock.SharedUnlock();
-                            break;
-                    }
-                }
+                ~smartMutex();
 
                 /**
                  * @brief Accquire a SharedLock
                  *
                  * @return true if accquired, false if another accquisition was already done
                  */
-                bool SharedLock()
-                {
-                    bool bRet = false;
-
-                    if (m_lockType == '\0')
-                    {
-                        m_lock.SharedLock();
-                        m_lockType = 'S';
-                        bRet = true;
-                    }
-
-                    return bRet;
-                }
+                bool SharedLock();
 
                 /**
                  * @brief Accquire a exclusive Lock
                  *
                  * @return true if accquired, false if another accquisition was already done
                  */
-                bool Lock()
-                {
-                    bool bRet = false;
-
-                    if (m_lockType == '\0')
-                    {
-                        m_lock.Lock();
-                        m_lockType = 'L';
-                        bRet = true;
-                    }
-
-                    return bRet;
-                }
+                bool Lock();
 
                 /**
                  * @brief Check how many shared locks are accquired
                  *
                  * @return size_t   Number of threads holding shared locks
                  */
-                size_t IsShared()
-                {
-                    return m_lock.IsShared();
-                }
+                size_t IsShared();
 
                 /**
                  * @brief Check if a exclusive lock has been already accquired
                  *
                  * @return true if yes, otherwise false
                  */
-                bool IsLocked()
-                {
-                    return m_lock.IsLocked();
-                }
+                bool IsLocked();
 
             private:
 
@@ -881,8 +915,7 @@ namespace thread
          * @tparam T Stack memory page type
          * @tparam N Stack memory page size
          */
-        template<typename T, size_t N>
-        atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
+        template<typename T, size_t N> atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
         {
             m_flags.autoStack = false;
 
@@ -1061,7 +1094,7 @@ namespace thread
         {
             Timeout timeout (waitFor);
 
-            while ((waitFor == 0 || timeout.IsTimedOut () == false) && IsWaiting(refVar, nTag, hasAtleast) == false)
+            while ((waitFor == 0 || timeout.IsTimedout () == false) && IsWaiting(refVar, nTag, hasAtleast) == false)
             {
                 SetWaitParammeters (refVar, nTag, aSubTypes::look);
 
@@ -1081,7 +1114,7 @@ namespace thread
                 }
             }
 
-            return (timeout.IsTimedOut ()) ? false : true;
+            return (timeout.IsTimedout ()) ? false : true;
         }
 
         /**
