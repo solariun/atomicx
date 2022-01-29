@@ -31,6 +31,57 @@ namespace thread
     static jmp_buf ms_joinContext{};
     static atomicx* ms_pCurrent=nullptr;
 
+    atomicx::semaphore::semaphore(size_t nMaxShared) : m_maxShared(nMaxShared)
+    {
+    }
+
+    size_t atomicx::semaphore::GetMax ()
+    {
+        return (size_t) ~0;
+    }
+
+    bool atomicx::semaphore::acquire(atomicx_time nTimeout)
+    {
+        Timeout timeout(nTimeout);
+
+        while (m_counter >= m_maxShared)
+        {
+            if (timeout.IsTimedOut () || GetCurrent()->Wait (*this, 1, timeout.GetRemaining()) == false)
+            {
+                return false;
+            }
+        }
+
+        m_counter++;
+
+        return true;
+    }
+
+    void atomicx::semaphore::release()
+    {
+        if (m_counter)
+        {
+            m_counter --;
+
+            GetCurrent()->Notify (*this, 1, NotifyType::one);
+        }
+    }
+
+    size_t atomicx::semaphore::GetCount ()
+    {
+        return m_counter;
+    }
+
+    size_t atomicx::semaphore::GetMaxAcquired ()
+    {
+        return m_maxShared;
+    }
+
+    size_t atomicx::semaphore::GetWaitCount ()
+    {
+        return GetCurrent()->HasWaitings (*this, 1);
+    }
+
     atomicx::Timeout::Timeout (atomicx_time nTimeoutValue) : m_timeoutValue (0)
     {
         m_timeoutValue = nTimeoutValue ? nTimeoutValue + Atomicx_GetTick () : 0;
