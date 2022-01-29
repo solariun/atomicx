@@ -10,6 +10,8 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+* **IMPORTANT**, Introducing Semaphores, `atomicx::semaphore(<How many shared>)`, now you can use methods (`acquire()` or `acquire(timeout)`) and `release()` along with `GetCount`, `GetMaxAcquired`, `GetWaitCount` and static method `GetMax` to return the maximum shared you can use to instantiate.  Examples for Arduino and PC where also introduced and fully tested.
+
 * Introducing `atomicx::Timeout`, this will help tracking a timeout over time, using methods `IsTimedOut` and `GetRemaining` and `GetDurationSince`. Special use case, if the timeout value is zero, IsTimedOut will always return false.
 
 * **IMPORTAT NOTIFICATION** `atomicx::lock` has been renamed to `atomicx::mutex` for consistency, all methods are the same.

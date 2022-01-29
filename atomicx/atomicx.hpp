@@ -546,6 +546,69 @@ namespace thread
         };
 
         /**
+         * --------------------------------
+         * SEMAPHORES IMPLEMENTATION
+         * --------------------------------
+         */
+
+        class semaphore
+        {
+            public:
+                /**
+                 * @brief Construct a new semaphore with MaxShared allowed
+                 *
+                 * @param nMaxShred     Max shared lock
+                 */
+                semaphore(size_t nMaxShared);
+
+                /**
+                 * @brief Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout
+                 *
+                 * @param nTimeout  default = 0 (indefinitely), How long to wait of accquiring
+                 *
+                 * @return true if it acquired the context, otherwise timeout returns false
+                 */
+                bool acquire(atomicx_time nTimeout = 0);
+
+                /**
+                 * @brief Releases one shared lock
+                 */
+                void release();
+
+                /**
+                 * @brief Get How many shared locks at a given moment
+                 *
+                 * @return size_t   Number of shared locks
+                 */
+                size_t GetCount();
+
+                /**
+                 * @brief Get how many waiting threads for accquiring context
+                 *
+                 * @return size_t   Number of waiting threads
+                 */
+                size_t GetWaitCount();
+
+                /**
+                 * @brief Get the Max Acquired Number
+                 *
+                 * @return size_t   The max acquired context number
+                 */
+                size_t GetMaxAcquired();
+
+                /**
+                 * @brief Get the maximun accquired context possible
+                 *
+                 * @return size_t
+                 */
+                static size_t GetMax ();
+
+            private:
+                size_t m_counter=0;
+                size_t m_maxShared;
+        };
+
+        /**
          * ------------------------------
          * SMART LOCK IMPLEMENTATION
          * ------------------------------
@@ -906,7 +969,7 @@ namespace thread
          * @tparam T        Type of the reference pointer
          * @param nMessage  The size_t message to be sent
          * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param nTag      The size_t tag that will give meaning to the notification
          * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
          *
@@ -945,7 +1008,7 @@ namespace thread
          *
          * @tparam T        Type of the reference pointer
          * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means wait all refVar regardless
+         * @param nTag      The size_t tag that will give meaning to the notification
          *
          * @return true     if at least one got notified, otherwise false.
          */

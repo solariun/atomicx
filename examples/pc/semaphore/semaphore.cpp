@@ -47,7 +47,6 @@ void Atomicx_SleepTick(atomicx_time nSleep)
     usleep ((useconds_t)nSleep * 1000);
 }
 
-atomicx::queue<size_t>q(5);
 size_t nGlobalCount = 0;
 
 atomicx::semaphore sem(2);
@@ -159,22 +158,6 @@ ThreadConsummer e1(500, "Consumer 1");
 
 int main()
 {
-    q.PushBack(1);
-    q.PushBack(2);
-    q.PushBack(3);
-    q.PushBack(4);
-    q.PushBack(5);
-    q.PushBack(6);
-    q.PushBack(7);
-    q.PushBack(8);
-
-    q.PushFront(-1);
-    q.PushFront(-2);
-    q.PushFront(-3);
-    q.PushFront(-5);
-
-   // while (q.GetSize()) std::cout << "push: " << q.pop() << std::endl;
-
 
     ThreadConsummer e2(500, "Consumer 2");
     ThreadConsummer e3(500, "Consumer 3");
