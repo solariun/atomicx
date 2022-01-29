@@ -980,6 +980,11 @@ namespace thread
          */
         size_t GetStackIncreasePace(void);
 
+         /**
+         * @brief Trigger a high priority NOW, caution it will always execute before normal yield.
+         */
+        void YieldNow (void);
+
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */

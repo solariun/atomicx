@@ -218,7 +218,7 @@ void MoveMotor (struct MotorData& motor, size_t nDistance)
 
     while (nDistance--)
     {
-        atomicx::GetCurrent()->Yield(10);
+        atomicx::GetCurrent()->Yield (1);
     }
 }
 
@@ -374,11 +374,11 @@ public:
         Serial.println ((size_t) this);
     }
 
-    int WaitForSerialData (atomicx_time nTime)
+    int WaitForSerialData ()
     {
         int nChars = 0;
 
-        for (;(nChars = Serial.available ()) == 0; Yield (nTime));
+        for (;(nChars = Serial.available ()) == 0; YieldNow ());
 
         return nChars;
     }
@@ -390,7 +390,7 @@ public:
 
         readCommand = "";
 
-        while (nChars || (nChars = WaitForSerialData (readCommand.length() ? 0 : 1)) > 0)
+        while (nChars || (nChars = WaitForSerialData ()) > 0)
         {
             chChar = Serial.read ();
 
