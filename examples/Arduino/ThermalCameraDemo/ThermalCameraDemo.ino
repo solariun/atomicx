@@ -304,7 +304,7 @@ public:
 
             nIndex = (int)nIndex + 1;
 
-            Yield (0);
+            Yield (5);
         }
 
         nIndex = (int)nIndex - (nCount - (nSpeed / 8));
@@ -438,7 +438,7 @@ protected:
             {
                 vt100::ResetColor ();
                 Serial.flush ();
-                Yield (0);
+                Yield (1);
                 vt100::SetLocation (12-((i) / 8), 1);
                 Serial.print (F("\e[K"));
                 Serial.flush ();
