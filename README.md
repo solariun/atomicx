@@ -10,9 +10,11 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+* **`smartSemaphore`**, Used to compliance with RII, once used in the thread context, it takes a semaphore to be initialized and expose the same methods, although it manages the local context, and ones it it gets out of context, due to leaving  {} or a functions, for example the semaphore shared context is released if ever taken during the smartSemaphore instantiated object life cycle. The same is available done for `mutex`, called `smartMutex`, follows the same principle.
+
 * **IMPORTANT**, Introducing Semaphores, `atomicx::semaphore(<How many shared>)`, now you can use methods (`acquire()` or `acquire(timeout)`) and `release()` along with `GetCount`, `GetMaxAcquired`, `GetWaitCount` and static method `GetMax` to return the maximum shared you can use to instantiate.  Examples for Arduino and PC where also introduced and fully tested.
 
-* Introducing `atomicx::Timeout`, this will help tracking a timeout over time, using methods `IsTimedOut` and `GetRemaining` and `GetDurationSince`. Special use case, if the timeout value is zero, IsTimedOut will always return false.
+* Introducing `atomicx::Timeout`, this will help tracking a timeout over time, using methods `IsTimedout` and `GetRemaining` and `GetDurationSince`. Special use case, if the timeout value is zero, IsTimedout will always return false.
 
 * **IMPORTAT NOTIFICATION** `atomicx::lock` has been renamed to `atomicx::mutex` for consistency, all methods are the same.
 
@@ -67,7 +69,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 * `finish()` method will be call every time `run()` is returned, this allow special cases like eventual threads to self-destroy itself, otherwise the object would be only a memory leak.... see examples on `main.cpp`
 
-* `SmartLock` RAII compliance, allow mutex or shared mutex to be auto release on object destruction.
+* `smartMutex` RAII compliance, allow mutex or shared mutex to be auto release on object destruction.
 
 * **IMPORTANT** Now Notifications (Wait/Notify) can be timedout. if Tick based time is given, the waiting procedure will only stay blocked during it. (NO SPIN LOCK, REAL STATE BLOCK)
 * **IMPORTANT** `LookForWaitings` block for timeout time will a wait for specific refVar/tag is available, otherwise timeout, can be used sync wait and notify availability

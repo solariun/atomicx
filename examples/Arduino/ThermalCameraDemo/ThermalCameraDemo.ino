@@ -72,9 +72,6 @@ namespace util
 
         if (! Serial)
         {
-            // Initialize serial and wait for port to open:
-            Serial.begin (230400);
-            //Serial.begin (115200);
 
             // Wait serial to proper start.
             while (! Serial);
@@ -110,6 +107,7 @@ namespace vt100
         Serial.print (nX);
         Serial.print (F("H"));
 #endif
+        Serial.flush ();
     }
 
     // works with 256 colors
@@ -126,31 +124,32 @@ namespace vt100
         Serial.print (nBgColor + 40);
         Serial.print (F("m"));
 #endif
+        Serial.flush ();
     }
 
     void ResetColor ()
     {
-        Serial.print (F("\033[0m"));
+        Serial.print (F("\033[0m")); Serial.flush ();
     }
 
     void HideCursor ()
     {
-        Serial.print (F("\033[?25l"));
+        Serial.print (F("\033[?25l")); Serial.flush ();
     }
 
     void ShowCursor ()
     {
-        Serial.print (F("\033[?25h"));
+        Serial.print (F("\033[?25h")); Serial.flush ();
     }
 
     void ClearConsole ()
     {
-        Serial.print (F("\033[2J"));
+        Serial.print (F("\033[2J")); Serial.flush ();
     }
 
     void ReverseColor ()
     {
-        Serial.print (F("\033[7m"));
+        Serial.print (F("\033[7m")); Serial.flush ();
     }
 }
 
@@ -227,7 +226,7 @@ protected:
     {
         begin();
 
-        while (true)
+        for(;;)
         {
             if (! show (strMatrixText.c_str(), strMatrixText.length()))
             {
@@ -313,7 +312,7 @@ public:
         return true;
     }
 private:
-    uint8_t m_stack [80]={};
+    uint8_t m_stack [65]={};
 
 } Matrix (10);
 
@@ -374,8 +373,10 @@ protected:
     {
         begin();
 
-        do
+        for (;;)
         {
+            Yield ();
+
             // read all the pixels
             amg.readPixels (pixels);
 
@@ -391,7 +392,7 @@ protected:
 
             SyncNotify (termCmds, 1, 1000);
 
-        } while (Yield ());
+        }
     }
 
     void StackOverflowHandler(void) noexcept override
@@ -426,26 +427,37 @@ public:
 protected:
     void PrintThermalImage (float& fMin, float& fMax)
     {
-        vt100::SetLocation(12, 1);
+        vt100::SetLocation(12, 1); Serial.print (F("\e[K"));
 
         for (int i = 0; i < AMG88xx_PIXEL_ARRAY_SIZE; i++)
         {
             snprintf (szPixel, sizeof (szPixel)-1, "\033[48;5;%um  ", map (pixels[i], fMin, fMax, 232, 255));
             Serial.print (szPixel); Serial.flush ();
 
-            if ((i + 1) % 8 == 0) { vt100::ResetColor ();  Serial.flush (); Yield(0); vt100::SetLocation (12-((i) / 8), 1);}
+            if ((i + 1) % 8 == 0)
+            {
+                vt100::ResetColor ();
+                Serial.flush ();
+                Yield(0);
+                vt100::SetLocation (12-((i) / 8), 1);
+                Serial.print (F("\e[K"));
+                Serial.flush ();
+            }
         }
 
         vt100::ResetColor ();
+        Serial.flush ();
     }
 
     void run (void) noexcept override
     {
-        while (Yield(0))
+        for (;;)
         {
+            Yield(0);
+
             if (Wait (termCmds, 1, 100))
             {
-                vt100::ResetColor();
+                vt100::ResetColor(); Serial.flush ();
 
                 if (termCmds == TermCommands::ThermalCam_Update)
                 {
@@ -460,15 +472,18 @@ protected:
                     Serial.print (F("c, Max:"));
                     Serial.print (fMax);
                     Serial.print (F("c"));
+                    Serial.flush ();
+                    Serial.flush ();
                 }
                 else if (termCmds == TermCommands::ThreadList_Update)
                 {
                     vt100::SetLocation(14,1);
                     ListAllThreads ();
                 }
-
-                Serial.flush ();
             }
+
+            Serial.flush ();
+            Serial.flush ();
         }
     }
 
@@ -511,8 +526,10 @@ protected:
 
         Matrix.SetSpeed (3);
 
-        while (Yield())
+        for(;;)
         {
+            Yield ();
+
             if (Wait (sysCmds, 1, 50))
             {
                 if (sysCmds == SysCommands::Matrix_Ready)
@@ -548,6 +565,7 @@ protected:
                     nScrollStage++;
                 }
             }
+
             if ((GetCurrentTick () - last) > 1000)
             {
                 termCmds = TermCommands::ThreadList_Update;
@@ -571,20 +589,20 @@ void ListAllThreads()
 
     Serial.flush();
 
-    Serial.println (F("[THREAD]-----------------------------------------------"));
+    Serial.println (F("\e[K[THREAD]-----------------------------------------------"));
 
-    Serial.print (F(">>> Free RAM: ")); Serial.println (util::GetFreeRam());
-    Serial.print (F("AtomicX context size: ")); Serial.println (sizeof (thread::atomicx));
-    Serial.print (F("System Context:")); Serial.println (sizeof (System));
-    Serial.print (F("Thermal Context:")); Serial.println (sizeof (ThermalCam));
-    Serial.print (F("Terminal Context:")); Serial.println (sizeof (Terminal));
+    Serial.print (F("\e[K>>> Free RAM: ")); Serial.println (util::GetFreeRam());
+    Serial.print (F("\e[KAtomicX context size: ")); Serial.println (sizeof (thread::atomicx));
+    Serial.print (F("\e[KSystem Context:")); Serial.println (sizeof (System));
+    Serial.print (F("\e[KThermal Context:")); Serial.println (sizeof (ThermalCam));
+    Serial.print (F("\e[KTerminal Context:")); Serial.println (sizeof (Terminal));
 
-    Serial.println ("---------------------------------------------------------");
+    Serial.println ("\e[K---------------------------------------------------------");
 
     for (auto& th : *(thread::atomicx::GetCurrent()))
     {
         Serial.print (F("\e[K"));
-        Serial.print (thread::atomicx::GetCurrent() == &th ? "*  " : "   ");
+        Serial.print (thread::atomicx::GetCurrent() == &th ? F("*  ") : F("   "));
         Serial.print (++nCount);
         Serial.print (F(":'"));
         Serial.print (th.GetName());
@@ -593,7 +611,6 @@ void ListAllThreads()
         Serial.print (F("\t| Nice: "));
         Serial.print (th.GetNice());
         Serial.print (F("\t| Stack: "));
-        Serial.print ((char) th.IsStackSelfManaged () ? 'A' : ' ');
         Serial.print (th.GetStackSize());
         Serial.print ("\t| UsedStack: ");
         Serial.print (th.GetUsedStackSize());
@@ -601,15 +618,15 @@ void ListAllThreads()
         Serial.print (th.GetStatus());
         Serial.print (F("\t| SStat: "));
         Serial.print (th.GetSubStatus());
-        Serial.print (F("\t| execT: "));
+        Serial.print (F("\t| LstExecTime: "));
         Serial.print (th.GetLastUserExecTime());
         Serial.println (F("ms"));
-
-        Serial.flush();
+        Serial.flush(); Serial.flush();
     }
 
-    Serial.println ("---------------------------------------------------------");
-    Serial.flush();
+    Serial.println ("\e[K---------------------------------------------------------");
+    Serial.flush(); Serial.flush();
+
 }
 
 void setup()

@@ -46,7 +46,7 @@ namespace thread
 
         while (m_counter >= m_maxShared)
         {
-            if (timeout.IsTimedOut () || GetCurrent()->Wait (*this, 1, timeout.GetRemaining()) == false)
+            if (timeout.IsTimedout () || GetCurrent()->Wait (*this, 1, timeout.GetRemaining()) == false)
             {
                 return false;
             }
@@ -82,12 +82,68 @@ namespace thread
         return GetCurrent()->HasWaitings (*this, 1);
     }
 
+    // Smart Semaphore, manages the semaphore com comply with RII
+    atomicx::smartSemaphore::smartSemaphore(semaphore& sem) : m_sem(sem)
+    {}
+
+    atomicx::smartSemaphore::~smartSemaphore()
+    {
+        release ();
+    }
+
+    bool atomicx::smartSemaphore::acquire(atomicx_time nTimeout)
+    {
+        if (bAcquired == false && m_sem.acquire (nTimeout))
+        {
+            bAcquired = true;
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    void atomicx::smartSemaphore::release()
+    {
+        if (bAcquired)
+        {
+            m_sem.release ();
+        }
+    }
+
+    size_t atomicx::smartSemaphore::GetCount ()
+    {
+        return m_sem.GetCount ();
+    }
+
+    size_t atomicx::smartSemaphore::GetMaxAcquired ()
+    {
+        return m_sem.GetMaxAcquired();
+    }
+
+    size_t atomicx::smartSemaphore::GetWaitCount ()
+    {
+        return m_sem.GetWaitCount ();
+    }
+
+    bool atomicx::smartSemaphore::IsAcquired ()
+    {
+        return bAcquired;
+    }
+
     atomicx::Timeout::Timeout (atomicx_time nTimeoutValue) : m_timeoutValue (0)
+    {
+        Set (nTimeoutValue);
+    }
+
+    void atomicx::Timeout::Set(atomicx_time nTimeoutValue)
     {
         m_timeoutValue = nTimeoutValue ? nTimeoutValue + Atomicx_GetTick () : 0;
     }
 
-    bool atomicx::Timeout::IsTimedOut()
+    bool atomicx::Timeout::IsTimedout()
     {
         return (m_timeoutValue == 0 || Atomicx_GetTick () < m_timeoutValue) ? false : true;
     }
@@ -271,7 +327,6 @@ namespace thread
         volatile uint8_t nStackEnd=0;
         m_pStaskEnd = &nStackEnd;
         m_stacUsedkSize = (size_t) (m_pStaskStart - m_pStaskEnd);
-
 
         if (m_stacUsedkSize > m_stackSize || m_stack == nullptr)
         {
@@ -505,6 +560,60 @@ namespace thread
     bool atomicx::mutex::IsLocked()
     {
         return bExclusiveLock;
+    }
+
+    atomicx::smartMutex::smartMutex (mutex& lockObj) : m_lock(lockObj)
+    {}
+
+    atomicx::smartMutex::~smartMutex()
+    {
+        switch (m_lockType)
+        {
+            case 'L':
+                m_lock.Unlock();
+                break;
+            case 'S':
+                m_lock.SharedUnlock();
+                break;
+        }
+    }
+
+    bool atomicx::smartMutex::SharedLock()
+    {
+        bool bRet = false;
+
+        if (m_lockType == '\0')
+        {
+            m_lock.SharedLock();
+            m_lockType = 'S';
+            bRet = true;
+        }
+
+        return bRet;
+    }
+
+    bool atomicx::smartMutex::Lock()
+    {
+        bool bRet = false;
+
+        if (m_lockType == '\0')
+        {
+            m_lock.Lock();
+            m_lockType = 'L';
+            bRet = true;
+        }
+
+        return bRet;
+    }
+
+    size_t atomicx::smartMutex::IsShared()
+    {
+        return m_lock.IsShared();
+    }
+
+    bool atomicx::smartMutex::IsLocked()
+    {
+        return m_lock.IsLocked();
     }
 
     uint16_t atomicx::crc16(const uint8_t* pData, size_t nSize, uint16_t nCRC)

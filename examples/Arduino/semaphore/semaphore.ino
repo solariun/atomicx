@@ -15,12 +15,6 @@ using namespace thread;
 
 void ListAllThreads();
 
-size_t GetFreeRam () {
-  extern int __heap_start, *__brkval;
-  int v;
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-}
-
 atomicx_time Atomicx_GetTick(void)
 {
     return millis();
@@ -63,9 +57,13 @@ public:
     {
         bool  bTimeout = 0;
 
-        while (true)
+        for (;;)
         {
-            if ((bTimeout = sem.acquire (10000)))
+            Yield ();
+
+            smartSemaphore ssem (sem);
+
+            if ((bTimeout = ssem.acquire (1000)))
             {
                 Serial.print (GetName());
                 Serial.print (F(":"));
@@ -82,8 +80,6 @@ public:
                 Serial.print (F(" TIMEOUT"));
             }
 
-            Serial.print (F(", Ram: "));
-            Serial.print (GetFreeRam ());
             Serial.print (F(", Stack used: "));
             Serial.print (GetUsedStackSize());
             Serial.print (F(", Max:"));
@@ -98,12 +94,7 @@ public:
 
             Serial.flush();
 
-            Yield (GetNice ());
-
-            if (bTimeout == true)
-            {
-                sem.release ();
-            }
+            Yield ();
         }
     }
 
@@ -121,7 +112,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(20)];
+    uint8_t m_stack[::GetStackSize(30)];
 };
 
 class Producer : public atomicx
@@ -145,10 +136,13 @@ public:
 
     void run() noexcept override
     {
-
-        while (Yield ())
+        for(;;)
         {
+            Yield ();
+
             GlobalCounter++;
+
+            ListAllThreads ();
         }
     }
 
@@ -174,9 +168,7 @@ void ListAllThreads()
 
    Serial.flush();
 
-  Serial.println (F("[THREAD]-----------------------------------------------"));
-  Serial.println (GetFreeRam ());
-  Serial.println (F("---------------------------------------------------------"));
+  Serial.println (F("[Objects]-----------------------------------------------"));
 
   Serial.print (F("Sizeof Producer:"));
   Serial.println (sizeof (Producer));
@@ -184,7 +176,7 @@ void ListAllThreads()
   Serial.print (F("Sizeof Consumer:"));
   Serial.println (sizeof (Consumer));
 
-  Serial.println (F("---------------------------------------------------------"));
+  Serial.println (F("[THREAD]-----------------------------------------------"));
 
   for (auto& th : *(atomicx::GetCurrent()))
   {
