@@ -390,9 +390,9 @@ public:
 
         readCommand = "";
 
-        while (nChars || (nChars = WaitForSerialData (readCommand.length() ? 0 : 10)) > 0)
+        while (nChars || (nChars = WaitForSerialData (readCommand.length() ? 0 : 1)) > 0)
         {
-            Serial.readBytes (&chChar, 1);
+            chChar = Serial.read ();
 
             if (chChar == TERMINAL_BS && readCommand.length () > 0)
             {
@@ -409,7 +409,9 @@ public:
             }
             else if (chChar >= 32 && chChar < 127)
             {
-                Serial.print ((char)chChar); Serial.flush ();
+                Serial.print ((char)chChar);
+                Serial.flush ();
+                Serial.flush ();
                 readCommand.concat ((char) chChar);
             }
 
