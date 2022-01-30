@@ -62,15 +62,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>SelfManagedThread</Name>
-      <APILanguage>c</APILanguage>
-      <Type>cl</Type>
-      <Scope>SelfManagedThread</Scope>
-    </TokenIdentifier>
-    <Path>class_self_managed_thread.html</Path>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>thread::atomicx::semaphore</Name>
       <APILanguage>c</APILanguage>
       <Type>cl</Type>
@@ -111,24 +102,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>Thread</Name>
-      <APILanguage>c</APILanguage>
-      <Type>cl</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>ThreadConsummer</Name>
-      <APILanguage>c</APILanguage>
-      <Type>cl</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>thread::atomicx::Timeout</Name>
       <APILanguage>c</APILanguage>
       <Type>cl</Type>
@@ -145,20 +118,6 @@
       <Scope>thread</Scope>
     </TokenIdentifier>
     <Path>namespacethread.html</Path>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>md_examples_Arduino_README</Name>
-      <APILanguage>markdown</APILanguage>
-    </TokenIdentifier>
-    <Path>md_examples__arduino__r_e_a_d_m_e.html</Path>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>md_README</Name>
-      <APILanguage>markdown</APILanguage>
-    </TokenIdentifier>
-    <Path>md__r_e_a_d_m_e.html</Path>
   </Token>
   <Token>
     <TokenIdentifier>
@@ -626,72 +585,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>GetName</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>a8f43ca53185da80dbbe8c8c5497f7583</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>GetName</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>a559f2b688c4e0253ec63c96b0134c9e4</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>GetName</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>SelfManagedThread</Scope>
-    </TokenIdentifier>
-    <Path>class_self_managed_thread.html</Path>
-    <Anchor>a0ed0a8fc141fe5b3592dc334a83604ba</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>GetName</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>a559f2b688c4e0253ec63c96b0134c9e4</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>GetName</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>a8f43ca53185da80dbbe8c8c5497f7583</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>GetName</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>a559f2b688c4e0253ec63c96b0134c9e4</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>GetNext</Name>
       <APILanguage>cpp</APILanguage>
       <Type>instm</Type>
@@ -1033,16 +926,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>lock</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>econst</Type>
-      <Scope>thread::atomicx</Scope>
-    </TokenIdentifier>
-    <Path>classthread_1_1atomicx.html</Path>
-    <Anchor>a82633f5364d51f3b5a8dfed1e93007edadce7c4174ce9323904a934a486c41288</Anchor>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>Lock</Name>
       <APILanguage>cpp</APILanguage>
       <Type>instm</Type>
@@ -1062,6 +945,16 @@
     <Path>classthread_1_1atomicx_1_1smart_mutex.html</Path>
     <Anchor>a0b0904835f6dab9f1a38189e7d71f2a1</Anchor>
     <DeclaredIn>atomicx.hpp</DeclaredIn>
+  </Token>
+  <Token>
+    <TokenIdentifier>
+      <Name>lock</Name>
+      <APILanguage>cpp</APILanguage>
+      <Type>econst</Type>
+      <Scope>thread::atomicx</Scope>
+    </TokenIdentifier>
+    <Path>classthread_1_1atomicx.html</Path>
+    <Anchor>a82633f5364d51f3b5a8dfed1e93007edadce7c4174ce9323904a934a486c41288</Anchor>
   </Token>
   <Token>
     <TokenIdentifier>
@@ -1430,72 +1323,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>run</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>a24b5c7c3bdf4ecb6c2e7de8eb6584fe6</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>run</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>ab7c637c3277500601b36cebbe0341879</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>run</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>SelfManagedThread</Scope>
-    </TokenIdentifier>
-    <Path>class_self_managed_thread.html</Path>
-    <Anchor>a0cec343208a5fd0b7053173dff8f676f</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>run</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>ab7c637c3277500601b36cebbe0341879</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>run</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>a24b5c7c3bdf4ecb6c2e7de8eb6584fe6</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>run</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>ab7c637c3277500601b36cebbe0341879</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>running</Name>
       <APILanguage>cpp</APILanguage>
       <Type>econst</Type>
@@ -1547,17 +1374,6 @@
     <Path>classthread_1_1atomicx.html</Path>
     <Anchor>a4877838c0c1e38a7941f7ca86926ada9</Anchor>
     <DeclaredIn>atomicx.hpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>SelfManagedThread</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>SelfManagedThread</Scope>
-    </TokenIdentifier>
-    <Path>class_self_managed_thread.html</Path>
-    <Anchor>a2d30c45f4f0ef4fb42c217954760ace5</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
   </Token>
   <Token>
     <TokenIdentifier>
@@ -1757,72 +1573,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>StackOverflowHandler</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>a520f01bc5ae0029ca1c5726792ad2dd2</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>StackOverflowHandler</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>adde299b6fa14ff11ef4faec885b594e2</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>StackOverflowHandler</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>SelfManagedThread</Scope>
-    </TokenIdentifier>
-    <Path>class_self_managed_thread.html</Path>
-    <Anchor>a32fabc24520ab27991288c95012500fd</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>StackOverflowHandler</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>adde299b6fa14ff11ef4faec885b594e2</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>StackOverflowHandler</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>a520f01bc5ae0029ca1c5726792ad2dd2</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>StackOverflowHandler</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>adde299b6fa14ff11ef4faec885b594e2</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>start</Name>
       <APILanguage>cpp</APILanguage>
       <Type>econst</Type>
@@ -1907,83 +1657,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>Thread</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>abf713b001718a3ef105fc7e3117ea845</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>Thread</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>a783a2eaf51eca955a2047bd0c5430269</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>Thread</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>abf713b001718a3ef105fc7e3117ea845</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>ThreadConsummer</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>ac1aad1f98fc8dda927c5f9bda3955a18</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>ThreadConsummer</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>aecf65e0216a374d0e303c6214c2dfba6</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>ThreadConsummer</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>ac1aad1f98fc8dda927c5f9bda3955a18</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>ThreadConsummer</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>aecf65e0216a374d0e303c6214c2dfba6</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>timeout</Name>
       <APILanguage>cpp</APILanguage>
       <Type>econst</Type>
@@ -2027,6 +1700,26 @@
   </Token>
   <Token>
     <TokenIdentifier>
+      <Name>wait</Name>
+      <APILanguage>cpp</APILanguage>
+      <Type>econst</Type>
+      <Scope>thread::atomicx</Scope>
+    </TokenIdentifier>
+    <Path>classthread_1_1atomicx.html</Path>
+    <Anchor>a82633f5364d51f3b5a8dfed1e93007eda49256b9819abacbb8e6e031a03abe81b</Anchor>
+  </Token>
+  <Token>
+    <TokenIdentifier>
+      <Name>wait</Name>
+      <APILanguage>cpp</APILanguage>
+      <Type>econst</Type>
+      <Scope>thread::atomicx</Scope>
+    </TokenIdentifier>
+    <Path>classthread_1_1atomicx.html</Path>
+    <Anchor>ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b</Anchor>
+  </Token>
+  <Token>
+    <TokenIdentifier>
       <Name>Wait</Name>
       <APILanguage>cpp</APILanguage>
       <Type>instm</Type>
@@ -2046,26 +1739,6 @@
     <Path>classthread_1_1atomicx.html</Path>
     <Anchor>aae81685ea59341f64a4b3d8cc5886563</Anchor>
     <DeclaredIn>atomicx.hpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>wait</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>econst</Type>
-      <Scope>thread::atomicx</Scope>
-    </TokenIdentifier>
-    <Path>classthread_1_1atomicx.html</Path>
-    <Anchor>a82633f5364d51f3b5a8dfed1e93007eda49256b9819abacbb8e6e031a03abe81b</Anchor>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>wait</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>econst</Type>
-      <Scope>thread::atomicx</Scope>
-    </TokenIdentifier>
-    <Path>classthread_1_1atomicx.html</Path>
-    <Anchor>ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b</Anchor>
   </Token>
   <Token>
     <TokenIdentifier>
@@ -2124,17 +1797,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>~SelfManagedThread</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>SelfManagedThread</Scope>
-    </TokenIdentifier>
-    <Path>class_self_managed_thread.html</Path>
-    <Anchor>a138c956b6f18a2f132656682727d06e7</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>~smart_ptr</Name>
       <APILanguage>cpp</APILanguage>
       <Type>instm</Type>
@@ -2168,61 +1830,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>~Thread</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>a37d9edd3a1a776cbc27dedff949c9726</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>~Thread</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>a37d9edd3a1a776cbc27dedff949c9726</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>~Thread</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>Thread</Scope>
-    </TokenIdentifier>
-    <Path>class_thread.html</Path>
-    <Anchor>a37d9edd3a1a776cbc27dedff949c9726</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>~ThreadConsummer</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>a223ba01a7508400bd77b45a3a21165c4</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>~ThreadConsummer</Name>
-      <APILanguage>cpp</APILanguage>
-      <Type>instm</Type>
-      <Scope>ThreadConsummer</Scope>
-    </TokenIdentifier>
-    <Path>class_thread_consummer.html</Path>
-    <Anchor>a223ba01a7508400bd77b45a3a21165c4</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>ATOMIC_VERSION_LABEL</Name>
       <APILanguage>unknown</APILanguage>
       <Type>macro</Type>
@@ -2243,36 +1850,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>Atomicx_GetTick</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>acba4f7fe589a5ea034da546e90039207</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>Atomicx_GetTick</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>simple_8cpp.html</Path>
-    <Anchor>acba4f7fe589a5ea034da546e90039207</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>Atomicx_GetTick</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>acba4f7fe589a5ea034da546e90039207</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>Atomicx_SleepTick</Name>
       <APILanguage>c</APILanguage>
       <Type>func</Type>
@@ -2280,36 +1857,6 @@
     <Path>atomicx_8hpp.html</Path>
     <Anchor>a965c93519ae7ab7036d1acaae0ae025a</Anchor>
     <DeclaredIn>atomicx.hpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>Atomicx_SleepTick</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>a965c93519ae7ab7036d1acaae0ae025a</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>Atomicx_SleepTick</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>simple_8cpp.html</Path>
-    <Anchor>a965c93519ae7ab7036d1acaae0ae025a</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>Atomicx_SleepTick</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>a965c93519ae7ab7036d1acaae0ae025a</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
   </Token>
   <Token>
     <TokenIdentifier>
@@ -2343,136 +1890,6 @@
   </Token>
   <Token>
     <TokenIdentifier>
-      <Name>e1</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>a5edc6de37b435c32863ecea4b73e43c9</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>e1</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>a5edc6de37b435c32863ecea4b73e43c9</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>issue</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>_upgrade_usb_asp_8txt.html</Path>
-    <Anchor>a75f191ba2f425ac4badca959673b72f5</Anchor>
-    <DeclaredIn>UpgradeUsbAsp.txt</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>ListAllThreads</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>aa88e34678db26b5b79e0ea15fa30490e</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>ListAllThreads</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>simple_8cpp.html</Path>
-    <Anchor>aa88e34678db26b5b79e0ea15fa30490e</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>ListAllThreads</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>aa88e34678db26b5b79e0ea15fa30490e</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>main</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>ae66f6b31b5ad750f1fe042a706a4e3d4</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>main</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>simple_8cpp.html</Path>
-    <Anchor>ae66f6b31b5ad750f1fe042a706a4e3d4</Anchor>
-    <DeclaredIn>simple.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>main</Name>
-      <APILanguage>c</APILanguage>
-      <Type>func</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>ae66f6b31b5ad750f1fe042a706a4e3d4</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>nCounter</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>ae1779946c59866d03daa930a59594c23</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>nCounter</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>ae1779946c59866d03daa930a59594c23</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>nGlobalCount</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>ab2b19b7a148d8f9f02bdbef085f99406</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>nGlobalCount</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>ab2b19b7a148d8f9f02bdbef085f99406</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
       <Name>POLY</Name>
       <APILanguage>unknown</APILanguage>
       <Type>macro</Type>
@@ -2480,56 +1897,6 @@
     <Path>atomicx_8cpp.html</Path>
     <Anchor>aa55bbb692b1c5e89d3a5c3bee1ce8399</Anchor>
     <DeclaredIn>atomicx.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>q</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>a9d6fa07987dd80eb143666b0b0331396</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>sem</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>a2990a8de09ebb02bfff296045710595f</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>sem</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>a2990a8de09ebb02bfff296045710595f</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>t1</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>semaphore_8cpp.html</Path>
-    <Anchor>a9a032b59690b12747156edc534aad7bb</Anchor>
-    <DeclaredIn>semaphore.cpp</DeclaredIn>
-  </Token>
-  <Token>
-    <TokenIdentifier>
-      <Name>t1</Name>
-      <APILanguage>c</APILanguage>
-      <Type>data</Type>
-    </TokenIdentifier>
-    <Path>main_8cpp.html</Path>
-    <Anchor>a9a032b59690b12747156edc534aad7bb</Anchor>
-    <DeclaredIn>main.cpp</DeclaredIn>
   </Token>
   <Token>
     <TokenIdentifier>

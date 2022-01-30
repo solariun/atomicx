@@ -87,7 +87,7 @@
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00083}00083     \}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00084}00084 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00085}00085     \textcolor{comment}{// Smart Semaphore, manages the semaphore com comply with RII}}
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00086}\mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_afdadfb55d8eb4d4998112a66b3d29f97}{00086}}     \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_ad7207fe696a6befaadc905f7e757d90d}{atomicx::smartSemaphore::smartSemaphore}}(\mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore}{semaphore}}\& \mbox{\hyperlink{semaphore_8cpp_a2990a8de09ebb02bfff296045710595f}{sem}}) : m\_sem(\mbox{\hyperlink{semaphore_8cpp_a2990a8de09ebb02bfff296045710595f}{sem}})}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00086}\mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_afdadfb55d8eb4d4998112a66b3d29f97}{00086}}     \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_ad7207fe696a6befaadc905f7e757d90d}{atomicx::smartSemaphore::smartSemaphore}}(\mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore}{semaphore}}\& sem) : m\_sem(sem)}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00087}00087     \{\}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00088}00088 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00089}\mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a95216c06f59aedcda133b31793142f26}{00089}}     \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a95216c06f59aedcda133b31793142f26}{atomicx::smartSemaphore::\string~smartSemaphore}}()}
@@ -747,7 +747,7 @@
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00743}00743 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00744}\mbox{\hyperlink{classthread_1_1atomicx_a5b238f8831ae0cb3a53c685123e5a5d8}{00744}}     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classthread_1_1atomicx_a5b238f8831ae0cb3a53c685123e5a5d8}{atomicx::SafePublish}} (\textcolor{keyword}{const} \textcolor{keywordtype}{char}* pszKey, \textcolor{keywordtype}{size\_t} nKeyLenght, \textcolor{keyword}{const} \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}} message)}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00745}00745     \{}
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00746}00746         \textcolor{keywordtype}{size\_t} \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}=0;}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00746}00746         \textcolor{keywordtype}{size\_t} nCounter=0;}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00747}00747 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00748}00748         \textcolor{keywordflow}{if} (pszKey != \textcolor{keyword}{nullptr} \&\& nKeyLenght > 0)}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00749}00749         \{}
@@ -757,7 +757,7 @@
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00753}00753             \{}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00754}00754                 \textcolor{keywordflow}{if} (nTagId == thr.m\_TopicId)}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00755}00755                 \{}
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00756}00756                     \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}++;}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00756}00756                     nCounter++;}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00757}00757 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00758}00758                     thr.m\_aStatus = \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda97bc592b27a9ada2d9a4bb418ed0ebed}{aTypes::now}};}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00759}00759                     thr.m\_TopicId = 0;}
@@ -768,14 +768,14 @@
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00764}00764 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00765}00765                 \textcolor{keywordflow}{if} (thr.IsSubscribed(pszKey, nKeyLenght))}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00766}00766                 \{}
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00767}00767                     \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}++;}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00767}00767                     nCounter++;}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00768}00768 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00769}00769                     thr.BrokerHandler(pszKey, nKeyLenght, thr.m\_lockMessage);}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00770}00770                 \}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00771}00771             \}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00772}00772         \}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00773}00773 }
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00774}00774         \textcolor{keywordflow}{return} \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}} ? true : \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00774}00774         \textcolor{keywordflow}{return} nCounter ? true : \textcolor{keyword}{false};}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00775}00775     \}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00776}00776 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00777}\mbox{\hyperlink{classthread_1_1atomicx_afc67058a34cd39f3f853a7f9a2ae84fd}{00777}}     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classthread_1_1atomicx_afc67058a34cd39f3f853a7f9a2ae84fd}{atomicx::Publish}} (\textcolor{keyword}{const} \textcolor{keywordtype}{char}* pszKey, \textcolor{keywordtype}{size\_t} nKeyLenght, \textcolor{keyword}{const} \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}} message)}
@@ -789,7 +789,7 @@
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00785}00785 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00786}\mbox{\hyperlink{classthread_1_1atomicx_a4877838c0c1e38a7941f7ca86926ada9}{00786}}     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classthread_1_1atomicx_a5b238f8831ae0cb3a53c685123e5a5d8}{atomicx::SafePublish}} (\textcolor{keyword}{const} \textcolor{keywordtype}{char}* pszKey, \textcolor{keywordtype}{size\_t} nKeyLenght)}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00787}00787     \{}
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00788}00788         \textcolor{keywordtype}{size\_t} \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}=0;}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00788}00788         \textcolor{keywordtype}{size\_t} nCounter=0;}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00789}00789 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00790}00790         \textcolor{keywordflow}{if} (pszKey != \textcolor{keyword}{nullptr} \&\& nKeyLenght > 0)}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00791}00791         \{}
@@ -799,7 +799,7 @@
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00795}00795             \{}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00796}00796                 \textcolor{keywordflow}{if} (nTagId == thr.m\_TopicId)}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00797}00797                 \{}
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00798}00798                     \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}++;}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00798}00798                     nCounter++;}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00799}00799 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00800}00800                     thr.m\_aStatus = \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda97bc592b27a9ada2d9a4bb418ed0ebed}{aTypes::now}};}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00801}00801                     thr.m\_TopicId = 0;}
@@ -809,7 +809,7 @@
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00805}00805 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00806}00806                 \textcolor{keywordflow}{if} (thr.IsSubscribed(pszKey, nKeyLenght))}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00807}00807                 \{}
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00808}00808                     \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}++;}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00808}00808                     nCounter++;}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00809}00809 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00810}00810                     thr.m\_lockMessage = \{0,0\};}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00811}00811                     thr.BrokerHandler(pszKey, nKeyLenght, thr.m\_lockMessage);}
@@ -817,10 +817,10 @@
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00813}00813 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00814}00814             \}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00815}00815 }
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00816}00816             \textcolor{keywordflow}{if} (\mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}) \mbox{\hyperlink{classthread_1_1atomicx_ab3dd1245396fc470b7b2c6a31a4455ca}{Yield}}();}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00816}00816             \textcolor{keywordflow}{if} (nCounter) \mbox{\hyperlink{classthread_1_1atomicx_ab3dd1245396fc470b7b2c6a31a4455ca}{Yield}}();}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00817}00817         \}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00818}00818 }
-\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00819}00819         \textcolor{keywordflow}{return} \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}} ? true : \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00819}00819         \textcolor{keywordflow}{return} nCounter ? true : \textcolor{keyword}{false};}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00820}00820     \}}
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00821}00821 }
 \DoxyCodeLine{\Hypertarget{atomicx_8cpp_source_l00822}\mbox{\hyperlink{classthread_1_1atomicx_a686358de14f2be34e688ee22dd5bc5b8}{00822}}     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classthread_1_1atomicx_afc67058a34cd39f3f853a7f9a2ae84fd}{atomicx::Publish}} (\textcolor{keyword}{const} \textcolor{keywordtype}{char}* pszKey, \textcolor{keywordtype}{size\_t} nKeyLenght)}

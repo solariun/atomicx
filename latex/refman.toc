@@ -1,0 +1,211 @@
+\@ifundefined {etoctocstyle}{\let \etoc@startlocaltoc \@gobble \let \etoc@settocdepth \@gobble \let \etoc@depthtag \@gobble \let \etoc@setlocaltop \@gobble }{}
+\contentsline {chapter}{\numberline {1}Namespace Index}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Namespace List}{1}{section.1.1}%
+\contentsline {chapter}{\numberline {2}Data Structure Index}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Data Structures}{3}{section.2.1}%
+\contentsline {chapter}{\numberline {3}File Index}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}File List}{5}{section.3.1}%
+\contentsline {chapter}{\numberline {4}Namespace Documentation}{7}{chapter.4}%
+\contentsline {section}{\numberline {4.1}thread Namespace Reference}{7}{section.4.1}%
+\contentsline {chapter}{\numberline {5}Data Structure Documentation}{9}{chapter.5}%
+\contentsline {section}{\numberline {5.1}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::aiterator Class Reference}{9}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Detailed Description}{9}{subsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.1.1}ITERATOR FOR THREAD LISTING}{9}{subsubsection.5.1.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Constructor \& Destructor Documentation}{9}{subsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.2.1}aiterator()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{9}{subsubsection.5.1.2.1}%
+\contentsline {subsubsection}{\numberline {5.1.2.2}aiterator()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{9}{subsubsection.5.1.2.2}%
+\contentsline {subsection}{\numberline {5.1.3}Member Function Documentation}{10}{subsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.3.1}operator$\ast $()}{10}{subsubsection.5.1.3.1}%
+\contentsline {subsubsection}{\numberline {5.1.3.2}operator++()}{10}{subsubsection.5.1.3.2}%
+\contentsline {subsubsection}{\numberline {5.1.3.3}operator-\/$>$()}{10}{subsubsection.5.1.3.3}%
+\contentsline {subsection}{\numberline {5.1.4}Friends And Related Function Documentation}{10}{subsection.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.4.1}operator"!=}{10}{subsubsection.5.1.4.1}%
+\contentsline {subsubsection}{\numberline {5.1.4.2}operator==}{10}{subsubsection.5.1.4.2}%
+\contentsline {section}{\numberline {5.2}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx Class Reference}{10}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Detailed Description}{14}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Member Enumeration Documentation}{14}{subsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.2.1}aSubTypes}{14}{subsubsection.5.2.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2.2}aTypes}{14}{subsubsection.5.2.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.2.3}STATE MACHINE TYPES}{14}{subsubsection.5.2.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.2.4}NotifyType}{15}{subsubsection.5.2.2.4}%
+\contentsline {subsection}{\numberline {5.2.3}Constructor \& Destructor Documentation}{15}{subsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.3.1}$\sim $atomicx()}{15}{subsubsection.5.2.3.1}%
+\contentsline {subsubsection}{\numberline {5.2.3.2}atomicx()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{15}{subsubsection.5.2.3.2}%
+\contentsline {subsubsection}{\numberline {5.2.3.3}atomicx()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{15}{subsubsection.5.2.3.3}%
+\contentsline {subsection}{\numberline {5.2.4}Member Function Documentation}{16}{subsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.4.1}begin()}{16}{subsubsection.5.2.4.1}%
+\contentsline {subsubsection}{\numberline {5.2.4.2}BrokerHandler()}{16}{subsubsection.5.2.4.2}%
+\contentsline {subsubsection}{\numberline {5.2.4.3}end()}{17}{subsubsection.5.2.4.3}%
+\contentsline {subsubsection}{\numberline {5.2.4.4}finish()}{17}{subsubsection.5.2.4.4}%
+\contentsline {subsubsection}{\numberline {5.2.4.5}GetCurrent()}{17}{subsubsection.5.2.4.5}%
+\contentsline {subsubsection}{\numberline {5.2.4.6}GetCurrentTick()}{17}{subsubsection.5.2.4.6}%
+\contentsline {subsubsection}{\numberline {5.2.4.7}GetID()}{18}{subsubsection.5.2.4.7}%
+\contentsline {subsubsection}{\numberline {5.2.4.8}GetLastUserExecTime()}{18}{subsubsection.5.2.4.8}%
+\contentsline {subsubsection}{\numberline {5.2.4.9}GetName()}{18}{subsubsection.5.2.4.9}%
+\contentsline {subsubsection}{\numberline {5.2.4.10}GetNice()}{18}{subsubsection.5.2.4.10}%
+\contentsline {subsubsection}{\numberline {5.2.4.11}GetReferenceLock()}{18}{subsubsection.5.2.4.11}%
+\contentsline {subsubsection}{\numberline {5.2.4.12}GetStackIncreasePace()}{18}{subsubsection.5.2.4.12}%
+\contentsline {subsubsection}{\numberline {5.2.4.13}GetStackSize()}{19}{subsubsection.5.2.4.13}%
+\contentsline {subsubsection}{\numberline {5.2.4.14}GetStatus()}{19}{subsubsection.5.2.4.14}%
+\contentsline {subsubsection}{\numberline {5.2.4.15}GetSubStatus()}{19}{subsubsection.5.2.4.15}%
+\contentsline {subsubsection}{\numberline {5.2.4.16}GetTagLock()}{19}{subsubsection.5.2.4.16}%
+\contentsline {subsubsection}{\numberline {5.2.4.17}GetTargetTime()}{19}{subsubsection.5.2.4.17}%
+\contentsline {subsubsection}{\numberline {5.2.4.18}GetTopicID()}{20}{subsubsection.5.2.4.18}%
+\contentsline {subsubsection}{\numberline {5.2.4.19}GetUsedStackSize()}{20}{subsubsection.5.2.4.19}%
+\contentsline {subsubsection}{\numberline {5.2.4.20}HasSubscriptions()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{20}{subsubsection.5.2.4.20}%
+\contentsline {subsubsection}{\numberline {5.2.4.21}HasSubscriptions()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{21}{subsubsection.5.2.4.21}%
+\contentsline {subsubsection}{\numberline {5.2.4.22}HasWaitings()}{21}{subsubsection.5.2.4.22}%
+\contentsline {subsubsection}{\numberline {5.2.4.23}IsDynamicNiceOn()}{22}{subsubsection.5.2.4.23}%
+\contentsline {subsubsection}{\numberline {5.2.4.24}IsStackSelfManaged()}{23}{subsubsection.5.2.4.24}%
+\contentsline {subsubsection}{\numberline {5.2.4.25}IsSubscribed()}{23}{subsubsection.5.2.4.25}%
+\contentsline {subsubsection}{\numberline {5.2.4.26}IsWaiting()}{23}{subsubsection.5.2.4.26}%
+\contentsline {subsubsection}{\numberline {5.2.4.27}LookForWaitings()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{25}{subsubsection.5.2.4.27}%
+\contentsline {subsubsection}{\numberline {5.2.4.28}LookForWaitings()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{26}{subsubsection.5.2.4.28}%
+\contentsline {subsubsection}{\numberline {5.2.4.29}SMART WAIT/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}NOTIFY IMPLEMENTATION}{26}{subsubsection.5.2.4.29}%
+\contentsline {subsubsection}{\numberline {5.2.4.30}Notify()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{27}{subsubsection.5.2.4.30}%
+\contentsline {subsubsection}{\numberline {5.2.4.31}Notify()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{27}{subsubsection.5.2.4.31}%
+\contentsline {subsubsection}{\numberline {5.2.4.32}Notify()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{29}{subsubsection.5.2.4.32}%
+\contentsline {subsubsection}{\numberline {5.2.4.33}Publish()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{31}{subsubsection.5.2.4.33}%
+\contentsline {subsubsection}{\numberline {5.2.4.34}Publish()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{32}{subsubsection.5.2.4.34}%
+\contentsline {subsubsection}{\numberline {5.2.4.35}run()}{32}{subsubsection.5.2.4.35}%
+\contentsline {subsubsection}{\numberline {5.2.4.36}SafeNotify()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{32}{subsubsection.5.2.4.36}%
+\contentsline {subsubsection}{\numberline {5.2.4.37}SafeNotify()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{34}{subsubsection.5.2.4.37}%
+\contentsline {subsubsection}{\numberline {5.2.4.38}SafePublish()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{36}{subsubsection.5.2.4.38}%
+\contentsline {subsubsection}{\numberline {5.2.4.39}SafePublish()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{37}{subsubsection.5.2.4.39}%
+\contentsline {subsubsection}{\numberline {5.2.4.40}SetDynamicNice()}{38}{subsubsection.5.2.4.40}%
+\contentsline {subsubsection}{\numberline {5.2.4.41}SetNice()}{38}{subsubsection.5.2.4.41}%
+\contentsline {subsubsection}{\numberline {5.2.4.42}SetStackIncreasePace()}{38}{subsubsection.5.2.4.42}%
+\contentsline {subsubsection}{\numberline {5.2.4.43}StackOverflowHandler()}{39}{subsubsection.5.2.4.43}%
+\contentsline {subsubsection}{\numberline {5.2.4.44}Start()}{39}{subsubsection.5.2.4.44}%
+\contentsline {subsubsection}{\numberline {5.2.4.45}SyncNotify()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{39}{subsubsection.5.2.4.45}%
+\contentsline {subsubsection}{\numberline {5.2.4.46}SyncNotify()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{39}{subsubsection.5.2.4.46}%
+\contentsline {subsubsection}{\numberline {5.2.4.47}SyncNotify()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{42}{subsubsection.5.2.4.47}%
+\contentsline {subsubsection}{\numberline {5.2.4.48}Wait()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{44}{subsubsection.5.2.4.48}%
+\contentsline {subsubsection}{\numberline {5.2.4.49}Wait()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{46}{subsubsection.5.2.4.49}%
+\contentsline {subsubsection}{\numberline {5.2.4.50}WaitBrokerMessage()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{48}{subsubsection.5.2.4.50}%
+\contentsline {subsubsection}{\numberline {5.2.4.51}WaitBrokerMessage()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{49}{subsubsection.5.2.4.51}%
+\contentsline {subsubsection}{\numberline {5.2.4.52}SMART BROKER IMPLEMENTATION}{49}{subsubsection.5.2.4.52}%
+\contentsline {subsubsection}{\numberline {5.2.4.53}Yield()}{49}{subsubsection.5.2.4.53}%
+\contentsline {subsubsection}{\numberline {5.2.4.54}YieldNow()}{50}{subsubsection.5.2.4.54}%
+\contentsline {subsection}{\numberline {5.2.5}Field Documentation}{50}{subsection.5.2.5}%
+\contentsline {subsubsection}{\numberline {5.2.5.1}autoStack}{50}{subsubsection.5.2.5.1}%
+\contentsline {subsubsection}{\numberline {5.2.5.2}dynamicNice}{50}{subsubsection.5.2.5.2}%
+\contentsline {section}{\numberline {5.3}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::Message Struct Reference}{50}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Detailed Description}{51}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Field Documentation}{51}{subsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.1}message}{51}{subsubsection.5.3.2.1}%
+\contentsline {subsubsection}{\numberline {5.3.2.2}tag}{51}{subsubsection.5.3.2.2}%
+\contentsline {section}{\numberline {5.4}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::mutex Class Reference}{51}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Detailed Description}{51}{subsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.1.1}SMART LOCK IMPLEMENTATION}{51}{subsubsection.5.4.1.1}%
+\contentsline {subsection}{\numberline {5.4.2}Member Function Documentation}{51}{subsection.5.4.2}%
+\contentsline {subsubsection}{\numberline {5.4.2.1}IsLocked()}{52}{subsubsection.5.4.2.1}%
+\contentsline {subsubsection}{\numberline {5.4.2.2}IsShared()}{52}{subsubsection.5.4.2.2}%
+\contentsline {subsubsection}{\numberline {5.4.2.3}Lock()}{52}{subsubsection.5.4.2.3}%
+\contentsline {subsubsection}{\numberline {5.4.2.4}SharedLock()}{52}{subsubsection.5.4.2.4}%
+\contentsline {subsubsection}{\numberline {5.4.2.5}SharedUnlock()}{52}{subsubsection.5.4.2.5}%
+\contentsline {subsubsection}{\numberline {5.4.2.6}Unlock()}{52}{subsubsection.5.4.2.6}%
+\contentsline {section}{\numberline {5.5}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::queue$<$ T $>$\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::QItem Class Reference}{53}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Detailed Description}{53}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Constructor \& Destructor Documentation}{53}{subsection.5.5.2}%
+\contentsline {subsubsection}{\numberline {5.5.2.1}QItem()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{53}{subsubsection.5.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.5.2.2}QItem()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{53}{subsubsection.5.5.2.2}%
+\contentsline {subsection}{\numberline {5.5.3}Member Function Documentation}{54}{subsection.5.5.3}%
+\contentsline {subsubsection}{\numberline {5.5.3.1}GetItem()}{54}{subsubsection.5.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.5.3.2}GetNext()}{54}{subsubsection.5.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.5.3.3}SetNext()}{54}{subsubsection.5.5.3.3}%
+\contentsline {subsection}{\numberline {5.5.4}Friends And Related Function Documentation}{54}{subsection.5.5.4}%
+\contentsline {subsubsection}{\numberline {5.5.4.1}queue}{54}{subsubsection.5.5.4.1}%
+\contentsline {section}{\numberline {5.6}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::queue$<$ T $>$ Class Template Reference}{55}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Detailed Description}{55}{subsection.5.6.1}%
+\contentsline {subsubsection}{\numberline {5.6.1.1}QUEUE FOR IPC IMPLEMENTATION}{55}{subsubsection.5.6.1.1}%
+\contentsline {subsection}{\numberline {5.6.2}Constructor \& Destructor Documentation}{55}{subsection.5.6.2}%
+\contentsline {subsubsection}{\numberline {5.6.2.1}queue()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{55}{subsubsection.5.6.2.1}%
+\contentsline {subsubsection}{\numberline {5.6.2.2}queue()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{55}{subsubsection.5.6.2.2}%
+\contentsline {subsection}{\numberline {5.6.3}Member Function Documentation}{56}{subsection.5.6.3}%
+\contentsline {subsubsection}{\numberline {5.6.3.1}GetMaxSize()}{56}{subsubsection.5.6.3.1}%
+\contentsline {subsubsection}{\numberline {5.6.3.2}GetSize()}{56}{subsubsection.5.6.3.2}%
+\contentsline {subsubsection}{\numberline {5.6.3.3}IsFull()}{56}{subsubsection.5.6.3.3}%
+\contentsline {subsubsection}{\numberline {5.6.3.4}Pop()}{56}{subsubsection.5.6.3.4}%
+\contentsline {subsubsection}{\numberline {5.6.3.5}PushBack()}{57}{subsubsection.5.6.3.5}%
+\contentsline {subsubsection}{\numberline {5.6.3.6}PushFront()}{57}{subsubsection.5.6.3.6}%
+\contentsline {section}{\numberline {5.7}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::semaphore Class Reference}{57}{section.5.7}%
+\contentsline {subsection}{\numberline {5.7.1}Detailed Description}{58}{subsection.5.7.1}%
+\contentsline {subsubsection}{\numberline {5.7.1.1}SEMAPHORES IMPLEMENTATION}{58}{subsubsection.5.7.1.1}%
+\contentsline {subsection}{\numberline {5.7.2}Constructor \& Destructor Documentation}{58}{subsection.5.7.2}%
+\contentsline {subsubsection}{\numberline {5.7.2.1}semaphore()}{58}{subsubsection.5.7.2.1}%
+\contentsline {subsection}{\numberline {5.7.3}Member Function Documentation}{58}{subsection.5.7.3}%
+\contentsline {subsubsection}{\numberline {5.7.3.1}acquire()}{58}{subsubsection.5.7.3.1}%
+\contentsline {subsubsection}{\numberline {5.7.3.2}GetCount()}{59}{subsubsection.5.7.3.2}%
+\contentsline {subsubsection}{\numberline {5.7.3.3}GetMax()}{59}{subsubsection.5.7.3.3}%
+\contentsline {subsubsection}{\numberline {5.7.3.4}GetMaxAcquired()}{59}{subsubsection.5.7.3.4}%
+\contentsline {subsubsection}{\numberline {5.7.3.5}GetWaitCount()}{59}{subsubsection.5.7.3.5}%
+\contentsline {subsubsection}{\numberline {5.7.3.6}release()}{60}{subsubsection.5.7.3.6}%
+\contentsline {section}{\numberline {5.8}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::smart\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}ptr$<$ T $>$ Class Template Reference}{60}{section.5.8}%
+\contentsline {subsection}{\numberline {5.8.1}Detailed Description}{60}{subsection.5.8.1}%
+\contentsline {subsubsection}{\numberline {5.8.1.1}SUPLEMENTAR SMART\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}PTR IMPLEMENTATION}{60}{subsubsection.5.8.1.1}%
+\contentsline {subsection}{\numberline {5.8.2}Constructor \& Destructor Documentation}{60}{subsection.5.8.2}%
+\contentsline {subsubsection}{\numberline {5.8.2.1}smart\_ptr()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{60}{subsubsection.5.8.2.1}%
+\contentsline {subsubsection}{\numberline {5.8.2.2}smart\_ptr()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{61}{subsubsection.5.8.2.2}%
+\contentsline {subsubsection}{\numberline {5.8.2.3}$\sim $smart\_ptr()}{61}{subsubsection.5.8.2.3}%
+\contentsline {subsection}{\numberline {5.8.3}Member Function Documentation}{61}{subsection.5.8.3}%
+\contentsline {subsubsection}{\numberline {5.8.3.1}GetRefCounter()}{61}{subsubsection.5.8.3.1}%
+\contentsline {subsubsection}{\numberline {5.8.3.2}IsValid()}{61}{subsubsection.5.8.3.2}%
+\contentsline {subsubsection}{\numberline {5.8.3.3}operator\&()}{62}{subsubsection.5.8.3.3}%
+\contentsline {subsubsection}{\numberline {5.8.3.4}operator-\/$>$()}{62}{subsubsection.5.8.3.4}%
+\contentsline {subsubsection}{\numberline {5.8.3.5}operator=()}{62}{subsubsection.5.8.3.5}%
+\contentsline {section}{\numberline {5.9}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::smart\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mutex Class Reference}{62}{section.5.9}%
+\contentsline {subsection}{\numberline {5.9.1}Detailed Description}{63}{subsection.5.9.1}%
+\contentsline {subsection}{\numberline {5.9.2}Constructor \& Destructor Documentation}{63}{subsection.5.9.2}%
+\contentsline {subsubsection}{\numberline {5.9.2.1}smartMutex()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{63}{subsubsection.5.9.2.1}%
+\contentsline {subsubsection}{\numberline {5.9.2.2}smartMutex()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{63}{subsubsection.5.9.2.2}%
+\contentsline {subsubsection}{\numberline {5.9.2.3}$\sim $smartMutex()}{63}{subsubsection.5.9.2.3}%
+\contentsline {subsection}{\numberline {5.9.3}Member Function Documentation}{63}{subsection.5.9.3}%
+\contentsline {subsubsection}{\numberline {5.9.3.1}IsLocked()}{64}{subsubsection.5.9.3.1}%
+\contentsline {subsubsection}{\numberline {5.9.3.2}IsShared()}{64}{subsubsection.5.9.3.2}%
+\contentsline {subsubsection}{\numberline {5.9.3.3}Lock()}{64}{subsubsection.5.9.3.3}%
+\contentsline {subsubsection}{\numberline {5.9.3.4}SharedLock()}{64}{subsubsection.5.9.3.4}%
+\contentsline {section}{\numberline {5.10}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::smart\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Semaphore Class Reference}{64}{section.5.10}%
+\contentsline {subsection}{\numberline {5.10.1}Detailed Description}{65}{subsection.5.10.1}%
+\contentsline {subsection}{\numberline {5.10.2}Constructor \& Destructor Documentation}{65}{subsection.5.10.2}%
+\contentsline {subsubsection}{\numberline {5.10.2.1}smartSemaphore()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{65}{subsubsection.5.10.2.1}%
+\contentsline {subsubsection}{\numberline {5.10.2.2}smartSemaphore()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{65}{subsubsection.5.10.2.2}%
+\contentsline {subsubsection}{\numberline {5.10.2.3}$\sim $smartSemaphore()}{65}{subsubsection.5.10.2.3}%
+\contentsline {subsection}{\numberline {5.10.3}Member Function Documentation}{65}{subsection.5.10.3}%
+\contentsline {subsubsection}{\numberline {5.10.3.1}acquire()}{66}{subsubsection.5.10.3.1}%
+\contentsline {subsubsection}{\numberline {5.10.3.2}GetCount()}{66}{subsubsection.5.10.3.2}%
+\contentsline {subsubsection}{\numberline {5.10.3.3}GetMax()}{66}{subsubsection.5.10.3.3}%
+\contentsline {subsubsection}{\numberline {5.10.3.4}GetMaxAcquired()}{66}{subsubsection.5.10.3.4}%
+\contentsline {subsubsection}{\numberline {5.10.3.5}GetWaitCount()}{67}{subsubsection.5.10.3.5}%
+\contentsline {subsubsection}{\numberline {5.10.3.6}IsAcquired()}{67}{subsubsection.5.10.3.6}%
+\contentsline {subsubsection}{\numberline {5.10.3.7}release()}{67}{subsubsection.5.10.3.7}%
+\contentsline {section}{\numberline {5.11}thread\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::atomicx\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::Timeout Class Reference}{67}{section.5.11}%
+\contentsline {subsection}{\numberline {5.11.1}Detailed Description}{67}{subsection.5.11.1}%
+\contentsline {subsection}{\numberline {5.11.2}Constructor \& Destructor Documentation}{68}{subsection.5.11.2}%
+\contentsline {subsubsection}{\numberline {5.11.2.1}Timeout()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{68}{subsubsection.5.11.2.1}%
+\contentsline {subsubsection}{\numberline {5.11.2.2}Timeout()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{68}{subsubsection.5.11.2.2}%
+\contentsline {subsection}{\numberline {5.11.3}Member Function Documentation}{68}{subsection.5.11.3}%
+\contentsline {subsubsection}{\numberline {5.11.3.1}GetDurationSince()}{68}{subsubsection.5.11.3.1}%
+\contentsline {subsubsection}{\numberline {5.11.3.2}GetRemaining()}{69}{subsubsection.5.11.3.2}%
+\contentsline {subsubsection}{\numberline {5.11.3.3}IsTimedout()}{69}{subsubsection.5.11.3.3}%
+\contentsline {subsubsection}{\numberline {5.11.3.4}Set()}{69}{subsubsection.5.11.3.4}%
+\contentsline {chapter}{\numberline {6}File Documentation}{71}{chapter.6}%
+\contentsline {section}{\numberline {6.1}atomicx/atomicx.cpp File Reference}{71}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Macro Definition Documentation}{71}{subsection.6.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.1.1}POLY}{71}{subsubsection.6.1.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Function Documentation}{71}{subsection.6.1.2}%
+\contentsline {subsubsection}{\numberline {6.1.2.1}yield()}{71}{subsubsection.6.1.2.1}%
+\contentsline {section}{\numberline {6.2}atomicx.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}cpp}{72}{section.6.2}%
+\contentsline {section}{\numberline {6.3}atomicx/atomicx.hpp File Reference}{82}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Macro Definition Documentation}{82}{subsection.6.3.1}%
+\contentsline {subsubsection}{\numberline {6.3.1.1}ATOMIC\_VERSION\_LABEL}{83}{subsubsection.6.3.1.1}%
+\contentsline {subsubsection}{\numberline {6.3.1.2}ATOMICX\_TIME\_MAX}{83}{subsubsection.6.3.1.2}%
+\contentsline {subsubsection}{\numberline {6.3.1.3}ATOMICX\_VERSION}{83}{subsubsection.6.3.1.3}%
+\contentsline {subsection}{\numberline {6.3.2}Typedef Documentation}{83}{subsection.6.3.2}%
+\contentsline {subsubsection}{\numberline {6.3.2.1}atomicx\_time}{83}{subsubsection.6.3.2.1}%
+\contentsline {subsection}{\numberline {6.3.3}Function Documentation}{83}{subsection.6.3.3}%
+\contentsline {subsubsection}{\numberline {6.3.3.1}Atomicx\_GetTick()}{83}{subsubsection.6.3.3.1}%
+\contentsline {subsubsection}{\numberline {6.3.3.2}Atomicx\_SleepTick()}{83}{subsubsection.6.3.3.2}%
+\contentsline {subsubsection}{\numberline {6.3.3.3}yield()}{84}{subsubsection.6.3.3.3}%
+\contentsline {section}{\numberline {6.4}atomicx.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}hpp}{84}{section.6.4}%
+\contentsline {chapter}{Index}{95}{section*.34}%
