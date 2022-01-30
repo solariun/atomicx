@@ -90,40 +90,26 @@ namespace util
     }
 }
 
-#define __VIA_STRING__
-
 namespace vt100
 {
     void SetLocation (uint16_t nY, uint16_t nX)
     {
-#ifdef __VIA_STRING__
-        byte szTemp[15];
-        uint8_t nLen = snprintf ((char*)szTemp, sizeof (szTemp), "\033[%u;%uH", nY, nX);
-        Serial.write (szTemp, nLen);
-#else
         Serial.print (F("\033["));
         Serial.print (nY);
         Serial.print (F(";"));
         Serial.print (nX);
         Serial.print (F("H"));
-#endif
         Serial.flush ();
     }
 
     // works with 256 colors
     void SetColor (const uint8_t nFgColor, const uint8_t nBgColor)
     {
-#ifdef __VIA_STRING__
-        byte szTemp[15];
-        uint8_t nLen = snprintf ((char*)szTemp, sizeof (szTemp), "\033[%u;%um", nFgColor + 30, nBgColor + 40);
-        Serial.write (szTemp, nLen);
-#else
         Serial.print (F("\033["));
         Serial.print (nFgColor + 30);
         Serial.print (F(";"));
         Serial.print (nBgColor + 40);
         Serial.print (F("m"));
-#endif
         Serial.flush ();
     }
 
