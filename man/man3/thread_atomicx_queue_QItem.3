@@ -1,0 +1,109 @@
+.TH "thread::atomicx::queue< T >::QItem" 3 "Sun Jan 30 2022" "AtomicX" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+thread::atomicx::queue< T >::QItem \- Queue Item object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atomicx\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQItem\fP ()=delete"
+.br
+.ti -1c
+.RI "\fBQItem\fP (T &qItem)"
+.br
+.RI "Queue Item constructor\&. "
+.ti -1c
+.RI "T & \fBGetItem\fP ()"
+.br
+.RI "Get the current object in the \fBQItem\fP\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBSetNext\fP (\fBQItem\fP &qItem)"
+.br
+.RI "Set Next Item in the Queue list\&. "
+.ti -1c
+.RI "\fBQItem\fP * \fBGetNext\fP ()"
+.br
+.RI "Get the Next \fBQItem\fP object, if any\&. "
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBqueue\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T>
+.br
+class thread::atomicx::queue< T >::QItem"Queue Item object\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T > \fBthread::atomicx::queue\fP< T >::QItem::QItem ()\fC [delete]\fP"
+
+.SS "template<typename T > \fBthread::atomicx::queue\fP< T >::QItem::QItem (T & qItem)\fC [inline]\fP"
+
+.PP
+Queue Item constructor\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIqItem\fP Obj template type T 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T > T & \fBthread::atomicx::queue\fP< T >::QItem::GetItem ()\fC [inline]\fP"
+
+.PP
+Get the current object in the \fBQItem\fP\&. 
+.PP
+\fBReturns\fP
+.RS 4
+T& The template type T object 
+.RE
+.PP
+
+.SS "template<typename T > \fBQItem\fP * \fBthread::atomicx::queue\fP< T >::QItem::GetNext ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Get the Next \fBQItem\fP object, if any\&. 
+.PP
+\fBReturns\fP
+.RS 4
+QItem* A valid \fBQItem\fP pointer otherwise nullptr 
+.RE
+.PP
+
+.SS "template<typename T > void \fBthread::atomicx::queue\fP< T >::QItem::SetNext (\fBQItem\fP & qItem)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+Set Next Item in the Queue list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIqItem\fP \fBQItem\fP that holds a Queue element 
+.RE
+.PP
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "template<typename T > friend class \fBqueue\fP\fC [friend]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AtomicX from the source code\&.

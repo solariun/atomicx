@@ -1,0 +1,103 @@
+.TH "thread::atomicx::mutex" 3 "Sun Jan 30 2022" "AtomicX" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+thread::atomicx::mutex
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atomicx\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBLock\fP ()"
+.br
+.RI "Exclusive/binary lock the smart lock\&. "
+.ti -1c
+.RI "void \fBUnlock\fP ()"
+.br
+.RI "Release the exclusive lock\&. "
+.ti -1c
+.RI "void \fBSharedLock\fP ()"
+.br
+.RI "Shared Lock for the smart Lock\&. "
+.ti -1c
+.RI "void \fBSharedUnlock\fP ()"
+.br
+.RI "Release the current shared lock\&. "
+.ti -1c
+.RI "size_t \fBIsShared\fP ()"
+.br
+.RI "Check how many shared locks are accquired\&. "
+.ti -1c
+.RI "bool \fBIsLocked\fP ()"
+.br
+.RI "Check if a exclusive lock has been already accquired\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+ 
+.SS "SMART LOCK IMPLEMENTATION"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool thread::atomicx::mutex::IsLocked ()"
+
+.PP
+Check if a exclusive lock has been already accquired\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if yes, otherwise false 
+.RE
+.PP
+
+.SS "size_t thread::atomicx::mutex::IsShared ()"
+
+.PP
+Check how many shared locks are accquired\&. 
+.PP
+\fBReturns\fP
+.RS 4
+size_t Number of threads holding shared locks 
+.RE
+.PP
+
+.SS "void thread::atomicx::mutex::Lock ()"
+
+.PP
+Exclusive/binary lock the smart lock\&. 
+.PP
+\fBNote\fP
+.RS 4
+Once \fBLock()\fP methos is called, if any thread held a shared lock, the Lock will wait for it to finish in order to acquire the exclusive lock, and all other threads that needs to a shared lock will wait till Lock is accquired and released\&. 
+.RE
+.PP
+
+.SS "void thread::atomicx::mutex::SharedLock ()"
+
+.PP
+Shared Lock for the smart Lock\&. 
+.PP
+\fBNote\fP
+.RS 4
+Shared lock can only be accquired if no Exclusive lock is waiting or already accquired a exclusive lock, In contrast, if at least one thread holds a shared lock, any exclusive lock can only be accquired once it is released\&. 
+.RE
+.PP
+
+.SS "void thread::atomicx::mutex::SharedUnlock ()"
+
+.PP
+Release the current shared lock\&. 
+.SS "void thread::atomicx::mutex::Unlock ()"
+
+.PP
+Release the exclusive lock\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AtomicX from the source code\&.

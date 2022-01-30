@@ -1,0 +1,52 @@
+.TH "ThreadConsummer" 3 "Sun Jan 30 2022" "CorePartition" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ThreadConsummer
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits atomicx\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBThreadConsummer\fP ()=delete"
+.br
+.ti -1c
+.RI "\fBThreadConsummer\fP (atomicx_time nNice, const char *pszName)"
+.br
+.ti -1c
+.RI "\fB~ThreadConsummer\fP ()"
+.br
+.ti -1c
+.RI "void \fBrun\fP (void) noexcept override"
+.br
+.ti -1c
+.RI "void \fBStackOverflowHandler\fP (void) noexcept override"
+.br
+.ti -1c
+.RI "const char * \fBGetName\fP (void) override"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ThreadConsummer::ThreadConsummer ()\fC [delete]\fP"
+
+.SS "ThreadConsummer::ThreadConsummer (atomicx_time nNice, const char * pszName)\fC [inline]\fP"
+
+.SS "ThreadConsummer::~ThreadConsummer ()\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "const char * ThreadConsummer::GetName (void)\fC [inline]\fP, \fC [override]\fP"
+
+.SS "void ThreadConsummer::run (void)\fC [inline]\fP, \fC [override]\fP, \fC [noexcept]\fP"
+
+.SS "void ThreadConsummer::StackOverflowHandler (void)\fC [inline]\fP, \fC [override]\fP, \fC [noexcept]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for CorePartition from the source code\&.

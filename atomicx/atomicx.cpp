@@ -313,7 +313,7 @@ namespace thread
         {
             m_aStatus = aTypes::sleep;
             m_aSubStatus = aSubTypes::ok;
-            m_nTargetTime=Atomicx_GetTick() + (nSleep == 0 ? m_nice : nSleep);
+            m_nTargetTime=Atomicx_GetTick() + (nSleep == ATOMICX_TIME_MAX ? m_nice : nSleep);
         }
         else if (m_aStatus == aTypes::wait)
         {
