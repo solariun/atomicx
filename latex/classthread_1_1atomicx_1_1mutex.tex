@@ -1,0 +1,107 @@
+\hypertarget{classthread_1_1atomicx_1_1mutex}{}\doxysection{thread\+::atomicx\+::mutex Class Reference}
+\label{classthread_1_1atomicx_1_1mutex}\index{thread::atomicx::mutex@{thread::atomicx::mutex}}
+
+
+{\ttfamily \#include $<$atomicx.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex_a0c77ddee2ad50c1aa7564ad2084b6e75}{Lock}} ()
+\begin{DoxyCompactList}\small\item\em Exclusive/binary lock the smart lock. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex_a74dc56d113bb2f7fbde82d1d9422a01b}{Unlock}} ()
+\begin{DoxyCompactList}\small\item\em Release the exclusive lock. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex_ab0e0c89eb46152f8095535891069ff3c}{Shared\+Lock}} ()
+\begin{DoxyCompactList}\small\item\em Shared Lock for the smart Lock. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex_aa7ac0e33713c28e55ac3a30ecbb10ebe}{Shared\+Unlock}} ()
+\begin{DoxyCompactList}\small\item\em Release the current shared lock. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex_ae66c669f09c131182805680aa894d18d}{Is\+Shared}} ()
+\begin{DoxyCompactList}\small\item\em Check how many shared locks are accquired. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex_aeeda698323932853965044d34a191ebf}{Is\+Locked}} ()
+\begin{DoxyCompactList}\small\item\em Check if a exclusive lock has been already accquired. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\DoxyHorRuler{0}
+ \hypertarget{classthread_1_1atomicx_1_1mutex_autotoc_md11}{}\doxysubsubsection{SMART LOCK IMPLEMENTATION}\label{classthread_1_1atomicx_1_1mutex_autotoc_md11}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1mutex_aeeda698323932853965044d34a191ebf}\label{classthread_1_1atomicx_1_1mutex_aeeda698323932853965044d34a191ebf}} 
+\index{thread::atomicx::mutex@{thread::atomicx::mutex}!IsLocked@{IsLocked}}
+\index{IsLocked@{IsLocked}!thread::atomicx::mutex@{thread::atomicx::mutex}}
+\doxysubsubsection{\texorpdfstring{IsLocked()}{IsLocked()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::mutex\+::\+Is\+Locked (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Check if a exclusive lock has been already accquired. 
+
+\begin{DoxyReturn}{Returns}
+true if yes, otherwise false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1mutex_ae66c669f09c131182805680aa894d18d}\label{classthread_1_1atomicx_1_1mutex_ae66c669f09c131182805680aa894d18d}} 
+\index{thread::atomicx::mutex@{thread::atomicx::mutex}!IsShared@{IsShared}}
+\index{IsShared@{IsShared}!thread::atomicx::mutex@{thread::atomicx::mutex}}
+\doxysubsubsection{\texorpdfstring{IsShared()}{IsShared()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::mutex\+::\+Is\+Shared (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Check how many shared locks are accquired. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t Number of threads holding shared locks 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1mutex_a0c77ddee2ad50c1aa7564ad2084b6e75}\label{classthread_1_1atomicx_1_1mutex_a0c77ddee2ad50c1aa7564ad2084b6e75}} 
+\index{thread::atomicx::mutex@{thread::atomicx::mutex}!Lock@{Lock}}
+\index{Lock@{Lock}!thread::atomicx::mutex@{thread::atomicx::mutex}}
+\doxysubsubsection{\texorpdfstring{Lock()}{Lock()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::mutex\+::\+Lock (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Exclusive/binary lock the smart lock. 
+
+\begin{DoxyNote}{Note}
+Once \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex_a0c77ddee2ad50c1aa7564ad2084b6e75}{Lock()}} methos is called, if any thread held a shared lock, the Lock will wait for it to finish in order to acquire the exclusive lock, and all other threads that needs to a shared lock will wait till Lock is accquired and released. 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1mutex_ab0e0c89eb46152f8095535891069ff3c}\label{classthread_1_1atomicx_1_1mutex_ab0e0c89eb46152f8095535891069ff3c}} 
+\index{thread::atomicx::mutex@{thread::atomicx::mutex}!SharedLock@{SharedLock}}
+\index{SharedLock@{SharedLock}!thread::atomicx::mutex@{thread::atomicx::mutex}}
+\doxysubsubsection{\texorpdfstring{SharedLock()}{SharedLock()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::mutex\+::\+Shared\+Lock (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Shared Lock for the smart Lock. 
+
+\begin{DoxyNote}{Note}
+Shared lock can only be accquired if no Exclusive lock is waiting or already accquired a exclusive lock, In contrast, if at least one thread holds a shared lock, any exclusive lock can only be accquired once it is released. 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1mutex_aa7ac0e33713c28e55ac3a30ecbb10ebe}\label{classthread_1_1atomicx_1_1mutex_aa7ac0e33713c28e55ac3a30ecbb10ebe}} 
+\index{thread::atomicx::mutex@{thread::atomicx::mutex}!SharedUnlock@{SharedUnlock}}
+\index{SharedUnlock@{SharedUnlock}!thread::atomicx::mutex@{thread::atomicx::mutex}}
+\doxysubsubsection{\texorpdfstring{SharedUnlock()}{SharedUnlock()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::mutex\+::\+Shared\+Unlock (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Release the current shared lock. 
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1mutex_a74dc56d113bb2f7fbde82d1d9422a01b}\label{classthread_1_1atomicx_1_1mutex_a74dc56d113bb2f7fbde82d1d9422a01b}} 
+\index{thread::atomicx::mutex@{thread::atomicx::mutex}!Unlock@{Unlock}}
+\index{Unlock@{Unlock}!thread::atomicx::mutex@{thread::atomicx::mutex}}
+\doxysubsubsection{\texorpdfstring{Unlock()}{Unlock()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::mutex\+::\+Unlock (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Release the exclusive lock. 
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+atomicx/\mbox{\hyperlink{atomicx_8hpp}{atomicx.\+hpp}}\item 
+atomicx/\mbox{\hyperlink{atomicx_8cpp}{atomicx.\+cpp}}\end{DoxyCompactItemize}

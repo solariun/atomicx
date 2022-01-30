@@ -1,0 +1,1318 @@
+\hypertarget{classthread_1_1atomicx}{}\doxysection{thread\+::atomicx Class Reference}
+\label{classthread_1_1atomicx}\index{thread::atomicx@{thread::atomicx}}
+
+
+{\ttfamily \#include $<$atomicx.\+hpp$>$}
+
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1aiterator}{aiterator}}
+\item 
+struct \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex}{mutex}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1queue}{queue}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore}{semaphore}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1smart__ptr}{smart\+\_\+ptr}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_mutex}{smart\+Mutex}}
+\begin{DoxyCompactList}\small\item\em RII compliance lock/shared lock to auto unlock on destruction. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore}{smart\+Semaphore}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} Check object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007ed}{a\+Types}} \+: uint8\+\_\+t \{ \newline
+\mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaea2b2676c28c0db26d39331a336c6b92}{start}} =1
+, \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda75101dcdfc88455bcafc9e53e0b06689}{running}} =5
+, \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda97bc592b27a9ada2d9a4bb418ed0ebed}{now}} =6
+, \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaef399b2d446bb37b7c32ad2cc1b6045b}{stop}} =10
+, \newline
+\mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edadce7c4174ce9323904a934a486c41288}{lock}} =50
+, \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda49256b9819abacbb8e6e031a03abe81b}{wait}} =55
+, \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edab48b13e73a6ac2a86dc54425dd24d9ff}{subscription}} =60
+, \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edac9fab33e9458412c527c3fe8a13ee37d}{sleep}} =100
+, \newline
+\mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaefab200f4775c7a6f73743d4dcd6681a}{stack\+Overflow}} =255
+ \}
+\item 
+enum class \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} \+: uint8\+\_\+t \{ \newline
+\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67facb5e100e5a9a3e7f6d1fd97512215282}{error}} =10
+, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa444bcb3a3fcf8389296c49467f27e1d6}{ok}}
+, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa8c4291f6956da81515a5c0caec2976d0}{look}}
+, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{wait}}
+, \newline
+\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa90272dda245ae1fb3cf197e91a8689dc}{timeout}}
+ \}
+\item 
+enum class \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} \+: uint8\+\_\+t \{ \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{one}} = 0
+, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaa181a603769c1f98ad927e7367c7aa51}{all}} = 1
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classthread_1_1atomicx_1_1aiterator}{aiterator}} \mbox{\hyperlink{classthread_1_1atomicx_a0e188b4cdad5fb7f9fff7cd1e0f438aa}{begin}} (void)
+\begin{DoxyCompactList}\small\item\em Get the beggining of the list. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classthread_1_1atomicx_1_1aiterator}{aiterator}} \mbox{\hyperlink{classthread_1_1atomicx_a8a832099edb224496c7ba204695138c7}{end}} (void)
+\begin{DoxyCompactList}\small\item\em Get the end of the list. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{classthread_1_1atomicx_ac460ddbc6a7201689a762fb8d3c35397}{$\sim$atomicx}} (void)
+\begin{DoxyCompactList}\small\item\em virtual destructor of the atomicx \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a75865402817f74f5917c958c2cc631ed}{Get\+ID}} (void)
+\begin{DoxyCompactList}\small\item\em Get the current thread ID. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_ad58b1b08bf0c0a3fe62affac1bffe845}{Get\+Stack\+Size}} (void)
+\begin{DoxyCompactList}\small\item\em Get the Max Stack Size for the thread. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} \mbox{\hyperlink{classthread_1_1atomicx_a075d951e2432e1e06f04691e3b83b2d5}{Get\+Nice}} (void)
+\begin{DoxyCompactList}\small\item\em Get the Nice the current thread. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a5bdde2eddb025706719d11632b4450b7}{Get\+Used\+Stack\+Size}} (void)
+\begin{DoxyCompactList}\small\item\em Get the Used Stack Size for the thread since the last context change cycle. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} \mbox{\hyperlink{classthread_1_1atomicx_ac357706436b933641d236447cdbd5462}{Get\+Current\+Tick}} (void)
+\begin{DoxyCompactList}\small\item\em Get the Current Tick using the ported tick granularity function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{classthread_1_1atomicx}{atomicx}} $\ast$ \mbox{\hyperlink{classthread_1_1atomicx_a0a73c90e27fec5dea704c430c36e0cee}{Get\+Current}} ()
+\begin{DoxyCompactList}\small\item\em Get the Current thread in execution. \end{DoxyCompactList}\item 
+static bool \mbox{\hyperlink{classthread_1_1atomicx_a64de6117b863b3d2edd217798d9c27f4}{Start}} (void)
+\begin{DoxyCompactList}\small\item\em Once it is call the process blocks execution and start all threads. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{If Get\+Name was not overloaded by the derived thread implementation}
+\label{_amgrpa95e051fbacc0563045fd1e93905af10}%
+Get the Name object
+
+\begin{DoxyReturn}{Returns}
+const char$\ast$ name in plain c string
+\end{DoxyReturn}
+a standard name will be returned. \begin{DoxyCompactItemize}
+\item 
+virtual const char $\ast$ \mbox{\hyperlink{classthread_1_1atomicx_a06fba915b6d19dd927f28a7b88fa566b}{Get\+Name}} (void)
+\item 
+\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} \mbox{\hyperlink{classthread_1_1atomicx_a96d17265ebe39e32586b4e117c15ae68}{Get\+Target\+Time}} (void)
+\begin{DoxyCompactList}\small\item\em Get next moment in ported tick granularity the thread will be due to return. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classthread_1_1atomicx_a59ff0db3d410d11672a4376432ec8188}{Get\+Status}} (void)
+\begin{DoxyCompactList}\small\item\em Get the current thread status. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classthread_1_1atomicx_ab9b7e5c959deefbe1dfccab55233a0c7}{Get\+Sub\+Status}} (void)
+\begin{DoxyCompactList}\small\item\em Get the current thread sub status. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a238414e659cf1bd1ac7b79eae1de1d10}{Get\+Reference\+Lock}} (void)
+\begin{DoxyCompactList}\small\item\em Get the Reference Lock last used to lock the thread. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a080c7d232dece44e29b3858fd4f2ac8c}{Get\+Tag\+Lock}} (void)
+\begin{DoxyCompactList}\small\item\em Get the last tag message posted. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_a6663c1d4f9483ee2b00ff01426efb6c7}{Set\+Nice}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} nice)
+\begin{DoxyCompactList}\small\item\em Set the Nice of the thread. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T , size\+\_\+t N$>$ }\\\mbox{\hyperlink{classthread_1_1atomicx_a06c82de06faf2019a9af23bc75886baa}{atomicx}} (T(\&stack)\mbox{[}N\mbox{]})
+\begin{DoxyCompactList}\small\item\em Construct a new atomicx thread. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classthread_1_1atomicx_ae227c8a72cddade05625f906b56f2cb7}{atomicx}} (size\+\_\+t n\+Stack\+Size=0, int n\+Stack\+Increase\+Pace=1)
+\begin{DoxyCompactList}\small\item\em Construct a new atomicx object and set initial auto stack and increase pace. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classthread_1_1atomicx_a8917ef300f396b3d8bc9fdd8aacccf14}{run}} (void) noexcept=0
+\begin{DoxyCompactList}\small\item\em The pure virtual function that runs the thread loop. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classthread_1_1atomicx_a8f358048df310da5b3f0b669605fc197}{Stack\+Overflow\+Handler}} (void) noexcept=0
+\begin{DoxyCompactList}\small\item\em Handles the Stack\+Overflow of the current thread. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classthread_1_1atomicx_a641e79e24059fb3fcaf81ee54a2009be}{finish}} () noexcept
+\begin{DoxyCompactList}\small\item\em Called right after run returns, can be used to self-\/destroy the object and other maintenance actions. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_ae8d4a2b0d8f59ea33a59236d69034cc7}{Is\+Stack\+Self\+Managed}} (void)
+\begin{DoxyCompactList}\small\item\em Return if the current thread\textquotesingle{}s stack memory is automatic. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_ab3dd1245396fc470b7b2c6a31a4455ca}{Yield}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} n\+Sleep=\mbox{\hyperlink{atomicx_8hpp_a5f79904e0c0abe4f6120ed97f66b3802}{ATOMICX\+\_\+\+TIME\+\_\+\+MAX}})
+\begin{DoxyCompactList}\small\item\em Foce the context change explicitly. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} \mbox{\hyperlink{classthread_1_1atomicx_af7c7ea1f95881fbc140c2a8f4cbf3c2e}{Get\+Last\+User\+Exec\+Time}} ()
+\begin{DoxyCompactList}\small\item\em Get the Last Execution of User Code. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_aee0a056b991664861eade9caf6adbd32}{Get\+Stack\+Increase\+Pace}} (void)
+\begin{DoxyCompactList}\small\item\em Get the Stack Increase Pace value. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_a8b38e8d84d71903a9162bcc541235614}{Yield\+Now}} (void)
+\begin{DoxyCompactList}\small\item\em Trigger a high priority NOW, caution it will always execute before normal yield. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_aee21cbd30a48efbf3a55817ad9bfe3e3}{Set\+Dynamic\+Nice}} (bool status)
+\begin{DoxyCompactList}\small\item\em Set the Dynamic Nice on and off. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_ae80cbf9f8fc2617eaa168d1281225715}{Is\+Dynamic\+Nice\+On}} ()
+\begin{DoxyCompactList}\small\item\em Get Dynamic Nice status. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_ab27f5a456d8983f5c17102bc0aaa0da0}{Get\+Topic\+ID}} (const char $\ast$psz\+Topic, size\+\_\+t n\+Key\+Lenght)
+\begin{DoxyCompactList}\small\item\em calculate the Topic ID for a given topic text \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\bool \mbox{\hyperlink{classthread_1_1atomicx_a3a7a1c5a1e645c09c0ff0a6c355404c5}{Look\+For\+Waitings}} (T \&ref\+Var, size\+\_\+t n\+Tag, size\+\_\+t has\+Atleast, \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} wait\+For)
+\begin{DoxyCompactList}\small\item\em Sync with thread call for a wait (ref\+Var,n\+Tag) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\bool \mbox{\hyperlink{classthread_1_1atomicx_af919d7337b1a6cc5912cd1c7c4fe5ea8}{Look\+For\+Waitings}} (T \&ref\+Var, size\+\_\+t n\+Tag, \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} wait\+For)
+\begin{DoxyCompactList}\small\item\em Sync with thread call for a wait (ref\+Var,n\+Tag) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\bool \mbox{\hyperlink{classthread_1_1atomicx_ad4512ab7de89d7cfd6b5d60c2d986b3e}{Is\+Waiting}} (T \&ref\+Var, size\+\_\+t n\+Tag=0, size\+\_\+t has\+Atleast=1, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em Check if there are waiting threads for a given reference pointer and tag value. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_af86a54fe9571c2fbab03c9f62f453ad5}{Has\+Waitings}} (T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em Report how much waiting threads for a given reference pointer and tag value are there. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\bool \mbox{\hyperlink{classthread_1_1atomicx_a51434a435b3470ee885272a18e7838bb}{Wait}} (size\+\_\+t \&n\+Message, T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} wait\+For=0, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em Blocks/\+Waits a notification along with a message and tag from a specific reference pointer. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\bool \mbox{\hyperlink{classthread_1_1atomicx_aae81685ea59341f64a4b3d8cc5886563}{Wait}} (T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} wait\+For=0, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em Blocks/\+Waits a notification along with a tag from a specific reference pointer. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a1cb98240204ba7c5981ad9ffba095253}{Safe\+Notify}} (size\+\_\+t \&n\+Message, T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} notify\+All=\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em Safely notify all Waits from a specific reference pointer along with a message without triggering context change. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a8b3845a6f977e4fc9644e996d4102d75}{Notify}} (size\+\_\+t \&n\+Message, T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} notify\+All=\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a401db852c22e1982ae5c184ec93423c0}{Notify}} (size\+\_\+t \&\&n\+Message, T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} notify\+All=\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a91a943d6b7dbce240fb8bc611edead6b}{Sync\+Notify}} (size\+\_\+t \&n\+Message, T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} wait\+For\+Waitings=0, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} notify\+All=\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em SYNC Waits for at least one Wait call for a given reference pointer along with a message and trigger context change. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a7e4e0bf42bafa19be930b43b72d244f7}{Sync\+Notify}} (size\+\_\+t \&\&n\+Message, T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} wait\+For\+Waitings=0, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} notify\+All=\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_a3658882cb26cc60166bf7b29a7024d14}{Safe\+Notify}} (T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} notify\+All=\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em Safely notify all Waits from a specific reference pointer without triggering context change. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_aad548d78d129a70a9e68862e06d4db9d}{Sync\+Notify}} (T \&ref\+Var, size\+\_\+t n\+Tag, \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} wait\+For\+Waitings=0, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} notify\+All=\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em SYNC Waits for at least one Wait call for a given reference pointer and trigger context change. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_ad1d6b634c9c90c1c15acc391f2b97671}{Notify}} (T \&ref\+Var, size\+\_\+t n\+Tag=0, \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}} notify\+All=\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}, \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}} asub\+Type=\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}})
+\begin{DoxyCompactList}\small\item\em Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_a407be004173a7db41834eb58fb8f4436}{Wait\+Broker\+Message}} (const char $\ast$psz\+Key, size\+\_\+t n\+Key\+Lenght, \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}} \&message)
+\begin{DoxyCompactList}\small\item\em Block and wait for message from a specific topic string. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_a1cfdab652a4a90fa8c760d9ee3a802fb}{Wait\+Broker\+Message}} (const char $\ast$psz\+Key, size\+\_\+t n\+Key\+Lenght)
+\begin{DoxyCompactList}\small\item\em Block and wait for a notification from a specific topic string. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_afc67058a34cd39f3f853a7f9a2ae84fd}{Publish}} (const char $\ast$psz\+Key, size\+\_\+t n\+Key\+Lenght, const \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}} message)
+\begin{DoxyCompactList}\small\item\em Publish a message for a specific topic string and trigger a context change if any delivered. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_a5b238f8831ae0cb3a53c685123e5a5d8}{Safe\+Publish}} (const char $\ast$psz\+Key, size\+\_\+t n\+Key\+Lenght, const \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}} message)
+\begin{DoxyCompactList}\small\item\em Safely Publish a message for a specific topic string DO NOT trigger a context change if any delivered. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_a686358de14f2be34e688ee22dd5bc5b8}{Publish}} (const char $\ast$psz\+Key, size\+\_\+t n\+Key\+Lenght)
+\begin{DoxyCompactList}\small\item\em Publish a notification for a specific topic string and trigger a context change if any delivered. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_a4877838c0c1e38a7941f7ca86926ada9}{Safe\+Publish}} (const char $\ast$psz\+Key, size\+\_\+t n\+Key\+Lenght)
+\begin{DoxyCompactList}\small\item\em Safely Publish a notification for a specific topic string DO NOT trigger a context change if any delivered. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_ab6b7c287310a686e589c57947084124b}{Has\+Subscriptions}} (const char $\ast$psz\+Topic, size\+\_\+t n\+Key\+Lenght)
+\begin{DoxyCompactList}\small\item\em Check if there is subscryption for a specific Topic String. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_ad335842d925985e2ea56639c5eda0f22}{Has\+Subscriptions}} (uint32\+\_\+t n\+Key\+ID)
+\begin{DoxyCompactList}\small\item\em Check if there is subscryption for a specific Topic ID. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classthread_1_1atomicx_ae43c2d0de94878ce0602a3b40d4deeba}{Broker\+Handler}} (const char $\ast$psz\+Key, size\+\_\+t n\+Key\+Lenght, \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}} \&message)
+\begin{DoxyCompactList}\small\item\em Default broker handler for a subscribed message. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classthread_1_1atomicx_a2407946fa015153b0a813d9ea7d15019}{Is\+Subscribed}} (const char $\ast$psz\+Key, size\+\_\+t n\+Key\+Lenght)
+\begin{DoxyCompactList}\small\item\em Specialize and gives power to decide if a topic is subscrybed on not. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_acfdf080727d53cbaf31cd6b8c6595e5b}{Set\+Stack\+Increase\+Pace}} (size\+\_\+t n\+Increase\+Pace)
+\begin{DoxyCompactList}\small\item\em Set the Stack Increase Pace object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}\label{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}} 
+\index{thread::atomicx@{thread::atomicx}!aSubTypes@{aSubTypes}}
+\index{aSubTypes@{aSubTypes}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{aSubTypes}{aSubTypes}}
+{\footnotesize\ttfamily enum class \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{thread\+::atomicx\+::a\+Sub\+Types}} \+: uint8\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{error@{error}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!error@{error}}}\mbox{\Hypertarget{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67facb5e100e5a9a3e7f6d1fd97512215282}\label{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67facb5e100e5a9a3e7f6d1fd97512215282}} 
+error&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ok@{ok}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!ok@{ok}}}\mbox{\Hypertarget{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa444bcb3a3fcf8389296c49467f27e1d6}\label{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa444bcb3a3fcf8389296c49467f27e1d6}} 
+ok&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{look@{look}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!look@{look}}}\mbox{\Hypertarget{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa8c4291f6956da81515a5c0caec2976d0}\label{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa8c4291f6956da81515a5c0caec2976d0}} 
+look&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{wait@{wait}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!wait@{wait}}}\mbox{\Hypertarget{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}\label{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}} 
+wait&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{timeout@{timeout}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!timeout@{timeout}}}\mbox{\Hypertarget{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa90272dda245ae1fb3cf197e91a8689dc}\label{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa90272dda245ae1fb3cf197e91a8689dc}} 
+timeout&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007ed}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007ed}} 
+\index{thread::atomicx@{thread::atomicx}!aTypes@{aTypes}}
+\index{aTypes@{aTypes}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{aTypes}{aTypes}}
+{\footnotesize\ttfamily enum class \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007ed}{thread\+::atomicx\+::a\+Types}} \+: uint8\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\DoxyHorRuler{0}
+ \hypertarget{classthread_1_1atomicx_autotoc_md1}{}\doxysubsubsection{STATE MACHINE TYPES}\label{classthread_1_1atomicx_autotoc_md1}
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{start@{start}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!start@{start}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaea2b2676c28c0db26d39331a336c6b92}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaea2b2676c28c0db26d39331a336c6b92}} 
+start&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{running@{running}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!running@{running}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda75101dcdfc88455bcafc9e53e0b06689}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda75101dcdfc88455bcafc9e53e0b06689}} 
+running&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{now@{now}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!now@{now}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda97bc592b27a9ada2d9a4bb418ed0ebed}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda97bc592b27a9ada2d9a4bb418ed0ebed}} 
+now&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{stop@{stop}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!stop@{stop}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaef399b2d446bb37b7c32ad2cc1b6045b}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaef399b2d446bb37b7c32ad2cc1b6045b}} 
+stop&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{lock@{lock}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!lock@{lock}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edadce7c4174ce9323904a934a486c41288}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edadce7c4174ce9323904a934a486c41288}} 
+lock&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{wait@{wait}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!wait@{wait}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda49256b9819abacbb8e6e031a03abe81b}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007eda49256b9819abacbb8e6e031a03abe81b}} 
+wait&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{subscription@{subscription}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!subscription@{subscription}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edab48b13e73a6ac2a86dc54425dd24d9ff}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edab48b13e73a6ac2a86dc54425dd24d9ff}} 
+subscription&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{sleep@{sleep}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!sleep@{sleep}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edac9fab33e9458412c527c3fe8a13ee37d}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edac9fab33e9458412c527c3fe8a13ee37d}} 
+sleep&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{stackOverflow@{stackOverflow}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!stackOverflow@{stackOverflow}}}\mbox{\Hypertarget{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaefab200f4775c7a6f73743d4dcd6681a}\label{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007edaefab200f4775c7a6f73743d4dcd6681a}} 
+stack\+Overflow&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}\label{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}} 
+\index{thread::atomicx@{thread::atomicx}!NotifyType@{NotifyType}}
+\index{NotifyType@{NotifyType}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{NotifyType}{NotifyType}}
+{\footnotesize\ttfamily enum class \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{thread\+::atomicx\+::\+Notify\+Type}} \+: uint8\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{one@{one}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!one@{one}}}\mbox{\Hypertarget{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}\label{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}} 
+one&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{all@{all}!thread::atomicx@{thread::atomicx}}\index{thread::atomicx@{thread::atomicx}!all@{all}}}\mbox{\Hypertarget{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaa181a603769c1f98ad927e7367c7aa51}\label{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaa181a603769c1f98ad927e7367c7aa51}} 
+all&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_ac460ddbc6a7201689a762fb8d3c35397}\label{classthread_1_1atomicx_ac460ddbc6a7201689a762fb8d3c35397}} 
+\index{thread::atomicx@{thread::atomicx}!````~atomicx@{$\sim$atomicx}}
+\index{````~atomicx@{$\sim$atomicx}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{$\sim$atomicx()}{~atomicx()}}
+{\footnotesize\ttfamily thread\+::atomicx\+::$\sim$atomicx (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+virtual destructor of the atomicx 
+
+PUBLIC OBJECT METHOS \mbox{\Hypertarget{classthread_1_1atomicx_a06c82de06faf2019a9af23bc75886baa}\label{classthread_1_1atomicx_a06c82de06faf2019a9af23bc75886baa}} 
+\index{thread::atomicx@{thread::atomicx}!atomicx@{atomicx}}
+\index{atomicx@{atomicx}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{atomicx()}{atomicx()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T , size\+\_\+t N$>$ \\
+thread\+::atomicx\+::atomicx (\begin{DoxyParamCaption}\item[{T(\&)}]{stack\mbox{[}\+N\mbox{]} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a new atomicx thread. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Stack memory page type \\
+\hline
+{\em N} & Stack memory page size \\
+\hline
+\end{DoxyTemplParams}
+\mbox{\Hypertarget{classthread_1_1atomicx_ae227c8a72cddade05625f906b56f2cb7}\label{classthread_1_1atomicx_ae227c8a72cddade05625f906b56f2cb7}} 
+\index{thread::atomicx@{thread::atomicx}!atomicx@{atomicx}}
+\index{atomicx@{atomicx}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{atomicx()}{atomicx()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily thread\+::atomicx\+::atomicx (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{n\+Stack\+Size = {\ttfamily 0},  }\item[{int}]{n\+Stack\+Increase\+Pace = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+
+
+Construct a new atomicx object and set initial auto stack and increase pace. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Stack\+Size} & Initial Size of the stack \\
+\hline
+{\em n\+Stack\+Increase\+Pace} & defalt=1, The increase pace on each resize \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_a0e188b4cdad5fb7f9fff7cd1e0f438aa}\label{classthread_1_1atomicx_a0e188b4cdad5fb7f9fff7cd1e0f438aa}} 
+\index{thread::atomicx@{thread::atomicx}!begin@{begin}}
+\index{begin@{begin}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{begin()}{begin()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_1_1aiterator}{atomicx\+::aiterator}} thread\+::atomicx\+::begin (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the beggining of the list. 
+
+\begin{DoxyReturn}{Returns}
+aiterator 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ae43c2d0de94878ce0602a3b40d4deeba}\label{classthread_1_1atomicx_ae43c2d0de94878ce0602a3b40d4deeba}} 
+\index{thread::atomicx@{thread::atomicx}!BrokerHandler@{BrokerHandler}}
+\index{BrokerHandler@{BrokerHandler}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{BrokerHandler()}{BrokerHandler()}}
+{\footnotesize\ttfamily virtual bool thread\+::atomicx\+::\+Broker\+Handler (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Key,  }\item[{size\+\_\+t}]{n\+Key\+Lenght,  }\item[{\mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}} \&}]{message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Default broker handler for a subscribed message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Key} & The Topic C string \\
+\hline
+{\em n\+Key\+Lenght} & The Topic C string size in bytes \\
+\hline
+{\em message} & The atomicx\+::message payload received\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true signify it was correctly processed
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Can be overloaded by the derived by the derived thread implementation and specialized, otherwise a empty function will be called instead 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_a8a832099edb224496c7ba204695138c7}\label{classthread_1_1atomicx_a8a832099edb224496c7ba204695138c7}} 
+\index{thread::atomicx@{thread::atomicx}!end@{end}}
+\index{end@{end}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{end()}{end()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_1_1aiterator}{atomicx\+::aiterator}} thread\+::atomicx\+::end (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the end of the list. 
+
+\begin{DoxyReturn}{Returns}
+aiterator 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a641e79e24059fb3fcaf81ee54a2009be}\label{classthread_1_1atomicx_a641e79e24059fb3fcaf81ee54a2009be}} 
+\index{thread::atomicx@{thread::atomicx}!finish@{finish}}
+\index{finish@{finish}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{finish()}{finish()}}
+{\footnotesize\ttfamily virtual void thread\+::atomicx\+::finish (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}, {\ttfamily [noexcept]}}
+
+
+
+Called right after run returns, can be used to self-\/destroy the object and other maintenance actions. 
+
+\begin{DoxyNote}{Note}
+if not implemented a default \char`\"{}empty\char`\"{} call is used instead 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_a0a73c90e27fec5dea704c430c36e0cee}\label{classthread_1_1atomicx_a0a73c90e27fec5dea704c430c36e0cee}} 
+\index{thread::atomicx@{thread::atomicx}!GetCurrent@{GetCurrent}}
+\index{GetCurrent@{GetCurrent}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetCurrent()}{GetCurrent()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classthread_1_1atomicx}{atomicx}} $\ast$ thread\+::atomicx\+::\+Get\+Current (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Get the Current thread in execution. 
+
+\begin{DoxyReturn}{Returns}
+atomicx$\ast$ thread 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ac357706436b933641d236447cdbd5462}\label{classthread_1_1atomicx_ac357706436b933641d236447cdbd5462}} 
+\index{thread::atomicx@{thread::atomicx}!GetCurrentTick@{GetCurrentTick}}
+\index{GetCurrentTick@{GetCurrentTick}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetCurrentTick()}{GetCurrentTick()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} thread\+::atomicx\+::\+Get\+Current\+Tick (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the Current Tick using the ported tick granularity function. 
+
+\begin{DoxyReturn}{Returns}
+atomicx\+\_\+time based on the ported tick granularity 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a75865402817f74f5917c958c2cc631ed}\label{classthread_1_1atomicx_a75865402817f74f5917c958c2cc631ed}} 
+\index{thread::atomicx@{thread::atomicx}!GetID@{GetID}}
+\index{GetID@{GetID}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetID()}{GetID()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::\+Get\+ID (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the current thread ID. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t Thread ID number 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_af7c7ea1f95881fbc140c2a8f4cbf3c2e}\label{classthread_1_1atomicx_af7c7ea1f95881fbc140c2a8f4cbf3c2e}} 
+\index{thread::atomicx@{thread::atomicx}!GetLastUserExecTime@{GetLastUserExecTime}}
+\index{GetLastUserExecTime@{GetLastUserExecTime}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetLastUserExecTime()}{GetLastUserExecTime()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} thread\+::atomicx\+::\+Get\+Last\+User\+Exec\+Time (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the Last Execution of User Code. 
+
+\begin{DoxyReturn}{Returns}
+atomicx\+\_\+time 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a06fba915b6d19dd927f28a7b88fa566b}\label{classthread_1_1atomicx_a06fba915b6d19dd927f28a7b88fa566b}} 
+\index{thread::atomicx@{thread::atomicx}!GetName@{GetName}}
+\index{GetName@{GetName}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetName()}{GetName()}}
+{\footnotesize\ttfamily const char $\ast$ thread\+::atomicx\+::\+Get\+Name (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+\mbox{\Hypertarget{classthread_1_1atomicx_a075d951e2432e1e06f04691e3b83b2d5}\label{classthread_1_1atomicx_a075d951e2432e1e06f04691e3b83b2d5}} 
+\index{thread::atomicx@{thread::atomicx}!GetNice@{GetNice}}
+\index{GetNice@{GetNice}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetNice()}{GetNice()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} thread\+::atomicx\+::\+Get\+Nice (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the Nice the current thread. 
+
+\begin{DoxyReturn}{Returns}
+atomicx\+\_\+time the number representing the nice and based on the ported tick granularity. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a238414e659cf1bd1ac7b79eae1de1d10}\label{classthread_1_1atomicx_a238414e659cf1bd1ac7b79eae1de1d10}} 
+\index{thread::atomicx@{thread::atomicx}!GetReferenceLock@{GetReferenceLock}}
+\index{GetReferenceLock@{GetReferenceLock}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetReferenceLock()}{GetReferenceLock()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::\+Get\+Reference\+Lock (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the Reference Lock last used to lock the thread. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t the lock\+\_\+id (used my wait) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_aee0a056b991664861eade9caf6adbd32}\label{classthread_1_1atomicx_aee0a056b991664861eade9caf6adbd32}} 
+\index{thread::atomicx@{thread::atomicx}!GetStackIncreasePace@{GetStackIncreasePace}}
+\index{GetStackIncreasePace@{GetStackIncreasePace}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetStackIncreasePace()}{GetStackIncreasePace()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::\+Get\+Stack\+Increase\+Pace (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the Stack Increase Pace value. 
+
+\mbox{\Hypertarget{classthread_1_1atomicx_ad58b1b08bf0c0a3fe62affac1bffe845}\label{classthread_1_1atomicx_ad58b1b08bf0c0a3fe62affac1bffe845}} 
+\index{thread::atomicx@{thread::atomicx}!GetStackSize@{GetStackSize}}
+\index{GetStackSize@{GetStackSize}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetStackSize()}{GetStackSize()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::\+Get\+Stack\+Size (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the Max Stack Size for the thread. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t size in bytes 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a59ff0db3d410d11672a4376432ec8188}\label{classthread_1_1atomicx_a59ff0db3d410d11672a4376432ec8188}} 
+\index{thread::atomicx@{thread::atomicx}!GetStatus@{GetStatus}}
+\index{GetStatus@{GetStatus}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetStatus()}{GetStatus()}}
+{\footnotesize\ttfamily int thread\+::atomicx\+::\+Get\+Status (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the current thread status. 
+
+\begin{DoxyReturn}{Returns}
+int use \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007ed}{atomicx\+::a\+Types}} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ab9b7e5c959deefbe1dfccab55233a0c7}\label{classthread_1_1atomicx_ab9b7e5c959deefbe1dfccab55233a0c7}} 
+\index{thread::atomicx@{thread::atomicx}!GetSubStatus@{GetSubStatus}}
+\index{GetSubStatus@{GetSubStatus}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetSubStatus()}{GetSubStatus()}}
+{\footnotesize\ttfamily int thread\+::atomicx\+::\+Get\+Sub\+Status (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the current thread sub status. 
+
+\begin{DoxyReturn}{Returns}
+int use \mbox{\hyperlink{classthread_1_1atomicx_a82633f5364d51f3b5a8dfed1e93007ed}{atomicx\+::a\+Types}} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a080c7d232dece44e29b3858fd4f2ac8c}\label{classthread_1_1atomicx_a080c7d232dece44e29b3858fd4f2ac8c}} 
+\index{thread::atomicx@{thread::atomicx}!GetTagLock@{GetTagLock}}
+\index{GetTagLock@{GetTagLock}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetTagLock()}{GetTagLock()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::\+Get\+Tag\+Lock (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the last tag message posted. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t atomicx\+::message\+::tag value 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a96d17265ebe39e32586b4e117c15ae68}\label{classthread_1_1atomicx_a96d17265ebe39e32586b4e117c15ae68}} 
+\index{thread::atomicx@{thread::atomicx}!GetTargetTime@{GetTargetTime}}
+\index{GetTargetTime@{GetTargetTime}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetTargetTime()}{GetTargetTime()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} thread\+::atomicx\+::\+Get\+Target\+Time (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get next moment in ported tick granularity the thread will be due to return. 
+
+\begin{DoxyReturn}{Returns}
+atomicx\+\_\+time based on the ported tick granularity 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ab27f5a456d8983f5c17102bc0aaa0da0}\label{classthread_1_1atomicx_ab27f5a456d8983f5c17102bc0aaa0da0}} 
+\index{thread::atomicx@{thread::atomicx}!GetTopicID@{GetTopicID}}
+\index{GetTopicID@{GetTopicID}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetTopicID()}{GetTopicID()}}
+{\footnotesize\ttfamily uint32\+\_\+t thread\+::atomicx\+::\+Get\+Topic\+ID (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Topic,  }\item[{size\+\_\+t}]{n\+Key\+Lenght }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+calculate the Topic ID for a given topic text 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Topic} & Topic Text in C string \\
+\hline
+{\em n\+Key\+Lenght} & Size, in bytes + zero terminated char\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+uint32\+\_\+t The calculated topic ID 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a5bdde2eddb025706719d11632b4450b7}\label{classthread_1_1atomicx_a5bdde2eddb025706719d11632b4450b7}} 
+\index{thread::atomicx@{thread::atomicx}!GetUsedStackSize@{GetUsedStackSize}}
+\index{GetUsedStackSize@{GetUsedStackSize}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{GetUsedStackSize()}{GetUsedStackSize()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::\+Get\+Used\+Stack\+Size (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get the Used Stack Size for the thread since the last context change cycle. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t size in bytes 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ab6b7c287310a686e589c57947084124b}\label{classthread_1_1atomicx_ab6b7c287310a686e589c57947084124b}} 
+\index{thread::atomicx@{thread::atomicx}!HasSubscriptions@{HasSubscriptions}}
+\index{HasSubscriptions@{HasSubscriptions}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{HasSubscriptions()}{HasSubscriptions()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Has\+Subscriptions (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Topic,  }\item[{size\+\_\+t}]{n\+Key\+Lenght }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Check if there is subscryption for a specific Topic String. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Topic} & The Topic string in C string \\
+\hline
+{\em n\+Key\+Lenght} & The Topic C string length in bytes\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if any substriction is found, otherwise false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ad335842d925985e2ea56639c5eda0f22}\label{classthread_1_1atomicx_ad335842d925985e2ea56639c5eda0f22}} 
+\index{thread::atomicx@{thread::atomicx}!HasSubscriptions@{HasSubscriptions}}
+\index{HasSubscriptions@{HasSubscriptions}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{HasSubscriptions()}{HasSubscriptions()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Has\+Subscriptions (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{n\+Key\+ID }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Check if there is subscryption for a specific Topic ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Key\+ID} & The Topic ID uint32\+\_\+t\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if any substriction is found, otherwise false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_af86a54fe9571c2fbab03c9f62f453ad5}\label{classthread_1_1atomicx_af86a54fe9571c2fbab03c9f62f453ad5}} 
+\index{thread::atomicx@{thread::atomicx}!HasWaitings@{HasWaitings}}
+\index{HasWaitings@{HasWaitings}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{HasWaitings()}{HasWaitings()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Has\+Waitings (\begin{DoxyParamCaption}\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Report how much waiting threads for a given reference pointer and tag value are there. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ref\+Var} & The reference pointer used a a notifier \\
+\hline
+{\em n\+Tag} & The size\+\_\+t tag that will give meaning to the notification, if n\+Tag == 0 mean all b\+Tag for the ref\+Var \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This is a powerful tool since it create layers of waiting within the same reference pointer 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_ae80cbf9f8fc2617eaa168d1281225715}\label{classthread_1_1atomicx_ae80cbf9f8fc2617eaa168d1281225715}} 
+\index{thread::atomicx@{thread::atomicx}!IsDynamicNiceOn@{IsDynamicNiceOn}}
+\index{IsDynamicNiceOn@{IsDynamicNiceOn}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{IsDynamicNiceOn()}{IsDynamicNiceOn()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Is\+Dynamic\+Nice\+On (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get Dynamic Nice status. 
+
+\begin{DoxyReturn}{Returns}
+true if dynamic nice is on otherwise off 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ae8d4a2b0d8f59ea33a59236d69034cc7}\label{classthread_1_1atomicx_ae8d4a2b0d8f59ea33a59236d69034cc7}} 
+\index{thread::atomicx@{thread::atomicx}!IsStackSelfManaged@{IsStackSelfManaged}}
+\index{IsStackSelfManaged@{IsStackSelfManaged}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{IsStackSelfManaged()}{IsStackSelfManaged()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Is\+Stack\+Self\+Managed (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Return if the current thread\textquotesingle{}s stack memory is automatic. 
+
+\mbox{\Hypertarget{classthread_1_1atomicx_a2407946fa015153b0a813d9ea7d15019}\label{classthread_1_1atomicx_a2407946fa015153b0a813d9ea7d15019}} 
+\index{thread::atomicx@{thread::atomicx}!IsSubscribed@{IsSubscribed}}
+\index{IsSubscribed@{IsSubscribed}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{IsSubscribed()}{IsSubscribed()}}
+{\footnotesize\ttfamily virtual bool thread\+::atomicx\+::\+Is\+Subscribed (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Key,  }\item[{size\+\_\+t}]{n\+Key\+Lenght }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Specialize and gives power to decide if a topic is subscrybed on not. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Key} & The Topic C String \\
+\hline
+{\em n\+Key\+Lenght} & The Topic C String size in bytes\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the given topic was subscribed, otherwise false. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ad4512ab7de89d7cfd6b5d60c2d986b3e}\label{classthread_1_1atomicx_ad4512ab7de89d7cfd6b5d60c2d986b3e}} 
+\index{thread::atomicx@{thread::atomicx}!IsWaiting@{IsWaiting}}
+\index{IsWaiting@{IsWaiting}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{IsWaiting()}{IsWaiting()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool thread\+::atomicx\+::\+Is\+Waiting (\begin{DoxyParamCaption}\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{size\+\_\+t}]{has\+Atleast = {\ttfamily 1},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Check if there are waiting threads for a given reference pointer and tag value. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ref\+Var} & The reference pointer used a a notifier \\
+\hline
+{\em n\+Tag} & The size\+\_\+t tag that will give meaning to the notification, if n\+Tag == 0 mean all b\+Tag for the ref\+Var \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This is a powerful tool since it create layers of waiting within the same reference pointer 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_af919d7337b1a6cc5912cd1c7c4fe5ea8}\label{classthread_1_1atomicx_af919d7337b1a6cc5912cd1c7c4fe5ea8}} 
+\index{thread::atomicx@{thread::atomicx}!LookForWaitings@{LookForWaitings}}
+\index{LookForWaitings@{LookForWaitings}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{LookForWaitings()}{LookForWaitings()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool thread\+::atomicx\+::\+Look\+For\+Waitings (\begin{DoxyParamCaption}\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag,  }\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{wait\+For }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Sync with thread call for a wait (ref\+Var,n\+Tag) 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ref\+Var} & The reference pointer \\
+\hline
+{\em n\+Tag} & The notification meaning, if n\+Tag == 0 means wait all ref\+Var regardless \\
+\hline
+{\em wait\+For} & default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true There is thread waiting for the given ref\+Var/n\+Tag 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a3a7a1c5a1e645c09c0ff0a6c355404c5}\label{classthread_1_1atomicx_a3a7a1c5a1e645c09c0ff0a6c355404c5}} 
+\index{thread::atomicx@{thread::atomicx}!LookForWaitings@{LookForWaitings}}
+\index{LookForWaitings@{LookForWaitings}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{LookForWaitings()}{LookForWaitings()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool thread\+::atomicx\+::\+Look\+For\+Waitings (\begin{DoxyParamCaption}\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag,  }\item[{size\+\_\+t}]{has\+Atleast,  }\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{wait\+For }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Sync with thread call for a wait (ref\+Var,n\+Tag) 
+
+\DoxyHorRuler{0}
+ \hypertarget{classthread_1_1atomicx_autotoc_md13}{}\doxysubsubsection{SMART WAIT/\+NOTIFY  IMPLEMENTATION}\label{classthread_1_1atomicx_autotoc_md13}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ref\+Var} & The reference pointer \\
+\hline
+{\em n\+Tag} & The notification meaning, if n\+Tag == 0 means wait all ref\+Var regardless \\
+\hline
+{\em wait\+For} & default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times \\
+\hline
+{\em has\+Atleast} & define how minimal Wait calls to report true\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true There is thread waiting for the given ref\+Var/n\+Tag 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a401db852c22e1982ae5c184ec93423c0}\label{classthread_1_1atomicx_a401db852c22e1982ae5c184ec93423c0}} 
+\index{thread::atomicx@{thread::atomicx}!Notify@{Notify}}
+\index{Notify@{Notify}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Notify()}{Notify()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Notify (\begin{DoxyParamCaption}\item[{size\+\_\+t \&\&}]{n\+Message,  }\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}}}]{notify\+All = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+\mbox{\Hypertarget{classthread_1_1atomicx_a8b3845a6f977e4fc9644e996d4102d75}\label{classthread_1_1atomicx_a8b3845a6f977e4fc9644e996d4102d75}} 
+\index{thread::atomicx@{thread::atomicx}!Notify@{Notify}}
+\index{Notify@{Notify}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Notify()}{Notify()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Notify (\begin{DoxyParamCaption}\item[{size\+\_\+t \&}]{n\+Message,  }\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}}}]{notify\+All = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Message} & The size\+\_\+t message to be sent \\
+\hline
+{\em ref\+Var} & The reference pointer used a a notifier \\
+\hline
+{\em n\+Tag} & The size\+\_\+t tag that will give meaning to the notification, if n\+Tag == 0 means notify all ref\+Var regardless \\
+\hline
+{\em notify\+All} & default = false, and only the fist available ref\+Var Waiting thread will be notified, if true all available ref\+Var waiting thread will be notified. \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one got notified, otherwise false. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ad1d6b634c9c90c1c15acc391f2b97671}\label{classthread_1_1atomicx_ad1d6b634c9c90c1c15acc391f2b97671}} 
+\index{thread::atomicx@{thread::atomicx}!Notify@{Notify}}
+\index{Notify@{Notify}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Notify()}{Notify()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Notify (\begin{DoxyParamCaption}\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}}}]{notify\+All = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ref\+Var} & The reference pointer used a a notifier \\
+\hline
+{\em n\+Tag} & The size\+\_\+t tag that will give meaning to the notification, if n\+Tag == 0 means notify all ref\+Var regardless \\
+\hline
+{\em notify\+All} & default = false, and only the fist available ref\+Var Waiting thread will be notified, if true all available ref\+Var waiting thread will be notified. \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one got notified, otherwise false. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a686358de14f2be34e688ee22dd5bc5b8}\label{classthread_1_1atomicx_a686358de14f2be34e688ee22dd5bc5b8}} 
+\index{thread::atomicx@{thread::atomicx}!Publish@{Publish}}
+\index{Publish@{Publish}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Publish()}{Publish()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Publish (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Key,  }\item[{size\+\_\+t}]{n\+Key\+Lenght }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Publish a notification for a specific topic string and trigger a context change if any delivered. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Key} & The Topic string \\
+\hline
+{\em n\+Key\+Lenght} & The size of the topic string in bytes\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one thread has received a message 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_afc67058a34cd39f3f853a7f9a2ae84fd}\label{classthread_1_1atomicx_afc67058a34cd39f3f853a7f9a2ae84fd}} 
+\index{thread::atomicx@{thread::atomicx}!Publish@{Publish}}
+\index{Publish@{Publish}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Publish()}{Publish()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Publish (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Key,  }\item[{size\+\_\+t}]{n\+Key\+Lenght,  }\item[{const \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}}}]{message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Publish a message for a specific topic string and trigger a context change if any delivered. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Key} & The Topic string \\
+\hline
+{\em n\+Key\+Lenght} & The size of the topic string in bytes \\
+\hline
+{\em message} & the atomicx\+::message structure with message and tag\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one thread has received a message 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a8917ef300f396b3d8bc9fdd8aacccf14}\label{classthread_1_1atomicx_a8917ef300f396b3d8bc9fdd8aacccf14}} 
+\index{thread::atomicx@{thread::atomicx}!run@{run}}
+\index{run@{run}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily virtual void thread\+::atomicx\+::run (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}, {\ttfamily [noexcept]}}
+
+
+
+The pure virtual function that runs the thread loop. 
+
+\begin{DoxyNote}{Note}
+REQUIRED implementation and once it returns it will execute finish method 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_a1cb98240204ba7c5981ad9ffba095253}\label{classthread_1_1atomicx_a1cb98240204ba7c5981ad9ffba095253}} 
+\index{thread::atomicx@{thread::atomicx}!SafeNotify@{SafeNotify}}
+\index{SafeNotify@{SafeNotify}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SafeNotify()}{SafeNotify()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Safe\+Notify (\begin{DoxyParamCaption}\item[{size\+\_\+t \&}]{n\+Message,  }\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}}}]{notify\+All = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Safely notify all Waits from a specific reference pointer along with a message without triggering context change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Message} & The size\+\_\+t message to be sent \\
+\hline
+{\em ref\+Var} & The reference pointer used a a notifier \\
+\hline
+{\em n\+Tag} & The size\+\_\+t tag that will give meaning to the notification, if n\+Tag == 0 means notify all ref\+Var regardless \\
+\hline
+{\em notify\+All} & default = false, and only the fist available ref\+Var Waiting thread will be notified, if true all available ref\+Var waiting thread will be notified. \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one got notified, otherwise false. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a3658882cb26cc60166bf7b29a7024d14}\label{classthread_1_1atomicx_a3658882cb26cc60166bf7b29a7024d14}} 
+\index{thread::atomicx@{thread::atomicx}!SafeNotify@{SafeNotify}}
+\index{SafeNotify@{SafeNotify}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SafeNotify()}{SafeNotify()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Safe\+Notify (\begin{DoxyParamCaption}\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}}}]{notify\+All = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Safely notify all Waits from a specific reference pointer without triggering context change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ref\+Var} & The reference pointer used a a notifier \\
+\hline
+{\em n\+Tag} & The size\+\_\+t tag that will give meaning to the notification, if n\+Tag == 0 means notify all ref\+Var regardless \\
+\hline
+{\em notify\+All} & default = false, and only the fist available ref\+Var Waiting thread will be notified, if true all available ref\+Var waiting thread will be notified. \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one got notified, otherwise false. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a4877838c0c1e38a7941f7ca86926ada9}\label{classthread_1_1atomicx_a4877838c0c1e38a7941f7ca86926ada9}} 
+\index{thread::atomicx@{thread::atomicx}!SafePublish@{SafePublish}}
+\index{SafePublish@{SafePublish}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SafePublish()}{SafePublish()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Safe\+Publish (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Key,  }\item[{size\+\_\+t}]{n\+Key\+Lenght }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Safely Publish a notification for a specific topic string DO NOT trigger a context change if any delivered. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Key} & The Topic string \\
+\hline
+{\em n\+Key\+Lenght} & The size of the topic string in bytes\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one thread has received a message
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Ideal for been used with interrupt request 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_a5b238f8831ae0cb3a53c685123e5a5d8}\label{classthread_1_1atomicx_a5b238f8831ae0cb3a53c685123e5a5d8}} 
+\index{thread::atomicx@{thread::atomicx}!SafePublish@{SafePublish}}
+\index{SafePublish@{SafePublish}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SafePublish()}{SafePublish()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Safe\+Publish (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Key,  }\item[{size\+\_\+t}]{n\+Key\+Lenght,  }\item[{const \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}}}]{message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Safely Publish a message for a specific topic string DO NOT trigger a context change if any delivered. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Key} & The Topic string \\
+\hline
+{\em n\+Key\+Lenght} & The size of the topic string in bytes \\
+\hline
+{\em message} & the atomicx\+::message structure with message and tag\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one thread has received a message
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Ideal for been used with interrupt request 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_aee21cbd30a48efbf3a55817ad9bfe3e3}\label{classthread_1_1atomicx_aee21cbd30a48efbf3a55817ad9bfe3e3}} 
+\index{thread::atomicx@{thread::atomicx}!SetDynamicNice@{SetDynamicNice}}
+\index{SetDynamicNice@{SetDynamicNice}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SetDynamicNice()}{SetDynamicNice()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::\+Set\+Dynamic\+Nice (\begin{DoxyParamCaption}\item[{bool}]{status }\end{DoxyParamCaption})}
+
+
+
+Set the Dynamic Nice on and off. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em status} & True for on otherwsize off \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classthread_1_1atomicx_a6663c1d4f9483ee2b00ff01426efb6c7}\label{classthread_1_1atomicx_a6663c1d4f9483ee2b00ff01426efb6c7}} 
+\index{thread::atomicx@{thread::atomicx}!SetNice@{SetNice}}
+\index{SetNice@{SetNice}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SetNice()}{SetNice()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::\+Set\+Nice (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{nice }\end{DoxyParamCaption})}
+
+
+
+Set the Nice of the thread. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nice} & in atomicx\+\_\+time reference based on the ported tick granularity \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classthread_1_1atomicx_acfdf080727d53cbaf31cd6b8c6595e5b}\label{classthread_1_1atomicx_acfdf080727d53cbaf31cd6b8c6595e5b}} 
+\index{thread::atomicx@{thread::atomicx}!SetStackIncreasePace@{SetStackIncreasePace}}
+\index{SetStackIncreasePace@{SetStackIncreasePace}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SetStackIncreasePace()}{SetStackIncreasePace()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::\+Set\+Stack\+Increase\+Pace (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{n\+Increase\+Pace }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Set the Stack Increase Pace object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Increase\+Pace} & The new stack increase pace value \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classthread_1_1atomicx_a8f358048df310da5b3f0b669605fc197}\label{classthread_1_1atomicx_a8f358048df310da5b3f0b669605fc197}} 
+\index{thread::atomicx@{thread::atomicx}!StackOverflowHandler@{StackOverflowHandler}}
+\index{StackOverflowHandler@{StackOverflowHandler}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{StackOverflowHandler()}{StackOverflowHandler()}}
+{\footnotesize\ttfamily virtual void thread\+::atomicx\+::\+Stack\+Overflow\+Handler (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}, {\ttfamily [noexcept]}}
+
+
+
+Handles the Stack\+Overflow of the current thread. 
+
+\begin{DoxyNote}{Note}
+REQUIRED 
+\end{DoxyNote}
+\mbox{\Hypertarget{classthread_1_1atomicx_a64de6117b863b3d2edd217798d9c27f4}\label{classthread_1_1atomicx_a64de6117b863b3d2edd217798d9c27f4}} 
+\index{thread::atomicx@{thread::atomicx}!Start@{Start}}
+\index{Start@{Start}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Start()}{Start()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Start (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Once it is call the process blocks execution and start all threads. 
+
+\begin{DoxyReturn}{Returns}
+false if it was destried by dead lock (all threads locked) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a7e4e0bf42bafa19be930b43b72d244f7}\label{classthread_1_1atomicx_a7e4e0bf42bafa19be930b43b72d244f7}} 
+\index{thread::atomicx@{thread::atomicx}!SyncNotify@{SyncNotify}}
+\index{SyncNotify@{SyncNotify}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SyncNotify()}{SyncNotify()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Sync\+Notify (\begin{DoxyParamCaption}\item[{size\+\_\+t \&\&}]{n\+Message,  }\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{wait\+For\+Waitings = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}}}]{notify\+All = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+\mbox{\Hypertarget{classthread_1_1atomicx_a91a943d6b7dbce240fb8bc611edead6b}\label{classthread_1_1atomicx_a91a943d6b7dbce240fb8bc611edead6b}} 
+\index{thread::atomicx@{thread::atomicx}!SyncNotify@{SyncNotify}}
+\index{SyncNotify@{SyncNotify}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SyncNotify()}{SyncNotify()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Sync\+Notify (\begin{DoxyParamCaption}\item[{size\+\_\+t \&}]{n\+Message,  }\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{wait\+For\+Waitings = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}}}]{notify\+All = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+SYNC Waits for at least one Wait call for a given reference pointer along with a message and trigger context change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Message} & The size\+\_\+t message to be sent \\
+\hline
+{\em ref\+Var} & The reference pointer used a a notifier \\
+\hline
+{\em n\+Tag} & The size\+\_\+t tag that will give meaning to the notification, if n\+Tag == 0 means notify all ref\+Var regardless \\
+\hline
+{\em wait\+For\+Waitings} & default=0 (waiting for Waiting calls) othersize wait for Wait commands compatible with the paramenters (Sync call). \\
+\hline
+{\em notify\+All} & default = false, and only the fist available ref\+Var Waiting thread will be notified, if true all available ref\+Var waiting thread will be notified. \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one got notified, otherwise false. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_aad548d78d129a70a9e68862e06d4db9d}\label{classthread_1_1atomicx_aad548d78d129a70a9e68862e06d4db9d}} 
+\index{thread::atomicx@{thread::atomicx}!SyncNotify@{SyncNotify}}
+\index{SyncNotify@{SyncNotify}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{SyncNotify()}{SyncNotify()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t thread\+::atomicx\+::\+Sync\+Notify (\begin{DoxyParamCaption}\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag,  }\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{wait\+For\+Waitings = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275ab}{Notify\+Type}}}]{notify\+All = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82}{Notify\+Type\+::one}}},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+SYNC Waits for at least one Wait call for a given reference pointer and trigger context change. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ref\+Var} & The reference pointer used a a notifier \\
+\hline
+{\em n\+Tag} & The size\+\_\+t tag that will give meaning to the notification, if n\+Tag == 0 means notify all ref\+Var regardless \\
+\hline
+{\em wait\+For\+Waitings} & default=0 (waiting for Waiting calls) othersize wait for Wait commands compatible with the paramenters (Sync call). \\
+\hline
+{\em notify\+All} & default = false, and only the fist available ref\+Var Waiting thread will be notified, if true all available ref\+Var waiting thread will be notified. \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if at least one got notified, otherwise false. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a51434a435b3470ee885272a18e7838bb}\label{classthread_1_1atomicx_a51434a435b3470ee885272a18e7838bb}} 
+\index{thread::atomicx@{thread::atomicx}!Wait@{Wait}}
+\index{Wait@{Wait}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Wait()}{Wait()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool thread\+::atomicx\+::\+Wait (\begin{DoxyParamCaption}\item[{size\+\_\+t \&}]{n\+Message,  }\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{wait\+For = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Blocks/\+Waits a notification along with a message and tag from a specific reference pointer. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Message} & the size\+\_\+t message to be received \\
+\hline
+{\em ref\+Var} & the reference pointer used as a notifier \\
+\hline
+{\em n\+Tag} & the size\+\_\+t tag that will give meaning to the the message, if n\+Tag == 0 means wait all ref\+Var regardless \\
+\hline
+{\em wait\+For} & default==0 (undefinitly), How log to wait for a notification based on atomicx\+\_\+time \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if it was successfully received. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_aae81685ea59341f64a4b3d8cc5886563}\label{classthread_1_1atomicx_aae81685ea59341f64a4b3d8cc5886563}} 
+\index{thread::atomicx@{thread::atomicx}!Wait@{Wait}}
+\index{Wait@{Wait}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Wait()}{Wait()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool thread\+::atomicx\+::\+Wait (\begin{DoxyParamCaption}\item[{T \&}]{ref\+Var,  }\item[{size\+\_\+t}]{n\+Tag = {\ttfamily 0},  }\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{wait\+For = {\ttfamily 0},  }\item[{\mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67f}{a\+Sub\+Types}}}]{asub\+Type = {\ttfamily \mbox{\hyperlink{classthread_1_1atomicx_ad539e1e9bbab631727153dea853aa67fa49256b9819abacbb8e6e031a03abe81b}{a\+Sub\+Types\+::wait}}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Blocks/\+Waits a notification along with a tag from a specific reference pointer. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the reference pointer \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em ref\+Var} & the reference pointer used as a notifier \\
+\hline
+{\em n\+Tag} & the size\+\_\+t tag that will give meaning to the the message, if n\+Tag == 0 means wait all ref\+Var regardless \\
+\hline
+{\em wait\+For} & default==0 (undefinitly), How log to wait for a notification based on atomicx\+\_\+time \\
+\hline
+{\em asub\+Type} & Type of the notification, only use it if you know what you are doing, it creates a different type of wait/notify, deafault == a\+Sub\+Type\+::wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if it was successfully received. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a1cfdab652a4a90fa8c760d9ee3a802fb}\label{classthread_1_1atomicx_a1cfdab652a4a90fa8c760d9ee3a802fb}} 
+\index{thread::atomicx@{thread::atomicx}!WaitBrokerMessage@{WaitBrokerMessage}}
+\index{WaitBrokerMessage@{WaitBrokerMessage}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{WaitBrokerMessage()}{WaitBrokerMessage()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Wait\+Broker\+Message (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Key,  }\item[{size\+\_\+t}]{n\+Key\+Lenght }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Block and wait for a notification from a specific topic string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Key} & The Topic string \\
+\hline
+{\em n\+Key\+Lenght} & The size of the topic string in bytes\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if it was successfully received, otherwise false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a407be004173a7db41834eb58fb8f4436}\label{classthread_1_1atomicx_a407be004173a7db41834eb58fb8f4436}} 
+\index{thread::atomicx@{thread::atomicx}!WaitBrokerMessage@{WaitBrokerMessage}}
+\index{WaitBrokerMessage@{WaitBrokerMessage}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{WaitBrokerMessage()}{WaitBrokerMessage()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Wait\+Broker\+Message (\begin{DoxyParamCaption}\item[{const char $\ast$}]{psz\+Key,  }\item[{size\+\_\+t}]{n\+Key\+Lenght,  }\item[{\mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{Message}} \&}]{message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Block and wait for message from a specific topic string. 
+
+\DoxyHorRuler{0}
+ \hypertarget{classthread_1_1atomicx_autotoc_md15}{}\doxysubsubsection{SMART BROKER IMPLEMENTATION}\label{classthread_1_1atomicx_autotoc_md15}
+
+\begin{DoxyParams}{Parameters}
+{\em psz\+Key} & The Topic string \\
+\hline
+{\em n\+Key\+Lenght} & The size of the topic string in bytes \\
+\hline
+{\em message} & the atomicx\+::message structure with message and tag\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if it was successfully received, otherwise false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_ab3dd1245396fc470b7b2c6a31a4455ca}\label{classthread_1_1atomicx_ab3dd1245396fc470b7b2c6a31a4455ca}} 
+\index{thread::atomicx@{thread::atomicx}!Yield@{Yield}}
+\index{Yield@{Yield}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{Yield()}{Yield()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Yield (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{n\+Sleep = {\ttfamily \mbox{\hyperlink{atomicx_8hpp_a5f79904e0c0abe4f6120ed97f66b3802}{ATOMICX\+\_\+\+TIME\+\_\+\+MAX}}} }\end{DoxyParamCaption})}
+
+
+
+Foce the context change explicitly. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Sleep} & default is ATOMICX\+\_\+\+TIME\+\_\+\+MAX, otherwise it will override the nice and sleep for n custom tick granularity\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the context came back correctly, otherwise false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_a8b38e8d84d71903a9162bcc541235614}\label{classthread_1_1atomicx_a8b38e8d84d71903a9162bcc541235614}} 
+\index{thread::atomicx@{thread::atomicx}!YieldNow@{YieldNow}}
+\index{YieldNow@{YieldNow}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{YieldNow()}{YieldNow()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::\+Yield\+Now (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Trigger a high priority NOW, caution it will always execute before normal yield. 
+
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_abb1519b6cc2f9dbe3521f3cffd011f15}\label{classthread_1_1atomicx_abb1519b6cc2f9dbe3521f3cffd011f15}} 
+\index{thread::atomicx@{thread::atomicx}!autoStack@{autoStack}}
+\index{autoStack@{autoStack}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{autoStack}{autoStack}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::auto\+Stack}
+
+\mbox{\Hypertarget{classthread_1_1atomicx_a736d1417c7f474e02b2684eebfb96b78}\label{classthread_1_1atomicx_a736d1417c7f474e02b2684eebfb96b78}} 
+\index{thread::atomicx@{thread::atomicx}!dynamicNice@{dynamicNice}}
+\index{dynamicNice@{dynamicNice}!thread::atomicx@{thread::atomicx}}
+\doxysubsubsection{\texorpdfstring{dynamicNice}{dynamicNice}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::dynamic\+Nice}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+atomicx/\mbox{\hyperlink{atomicx_8hpp}{atomicx.\+hpp}}\item 
+atomicx/\mbox{\hyperlink{atomicx_8cpp}{atomicx.\+cpp}}\end{DoxyCompactItemize}

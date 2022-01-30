@@ -1,0 +1,138 @@
+\hypertarget{classthread_1_1atomicx_1_1semaphore}{}\doxysection{thread\+::atomicx\+::semaphore Class Reference}
+\label{classthread_1_1atomicx_1_1semaphore}\index{thread::atomicx::semaphore@{thread::atomicx::semaphore}}
+
+
+{\ttfamily \#include $<$atomicx.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore_a79d76e6e1ee01a6677883905e7087e09}{semaphore}} (size\+\_\+t n\+Max\+Shared)
+\begin{DoxyCompactList}\small\item\em Construct a new semaphore with Max\+Shared allowed. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore_a3878e64275d2b5ff7e2ac048c8ef3f71}{acquire}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} n\+Timeout=0)
+\begin{DoxyCompactList}\small\item\em Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore_a1709f7143fe5b61c059b5863b96a97f1}{release}} ()
+\begin{DoxyCompactList}\small\item\em Releases one shared lock. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore_ad75031cc128b92ac9c88c53506ac6d43}{Get\+Count}} ()
+\begin{DoxyCompactList}\small\item\em Get How many shared locks at a given moment. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore_a62bc2b7526553d6b2ad72da530adf4cb}{Get\+Wait\+Count}} ()
+\begin{DoxyCompactList}\small\item\em Get how many waiting threads for accquiring context. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore_a00091856b2f9a2c0fe74c6f906889a33}{Get\+Max\+Acquired}} ()
+\begin{DoxyCompactList}\small\item\em Get the Max Acquired Number. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore_ade0023e9bf71f3ea941281355e0a0559}{Get\+Max}} ()
+\begin{DoxyCompactList}\small\item\em Get the maximun accquired context possible. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\DoxyHorRuler{0}
+ \hypertarget{classthread_1_1atomicx_1_1semaphore_autotoc_md9}{}\doxysubsubsection{SEMAPHORES IMPLEMENTATION}\label{classthread_1_1atomicx_1_1semaphore_autotoc_md9}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1semaphore_a79d76e6e1ee01a6677883905e7087e09}\label{classthread_1_1atomicx_1_1semaphore_a79d76e6e1ee01a6677883905e7087e09}} 
+\index{thread::atomicx::semaphore@{thread::atomicx::semaphore}!semaphore@{semaphore}}
+\index{semaphore@{semaphore}!thread::atomicx::semaphore@{thread::atomicx::semaphore}}
+\doxysubsubsection{\texorpdfstring{semaphore()}{semaphore()}}
+{\footnotesize\ttfamily thread\+::atomicx\+::semaphore\+::semaphore (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{n\+Max\+Shared }\end{DoxyParamCaption})}
+
+
+
+Construct a new semaphore with Max\+Shared allowed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Max\+Shred} & Max shared lock \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1semaphore_a3878e64275d2b5ff7e2ac048c8ef3f71}\label{classthread_1_1atomicx_1_1semaphore_a3878e64275d2b5ff7e2ac048c8ef3f71}} 
+\index{thread::atomicx::semaphore@{thread::atomicx::semaphore}!acquire@{acquire}}
+\index{acquire@{acquire}!thread::atomicx::semaphore@{thread::atomicx::semaphore}}
+\doxysubsubsection{\texorpdfstring{acquire()}{acquire()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::semaphore\+::acquire (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{n\+Timeout = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+
+
+Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Timeout} & default = 0 (indefinitely), How long to wait of accquiring\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if it acquired the context, otherwise timeout returns false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1semaphore_ad75031cc128b92ac9c88c53506ac6d43}\label{classthread_1_1atomicx_1_1semaphore_ad75031cc128b92ac9c88c53506ac6d43}} 
+\index{thread::atomicx::semaphore@{thread::atomicx::semaphore}!GetCount@{GetCount}}
+\index{GetCount@{GetCount}!thread::atomicx::semaphore@{thread::atomicx::semaphore}}
+\doxysubsubsection{\texorpdfstring{GetCount()}{GetCount()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::semaphore\+::\+Get\+Count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get How many shared locks at a given moment. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t Number of shared locks 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1semaphore_ade0023e9bf71f3ea941281355e0a0559}\label{classthread_1_1atomicx_1_1semaphore_ade0023e9bf71f3ea941281355e0a0559}} 
+\index{thread::atomicx::semaphore@{thread::atomicx::semaphore}!GetMax@{GetMax}}
+\index{GetMax@{GetMax}!thread::atomicx::semaphore@{thread::atomicx::semaphore}}
+\doxysubsubsection{\texorpdfstring{GetMax()}{GetMax()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::semaphore\+::\+Get\+Max (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Get the maximun accquired context possible. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1semaphore_a00091856b2f9a2c0fe74c6f906889a33}\label{classthread_1_1atomicx_1_1semaphore_a00091856b2f9a2c0fe74c6f906889a33}} 
+\index{thread::atomicx::semaphore@{thread::atomicx::semaphore}!GetMaxAcquired@{GetMaxAcquired}}
+\index{GetMaxAcquired@{GetMaxAcquired}!thread::atomicx::semaphore@{thread::atomicx::semaphore}}
+\doxysubsubsection{\texorpdfstring{GetMaxAcquired()}{GetMaxAcquired()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::semaphore\+::\+Get\+Max\+Acquired (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the Max Acquired Number. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t The max acquired context number 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1semaphore_a62bc2b7526553d6b2ad72da530adf4cb}\label{classthread_1_1atomicx_1_1semaphore_a62bc2b7526553d6b2ad72da530adf4cb}} 
+\index{thread::atomicx::semaphore@{thread::atomicx::semaphore}!GetWaitCount@{GetWaitCount}}
+\index{GetWaitCount@{GetWaitCount}!thread::atomicx::semaphore@{thread::atomicx::semaphore}}
+\doxysubsubsection{\texorpdfstring{GetWaitCount()}{GetWaitCount()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::semaphore\+::\+Get\+Wait\+Count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get how many waiting threads for accquiring context. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t Number of waiting threads 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1semaphore_a1709f7143fe5b61c059b5863b96a97f1}\label{classthread_1_1atomicx_1_1semaphore_a1709f7143fe5b61c059b5863b96a97f1}} 
+\index{thread::atomicx::semaphore@{thread::atomicx::semaphore}!release@{release}}
+\index{release@{release}!thread::atomicx::semaphore@{thread::atomicx::semaphore}}
+\doxysubsubsection{\texorpdfstring{release()}{release()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::semaphore\+::release (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Releases one shared lock. 
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+atomicx/\mbox{\hyperlink{atomicx_8hpp}{atomicx.\+hpp}}\item 
+atomicx/\mbox{\hyperlink{atomicx_8cpp}{atomicx.\+cpp}}\end{DoxyCompactItemize}
