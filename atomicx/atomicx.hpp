@@ -13,7 +13,7 @@
 #include <setjmp.h>
 
 /* Official version */
-#define ATOMICX_VERSION "1.2.0"
+#define ATOMICX_VERSION "1.2.1"
 #define ATOMIC_VERSION_LABEL "AtomicX v" ATOMICX_VERSION " built at " __TIMESTAMP__
 
 using atomicx_time = uint32_t;
