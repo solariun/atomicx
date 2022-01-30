@@ -1,6 +1,6 @@
 # AtomicX
 
-Version 1.2.0 release
+Version 1.2.1 release
 
 ![image](https://user-images.githubusercontent.com/1805792/125191254-6591cf80-e239-11eb-9e89-d7500e793cd4.png)
 
@@ -10,6 +10,10 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+## Version 1.2.1
+
+* Adding Dynamic Nice, now it is possible to let the kernel set the best performance for your thread, for this `SetNice(*initial nice*)` and than `SetDynamicNice(true)` in the constructor of your thread. The kernel will be able to always adjust your thread for Best performance, but, it will leave no room for sleeps between threads, increasing power consumption, it is powerful but use it carefully.
+
 * Added `YieldNow()` the higher priority context change, it will allow other threads to work, but will, also return faster than others
 
 * **`smartSemaphore`**, Used to compliance with RII, once used in the thread context, it takes a semaphore to be initialized and expose the same methods, although it manages the local context, and ones it it gets out of context, due to leaving  {} or a functions, for example the semaphore shared context is released if ever taken during the smartSemaphore instantiated object life cycle. The same is available for `mutex`, called `smartMutex`, follows the same principle.
@@ -18,7 +22,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 * Introducing `atomicx::Timeout`, this will help tracking a timeout over time, using methods `IsTimedout` and `GetRemaining` and `GetDurationSince`. Special use case, if the timeout value is zero, IsTimedout will always return false.
 
-* **IMPORTAT NOTIFICATION** `atomicx::lock` has been renamed to `atomicx::mutex` for consistency, all methods are the same.
+* **IMPORTANT NOTIFICATION** `atomicx::lock` has been renamed to `atomicx::mutex` for consistency, all methods are the same.
 
 * **Improvement** Added a contructor for self-manager start to define a start size and increase pace. For example: a thread starts with 150 bytes and increase pace of 10, but used stack was 200, the kernel will do 200 + 10 (increase pace) to give it room to work. The default value is (1)
 ```cpp
