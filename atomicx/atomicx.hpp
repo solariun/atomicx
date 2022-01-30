@@ -13,7 +13,7 @@
 #include <setjmp.h>
 
 /* Official version */
-#define ATOMICX_VERSION "1.2.0"
+#define ATOMICX_VERSION "1.2.1"
 #define ATOMIC_VERSION_LABEL "AtomicX v" ATOMICX_VERSION " built at " __TIMESTAMP__
 
 using atomicx_time = uint32_t;
@@ -917,7 +917,7 @@ namespace thread
          */
         template<typename T, size_t N> atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
         {
-            m_flags.autoStack = false;
+           SetDefaultParameters();
 
             AddThisThread();
         }
@@ -986,9 +986,29 @@ namespace thread
         void YieldNow (void);
 
         /**
+         * @brief Set the Dynamic Nice on and off
+         *
+         * @param status    True for on otherwsize off
+         */
+        void SetDynamicNice(bool status);
+
+        /**
+         * @brief Get Dynamic Nice status
+         *
+         * @return true if dynamic nice is on otherwise off
+         */
+        bool IsDynamicNiceOn();
+
+        /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */
     private:
+
+        /**
+         * @brief Set the Default Parameters for constructors
+         *
+         */
+        void SetDefaultParameters ();
 
         template<typename T> void SetWaitParammeters (T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
         {
@@ -1642,6 +1662,7 @@ namespace thread
         struct
         {
             bool autoStack : 1;
+            bool dynamicNice : 1;
         } m_flags = {};
     };
 }

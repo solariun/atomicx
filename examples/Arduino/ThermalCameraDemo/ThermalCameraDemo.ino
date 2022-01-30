@@ -250,7 +250,10 @@ public:
     TextScroller (atomicx_time nNice) : atomicx(m_stack), nNumberDigits (MAX_LED_MATRIX), nOffset (0), nSpeed (2)
     {
         nIndex = (nSpeed == 0) ? nNumberDigits * (-1) : 0;
+
         SetNice (nNice);
+
+        SetDynamicNice(true);
 
         strMatrixText.concat (F("Welcome to AtomicX Thermal Camera demo."));
     }
@@ -438,7 +441,7 @@ protected:
             {
                 vt100::ResetColor ();
                 Serial.flush ();
-                Yield (1);
+                Yield ();
                 vt100::SetLocation (12-((i) / 8), 1);
                 Serial.print (F("\e[K"));
                 Serial.flush ();
@@ -510,6 +513,7 @@ public:
         Serial.flush ();
 
         SetNice (nNice);
+        SetDynamicNice (true);
     }
 
     char* GetName()

@@ -39,6 +39,7 @@ public:
     Consumer(uint32_t nNice) :  atomicx (::GetStackSize(10), 10)
     {
         SetNice(nNice);
+        SetDynamicNice(true);
     }
 
     const char* GetName () override
