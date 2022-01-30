@@ -4,6 +4,79 @@
 <param name="FrameName" value="right">
 </OBJECT>
 <UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Arduino procedures"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html"><param name="ImageNumber" value="1"></OBJECT>
+  <UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Install arduino-cli"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md17"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Useful commands"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md18"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Compiling and uploading"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md19"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="LIST CPUS and other options from a board"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md20"><param name="ImageNumber" value="11"></OBJECT>
+    </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Before you start"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md21"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Create a configuration file"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md22"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Create a new sketch"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md23"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Connect the board to your PC"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md24"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Install the core for your board"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md25"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Adding 3rd party cores"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md26"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Compile and upload the sketch"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md27"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Add libraries"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md28"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Using the &lt;tt&gt;daemon&lt;/tt&gt; mode and the gRPC interface"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md29"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Configuration keys"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md30"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Configuration methods"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md31"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Command line flags"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md32"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Example"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md33"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Environment variables"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md34"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Example"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md35"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Configuration file"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md36"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="File name"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md37"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Supported formats"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md38"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Locations"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md39"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Example"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md40"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Sketch folders and files"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md41"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Sketch root folder"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md42"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Primary sketch file"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md43"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Additional code files"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md44"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="&lt;tt&gt;src&lt;/tt&gt; subfolder"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md45"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="&lt;tt&gt;data&lt;/tt&gt; subfolder"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md46"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Metadata"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md47"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Secrets"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md48"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Documentation"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md49"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Sketch file structure example"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md50"><param name="ImageNumber" value="11"></OBJECT>
+    </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Sketchbook"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md51"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Library/Boards Manager links"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md52"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Example"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md53"><param name="ImageNumber" value="11"></OBJECT>
+    </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="See also"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md54"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Boards"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md55"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="repos"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md56"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Full TODAY&#39;s boards"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md57"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Hints for bluepill STM32F103"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html#autotoc_md58"><param name="ImageNumber" value="11"></OBJECT>
+  </UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="AtomicX"><param name="Local" value="md__r_e_a_d_m_e.html"><param name="ImageNumber" value="1"></OBJECT>
+  <UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Backlog and updates"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md60"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Implementations from Work on progress"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md61"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Version 1.2.1"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md62"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Version 1.2.0"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md63"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Version 1.1.3"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md64"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Version 1.1.2"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md65"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Version 1.1.1"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md66"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Version 1.1.0"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md67"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Version 1.0.0"><param name="Local" value="md__r_e_a_d_m_e.html#autotoc_md68"><param name="ImageNumber" value="11"></OBJECT>
+    </UL>
+  </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Namespaces"><param name="Local" value="namespaces.html"><param name="ImageNumber" value="1"></OBJECT>
   <UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Namespace List"><param name="Local" value="namespaces.html"><param name="ImageNumber" value="1"></OBJECT>
@@ -376,8 +449,71 @@
         <LI><OBJECT type="text/sitemap"><param name="Name" value="dynamicNice"><param name="Local" value="classthread_1_1atomicx.html#a736d1417c7f474e02b2684eebfb96b78"><param name="ImageNumber" value="11"></OBJECT>
         </UL>
       </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="SelfManagedThread"><param name="Local" value="class_self_managed_thread.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="SelfManagedThread"><param name="Local" value="class_self_managed_thread.html#a2d30c45f4f0ef4fb42c217954760ace5"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="~SelfManagedThread"><param name="Local" value="class_self_managed_thread.html#a138c956b6f18a2f132656682727d06e7"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_self_managed_thread.html#a0ed0a8fc141fe5b3592dc334a83604ba"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_self_managed_thread.html#a0cec343208a5fd0b7053173dff8f676f"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_self_managed_thread.html#a32fabc24520ab27991288c95012500fd"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#a783a2eaf51eca955a2047bd0c5430269"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#ac1aad1f98fc8dda927c5f9bda3955a18"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#aecf65e0216a374d0e303c6214c2dfba6"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="~ThreadConsummer"><param name="Local" value="class_thread_consummer.html#a223ba01a7508400bd77b45a3a21165c4"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#ac1aad1f98fc8dda927c5f9bda3955a18"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#aecf65e0216a374d0e303c6214c2dfba6"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="~ThreadConsummer"><param name="Local" value="class_thread_consummer.html#a223ba01a7508400bd77b45a3a21165c4"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
     </UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Data Structure Index"><param name="Local" value="classes.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Class Hierarchy"><param name="Local" value="hierarchy.html"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::aiterator"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx"><param name="Local" value="classthread_1_1atomicx.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="SelfManagedThread"><param name="Local" value="class_self_managed_thread.html"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::Message"><param name="Local" value="structthread_1_1atomicx_1_1_message.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::mutex"><param name="Local" value="classthread_1_1atomicx_1_1mutex.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::queue&lt; T &gt;::QItem"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::queue&lt; T &gt;"><param name="Local" value="classthread_1_1atomicx_1_1queue.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::semaphore"><param name="Local" value="classthread_1_1atomicx_1_1semaphore.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::smart_ptr&lt; T &gt;"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::smartMutex"><param name="Local" value="classthread_1_1atomicx_1_1smart_mutex.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::smartSemaphore"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="thread::atomicx::Timeout"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html"><param name="ImageNumber" value="11"></OBJECT>
+    </UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Data Fields"><param name="Local" value="functions.html"><param name="ImageNumber" value="1"></OBJECT>
     <UL>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="All"><param name="Local" value="functions.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -691,11 +827,175 @@
         <LI><OBJECT type="text/sitemap"><param name="Name" value="yield"><param name="Local" value="atomicx_8hpp.html#a7cb51f5c2b5cad3766f19eb69c92793b"><param name="ImageNumber" value="11"></OBJECT>
         </UL>
       </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="examples"><param name="Local" value="dir_d28a4824dc47e487b107a5db32ef43c4.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Arduino"><param name="Local" value="dir_566e3080b9de3b93d5667d10c656a736.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="avrAutoRobotController"><param name="Local" value="dir_b2a7a8c7ffdb9aba88e48286997d2316.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="avrAutoRobotController.ino"><param name="Local" value="avr_auto_robot_controller_8ino.html"><param name="ImageNumber" value="11"></OBJECT>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="pubsublock"><param name="Local" value="dir_8d8771a8b8dfcfdde0cce8b568d83617.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="pubsublock.ino"><param name="Local" value="pubsublock_8ino.html"><param name="ImageNumber" value="11"></OBJECT>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="semaphore"><param name="Local" value="dir_481a705a37dc961904c7c219f5665654.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="semaphore.ino"><param name="Local" value="semaphore_8ino.html"><param name="ImageNumber" value="11"></OBJECT>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="sharedlock"><param name="Local" value="dir_eb04b68d98654aae399e822451fd7573.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="sharedlock.ino"><param name="Local" value="sharedlock_8ino.html"><param name="ImageNumber" value="11"></OBJECT>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="simple"><param name="Local" value="dir_2d6f26eacc0d3de7d9aea6806ed937cd.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="simple.ino"><param name="Local" value="simple_8ino.html"><param name="ImageNumber" value="11"></OBJECT>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="ThermalCameraDemo"><param name="Local" value="dir_ec8077417311f27d4a97697afa4289a9.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="ThermalCameraDemo.ino"><param name="Local" value="_thermal_camera_demo_8ino.html"><param name="ImageNumber" value="11"></OBJECT>
+          </UL>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="pc"><param name="Local" value="dir_ad01fe19f6e334ad21940f7d9771a49b.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="semaphore"><param name="Local" value="dir_871304420857bca9d24c2b419f5db42d.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="semaphore.cpp"><param name="Local" value="semaphore_8cpp.html"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html"><param name="ImageNumber" value="1"></OBJECT>
+              <UL>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#ac1aad1f98fc8dda927c5f9bda3955a18"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#aecf65e0216a374d0e303c6214c2dfba6"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~ThreadConsummer"><param name="Local" value="class_thread_consummer.html#a223ba01a7508400bd77b45a3a21165c4"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#ac1aad1f98fc8dda927c5f9bda3955a18"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#aecf65e0216a374d0e303c6214c2dfba6"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~ThreadConsummer"><param name="Local" value="class_thread_consummer.html#a223ba01a7508400bd77b45a3a21165c4"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="ImageNumber" value="11"></OBJECT>
+              </UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html"><param name="ImageNumber" value="1"></OBJECT>
+              <UL>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#a783a2eaf51eca955a2047bd0c5430269"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+              </UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="Atomicx_GetTick"><param name="Local" value="semaphore_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="Atomicx_SleepTick"><param name="Local" value="semaphore_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="ListAllThreads"><param name="Local" value="semaphore_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="main"><param name="Local" value="semaphore_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="e1"><param name="Local" value="semaphore_8cpp.html#a5edc6de37b435c32863ecea4b73e43c9"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="nCounter"><param name="Local" value="semaphore_8cpp.html#ae1779946c59866d03daa930a59594c23"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="nGlobalCount"><param name="Local" value="semaphore_8cpp.html#ab2b19b7a148d8f9f02bdbef085f99406"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="sem"><param name="Local" value="semaphore_8cpp.html#a2990a8de09ebb02bfff296045710595f"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="t1"><param name="Local" value="semaphore_8cpp.html#a9a032b59690b12747156edc534aad7bb"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="simple"><param name="Local" value="dir_2a45daebcb92e8397803ce3c43e9ee74.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="simple.cpp"><param name="Local" value="simple_8cpp.html"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="SelfManagedThread"><param name="Local" value="class_self_managed_thread.html"><param name="ImageNumber" value="1"></OBJECT>
+              <UL>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="SelfManagedThread"><param name="Local" value="class_self_managed_thread.html#a2d30c45f4f0ef4fb42c217954760ace5"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~SelfManagedThread"><param name="Local" value="class_self_managed_thread.html#a138c956b6f18a2f132656682727d06e7"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_self_managed_thread.html#a0ed0a8fc141fe5b3592dc334a83604ba"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_self_managed_thread.html#a0cec343208a5fd0b7053173dff8f676f"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_self_managed_thread.html#a32fabc24520ab27991288c95012500fd"><param name="ImageNumber" value="11"></OBJECT>
+              </UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html"><param name="ImageNumber" value="1"></OBJECT>
+              <UL>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#a783a2eaf51eca955a2047bd0c5430269"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+              </UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="Atomicx_GetTick"><param name="Local" value="simple_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="Atomicx_SleepTick"><param name="Local" value="simple_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="ListAllThreads"><param name="Local" value="simple_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="main"><param name="Local" value="simple_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          </UL>
+        </UL>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="main.cpp"><param name="Local" value="main_8cpp.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#ac1aad1f98fc8dda927c5f9bda3955a18"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#aecf65e0216a374d0e303c6214c2dfba6"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="~ThreadConsummer"><param name="Local" value="class_thread_consummer.html#a223ba01a7508400bd77b45a3a21165c4"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#ac1aad1f98fc8dda927c5f9bda3955a18"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="ThreadConsummer"><param name="Local" value="class_thread_consummer.html#aecf65e0216a374d0e303c6214c2dfba6"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="~ThreadConsummer"><param name="Local" value="class_thread_consummer.html#a223ba01a7508400bd77b45a3a21165c4"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#a783a2eaf51eca955a2047bd0c5430269"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="Thread"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="~Thread"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="GetName"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="run"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="StackOverflowHandler"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Atomicx_GetTick"><param name="Local" value="main_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Atomicx_SleepTick"><param name="Local" value="main_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="ListAllThreads"><param name="Local" value="main_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="main"><param name="Local" value="main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="e1"><param name="Local" value="main_8cpp.html#a5edc6de37b435c32863ecea4b73e43c9"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="nCounter"><param name="Local" value="main_8cpp.html#ae1779946c59866d03daa930a59594c23"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="nGlobalCount"><param name="Local" value="main_8cpp.html#ab2b19b7a148d8f9f02bdbef085f99406"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="q"><param name="Local" value="main_8cpp.html#a9d6fa07987dd80eb143666b0b0331396"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="sem"><param name="Local" value="main_8cpp.html#a2990a8de09ebb02bfff296045710595f"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="t1"><param name="Local" value="main_8cpp.html#a9a032b59690b12747156edc534aad7bb"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
     </UL>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Globals"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
     <UL>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="All"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="Functions"><param name="Local" value="globals_func.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Variables"><param name="Local" value="globals_vars.html"><param name="ImageNumber" value="11"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="Typedefs"><param name="Local" value="globals_type.html"><param name="ImageNumber" value="11"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="Macros"><param name="Local" value="globals_defs.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>

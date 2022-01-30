@@ -1,0 +1,895 @@
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md17}{}\doxysection{Install arduino-\/cli}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md17}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md18}{}\doxysection{Useful commands}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md18}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{arduino-\/cli board details -\/b arduino:avr:uno -\/-\/list-\/programmers}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli board details "{}\$1"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli board listall}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli board listall esp8266:esp8266:wifi}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli board listall avr}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md19}{}\doxysection{Compiling and uploading}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md19}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{arduino-\/cli compile -\/b arduino:avr:nano:cpu=atmega328  -\/-\/upload -\/p "{}\$1"{} "{}\$2"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\# upload AVR using USB-\/ASP}
+\DoxyCodeLine{arduino-\/cli compile -\/b arduino:avr:nano:cpu=atmega328  -\/-\/upload -\/P usbasp  "{}\$1"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\# upload using avrisp XSP}
+\DoxyCodeLine{arduino-\/cli compile -\/b arduino:avr:nano:cpu=atmega328  -\/-\/upload -\/P avrisp -\/p "{}\$1"{} "{}\$2"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli compile -\/u -\/p "{}\$1"{}  -\/b esp32:esp32:heltec\_wifi\_kit\_32  "{}\$2"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli compile -\/u  -\/p "{}\$1"{} -\/b Arduino\_STM32:STM32F1:genericSTM32F103C:upload\_method=jlinkMethod,opt=o3std "{}\$2"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli compile -\/v -\/b esp8266:esp8266:wifi\_kit\_8:baud=921600 -\/upload -\/p "{}<serial>"{} "{}<arduino>"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli compile -\/b arduino:mbed\_nano:nano33ble -\/upload -\/p "{}<serial>"{} "{}<arduino>"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\# Using ST-\/LINK}
+\DoxyCodeLine{arduino-\/cli compile -\/v -\/b STMicroelectronics:stm32:GenF1:pnum=BLUEPILL\_F103C8,usb=CDCgen -\/upload -\/p "{}."{} "{}<arduino>"{}}
+
+\end{DoxyCode}
+
+
+Despite the lack of feature parity at the moment, Arduino CLI provides many of the features you can find in the Arduino IDE. Let\textquotesingle{}s see some examples.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md20}{}\doxysubsection{LIST CPUS and other options from a board}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md20}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{arduino-\/cli board details -\/b STMicroelectronics:stm32:GenF1}
+\DoxyCodeLine{}
+\DoxyCodeLine{arduino-\/cli board details -\/b arduino:avr:nano}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md21}{}\doxysection{Before you start}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md21}
+{\ttfamily arduino-\/cli} is a container of commands and each command has its own dedicated help text that can be shown with the {\ttfamily help} command like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli help core}
+\DoxyCodeLine{Arduino Core operations.}
+\DoxyCodeLine{}
+\DoxyCodeLine{Usage:}
+\DoxyCodeLine{    arduino-\/cli core [command]}
+\DoxyCodeLine{}
+\DoxyCodeLine{Examples:}
+\DoxyCodeLine{    ./arduino-\/cli core update-\/index}
+\DoxyCodeLine{}
+\DoxyCodeLine{Available Commands:}
+\DoxyCodeLine{    download     Downloads one or more cores and corresponding tool dependencies.}
+\DoxyCodeLine{    install      Installs one or more cores and corresponding tool dependencies.}
+\DoxyCodeLine{    list         Shows the list of installed platforms.}
+\DoxyCodeLine{    search       Search for a core in Boards Manager.}
+\DoxyCodeLine{    uninstall    Uninstalls one or more cores and corresponding tool dependencies if no more used.}
+\DoxyCodeLine{    update-\/index Updates the index of cores.}
+\DoxyCodeLine{    upgrade      Upgrades one or all installed platforms to the latest version.}
+\DoxyCodeLine{}
+\DoxyCodeLine{Flags:}
+\DoxyCodeLine{    -\/h, -\/-\/help   help for core}
+\DoxyCodeLine{}
+\DoxyCodeLine{Global Flags:}
+\DoxyCodeLine{        -\/-\/additional-\/urls strings   Additional URLs for Boards Manager.}
+\DoxyCodeLine{        -\/-\/config-\/file string        The custom config file (if not specified the default will be used).}
+\DoxyCodeLine{        -\/-\/format string             The output format, can be [text|json]. (default "{}text"{})}
+\DoxyCodeLine{        -\/-\/log-\/file string           Path to the file where logs will be written.}
+\DoxyCodeLine{        -\/-\/log-\/format string         The output format for the logs, can be [text|json].}
+\DoxyCodeLine{        -\/-\/log-\/level string          Messages with this level and above will be logged.}
+\DoxyCodeLine{    -\/v, -\/-\/verbose                   Print the logs on the standard output.}
+\DoxyCodeLine{}
+\DoxyCodeLine{Use "{}arduino-\/cli core [command] -\/-\/help"{} for more information about a command.}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md22}{}\doxysection{Create a configuration file}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md22}
+Arduino CLI doesn\textquotesingle{}t strictly require a configuration file to work because the command line interface provides any possible functionality. However, having one can spare you a lot of typing when issuing a command, so let\textquotesingle{}s go ahead and create it with\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli config init}
+\DoxyCodeLine{Config file written: /home/luca/.arduino15/arduino-\/cli.yaml}
+
+\end{DoxyCode}
+
+
+If you inspect the contents of {\ttfamily arduino-\/cli.\+yaml}, you\textquotesingle{}ll find the available options with their respective default values. For more information, see the configuration documentation.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md23}{}\doxysection{Create a new sketch}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md23}
+To create a new sketch named {\ttfamily My\+First\+Sketch} in the current directory, run the following command\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli sketch new MyFirstSketch}
+\DoxyCodeLine{Sketch created in: /home/luca/MyFirstSketch}
+
+\end{DoxyCode}
+
+
+A sketch is a folder containing assets like source files and libraries; the {\ttfamily new} command creates for you a .ino file called {\ttfamily My\+First\+Sketch.\+ino} containing Arduino boilerplate code\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cat \$HOME/MyFirstSketch/MyFirstSketch.ino}
+\DoxyCodeLine{void setup() \{}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{void loop() \{}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+At this point you can use your favourite file editor or IDE to open the file {\ttfamily \$\+HOME/\+My\+First\+Sketch/\+My\+First\+Sketch.ino} and change the code like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void} setup() \{}
+\DoxyCodeLine{    pinMode(LED\_BUILTIN, OUTPUT);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} loop() \{}
+\DoxyCodeLine{    digitalWrite(LED\_BUILTIN, HIGH);}
+\DoxyCodeLine{    delay(1000);}
+\DoxyCodeLine{    digitalWrite(LED\_BUILTIN, LOW);}
+\DoxyCodeLine{    delay(1000);}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md24}{}\doxysection{Connect the board to your PC}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md24}
+The first thing to do upon a fresh install is to update the local cache of available platforms and libraries by running\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli core update-\/index}
+\DoxyCodeLine{Updating index: package\_index.json downloaded}
+
+\end{DoxyCode}
+
+
+After connecting the board to your PC by using the USB cable, you should be able to check whether it\textquotesingle{}s been recognized by running\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli board list}
+\DoxyCodeLine{Port         Type              Board Name              FQBN                 Core}
+\DoxyCodeLine{/dev/ttyACM1 Serial Port (USB) Arduino/Genuino MKR1000 arduino:samd:mkr1000 arduino:samd}
+
+\end{DoxyCode}
+
+
+In this example, the MKR1000 board was recognized and from the output of the command you see the platform core called {\ttfamily arduino\+:samd} is the one that needs to be installed to make it work.
+
+If you see an {\ttfamily Unknown} board listed, uploading should still work as long as you identify the platform core and use the correct FQBN string. When a board is not detected for whatever reason, you can list all the supported boards and their FQBN strings by running the following\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli board listall mkr}
+\DoxyCodeLine{Board Name              FQBN}
+\DoxyCodeLine{Arduino MKR FOX 1200    arduino:samd:mkrfox1200}
+\DoxyCodeLine{Arduino MKR GSM 1400    arduino:samd:mkrgsm1400}
+\DoxyCodeLine{Arduino MKR WAN 1300    arduino:samd:mkrwan1300}
+\DoxyCodeLine{Arduino MKR WiFi 1010   arduino:samd:mkrwifi1010}
+\DoxyCodeLine{Arduino MKRZERO         arduino:samd:mkrzero}
+\DoxyCodeLine{Arduino/Genuino MKR1000 arduino:samd:mkr1000}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md25}{}\doxysection{Install the core for your board}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md25}
+To install the {\ttfamily arduino\+:samd} platform core, run the following\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli core install arduino:samd}
+\DoxyCodeLine{Downloading tools...}
+\DoxyCodeLine{arduino:arm-\/none-\/eabi-\/gcc@4.8.3-\/2014q1 downloaded}
+\DoxyCodeLine{arduino:bossac@1.7.0 downloaded}
+\DoxyCodeLine{arduino:openocd@0.9.0-\/arduino6-\/static downloaded}
+\DoxyCodeLine{arduino:CMSIS@4.5.0 downloaded}
+\DoxyCodeLine{arduino:CMSIS-\/Atmel@1.1.0 downloaded}
+\DoxyCodeLine{arduino:arduinoOTA@1.2.0 downloaded}
+\DoxyCodeLine{Downloading cores...}
+\DoxyCodeLine{arduino:samd@1.6.19 downloaded}
+\DoxyCodeLine{Installing tools...}
+\DoxyCodeLine{Installing platforms...}
+\DoxyCodeLine{Results:}
+\DoxyCodeLine{arduino:samd@1.6.19 -\/ Installed}
+\DoxyCodeLine{arduino:arm-\/none-\/eabi-\/gcc@4.8.3-\/2014q1 -\/ Installed}
+\DoxyCodeLine{arduino:bossac@1.7.0 -\/ Installed}
+\DoxyCodeLine{arduino:openocd@0.9.0-\/arduino6-\/static -\/ Installed}
+\DoxyCodeLine{arduino:CMSIS@4.5.0 -\/ Installed}
+\DoxyCodeLine{arduino:CMSIS-\/Atmel@1.1.0 -\/ Installed}
+\DoxyCodeLine{arduino:arduinoOTA@1.2.0 -\/ Installed}
+
+\end{DoxyCode}
+
+
+Now verify we have installed the core properly by running\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli core list}
+\DoxyCodeLine{ID              Installed       Latest  Name}
+\DoxyCodeLine{arduino:samd    1.6.19          1.6.19  Arduino SAMD Boards (32-\/bits ARM Cortex-\/M0+)}
+
+\end{DoxyCode}
+
+
+Great! Now we are ready to compile and upload the sketch.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md26}{}\doxysection{Adding 3rd party cores}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md26}
+If your board requires 3rd party core packages to work, you can list the URLs to additional package indexes in the Arduino CLI configuration file.
+
+For example, to add the ESP8266 core, edit the configuration file and change the {\ttfamily board\+\_\+manager} settings as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{board\_manager:}
+\DoxyCodeLine{  additional\_urls:}
+\DoxyCodeLine{    -\/ https://arduino.esp8266.com/stable/package\_esp8266com\_index.json}
+
+\end{DoxyCode}
+
+
+If you have your package indexes locally installed, you can list their file path in the Arduino CLI configuration file.
+
+For example, to add the NRF52832 core, edit the configuration file and change the {\ttfamily board\+\_\+manager} settings as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{board\_manager:}
+\DoxyCodeLine{  additional\_urls:}
+\DoxyCodeLine{    -\/ https://arduino.esp8266.com/stable/package\_esp8266com\_index.json}
+\DoxyCodeLine{    -\/ file:///absolute/path/to/your/package\_nrf52832\_index.json}
+
+\end{DoxyCode}
+
+
+From now on, commands supporting custom cores will automatically use the additional URL from the configuration file\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli core update-\/index}
+\DoxyCodeLine{Updating index: package\_index.json downloaded}
+\DoxyCodeLine{Updating index: package\_esp8266com\_index.json downloaded}
+\DoxyCodeLine{Updating index: package\_nrf52832\_index.json}
+\DoxyCodeLine{Updating index: package\_index.json downloaded}
+\DoxyCodeLine{}
+\DoxyCodeLine{\$ arduino-\/cli core search esp8266}
+\DoxyCodeLine{ID              Version Name}
+\DoxyCodeLine{esp8266:esp8266 2.5.2   esp8266}
+
+\end{DoxyCode}
+
+
+Alternatively, you can pass a link to the additional package index file with the {\ttfamily -\/-\/additional-\/urls} option, that has to be specified every time and for every command that operates on a 3rd party platform core, for example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli  core update-\/index -\/-\/additional-\/urls https://arduino.esp8266.com/stable/package\_esp8266com\_index.json}
+\DoxyCodeLine{Updating index: package\_esp8266com\_index.json downloaded}
+\DoxyCodeLine{}
+\DoxyCodeLine{\$ arduino-\/cli core search esp8266 -\/-\/additional-\/urls https://arduino.esp8266.com/stable/package\_esp8266com\_index.json}
+\DoxyCodeLine{ID              Version Name}
+\DoxyCodeLine{esp8266:esp8266 2.5.2   esp8266}
+
+\end{DoxyCode}
+
+
+The same applies to the additional package index file provided by file paths\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli  core update-\/index -\/-\/additional-\/urls file:///absolute/path/to/your/package\_esp8266com\_index.json}
+\DoxyCodeLine{Updating index: package\_esp8266com\_index.json downloaded}
+\DoxyCodeLine{}
+\DoxyCodeLine{\$ arduino-\/cli core search esp8266 -\/-\/additional-\/urls file:///absolute/path/to/your/package\_esp8266com\_index.json}
+\DoxyCodeLine{ID              Version Name}
+\DoxyCodeLine{esp8266:esp8266 2.5.2   esp8266}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md27}{}\doxysection{Compile and upload the sketch}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md27}
+To compile the sketch you run the {\ttfamily compile} command, passing the proper FQBN string\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli compile -\/-\/fqbn arduino:samd:mkr1000 MyFirstSketch}
+\DoxyCodeLine{Sketch uses 9600 bytes (3\%) of program storage space. Maximum is 262144 bytes.}
+
+\end{DoxyCode}
+
+
+To upload the sketch to your board, run the following command, using the serial port your board is connected to\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli upload -\/p /dev/ttyACM0 -\/-\/fqbn arduino:samd:mkr1000 MyFirstSketch}
+\DoxyCodeLine{No new serial port detected.}
+\DoxyCodeLine{Atmel SMART device 0x10010005 found}
+\DoxyCodeLine{Device       : ATSAMD21G18A}
+\DoxyCodeLine{Chip ID      : 10010005}
+\DoxyCodeLine{Version      : v2.0 [Arduino:XYZ] Dec 20 2016 15:36:43}
+\DoxyCodeLine{Address      : 8192}
+\DoxyCodeLine{Pages        : 3968}
+\DoxyCodeLine{Page Size    : 64 bytes}
+\DoxyCodeLine{Total Size   : 248KB}
+\DoxyCodeLine{Planes       : 1}
+\DoxyCodeLine{Lock Regions : 16}
+\DoxyCodeLine{Locked       : none}
+\DoxyCodeLine{Security     : false}
+\DoxyCodeLine{Boot Flash   : true}
+\DoxyCodeLine{BOD          : true}
+\DoxyCodeLine{BOR          : true}
+\DoxyCodeLine{Arduino      : FAST\_CHIP\_ERASE}
+\DoxyCodeLine{Arduino      : FAST\_MULTI\_PAGE\_WRITE}
+\DoxyCodeLine{Arduino      : CAN\_CHECKSUM\_MEMORY\_BUFFER}
+\DoxyCodeLine{Erase flash}
+\DoxyCodeLine{done in 0.784 seconds}
+\DoxyCodeLine{}
+\DoxyCodeLine{Write 9856 bytes to flash (154 pages)}
+\DoxyCodeLine{[==============================] 100\% (154/154 pages)}
+\DoxyCodeLine{done in 0.069 seconds}
+\DoxyCodeLine{}
+\DoxyCodeLine{Verify 9856 bytes of flash with checksum.}
+\DoxyCodeLine{Verify successful}
+\DoxyCodeLine{done in 0.009 seconds}
+\DoxyCodeLine{CPU reset.}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md28}{}\doxysection{Add libraries}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md28}
+If you need to add more functionalities to your sketch, chances are some of the libraries available in the Arduino ecosystem already provide what you need. For example, if you need a debouncing strategy to better handle button inputs, you can try searching for the {\ttfamily debouncer} keyword\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli lib search debouncer}
+\DoxyCodeLine{Name: "{}Debouncer"{}}
+\DoxyCodeLine{    Author: hideakitai}
+\DoxyCodeLine{    Maintainer: hideakitai}
+\DoxyCodeLine{    Sentence: Debounce library for Arduino}
+\DoxyCodeLine{    Paragraph: Debounce library for Arduino}
+\DoxyCodeLine{    Website: https://github.com/hideakitai}
+\DoxyCodeLine{    Category: Timing}
+\DoxyCodeLine{    Architecture: *}
+\DoxyCodeLine{    Types: Contributed}
+\DoxyCodeLine{    Versions: [0.1.0]}
+\DoxyCodeLine{Name: "{}FTDebouncer"{}}
+\DoxyCodeLine{    Author: Ubi de Feo}
+\DoxyCodeLine{    Maintainer: Ubi de Feo, Sebastian Hunkeler}
+\DoxyCodeLine{    Sentence: An efficient, low footprint, fast pin debouncing library for Arduino}
+\DoxyCodeLine{    Paragraph: This pin state supervisor manages debouncing of buttons and handles transitions between LOW and HIGH state, calling a function and notifying your code of which pin has been activated or deactivated.}
+\DoxyCodeLine{    Website: https://github.com/ubidefeo/FTDebouncer}
+\DoxyCodeLine{    Category: Uncategorized}
+\DoxyCodeLine{    Architecture: *}
+\DoxyCodeLine{    Types: Contributed}
+\DoxyCodeLine{    Versions: [1.3.0]}
+\DoxyCodeLine{Name: "{}SoftTimer"{}}
+\DoxyCodeLine{    Author: Balazs Kelemen <prampec+arduino@gmail.com>}
+\DoxyCodeLine{    Maintainer: Balazs Kelemen <prampec+arduino@gmail.com>}
+\DoxyCodeLine{    Sentence: SoftTimer is a lightweight pseudo multitasking solution for Arduino.}
+\DoxyCodeLine{    Paragraph: SoftTimer enables higher level Arduino programing, yet easy to use, and lightweight. You are often faced with the problem that you need to do multiple tasks at the same time. In SoftTimer, the programmer creates Tasks that runs periodically. This library comes with a collection of handy tools like blinker, pwm, debouncer.}
+\DoxyCodeLine{    Website: https://github.com/prampec/arduino-\/softtimer}
+\DoxyCodeLine{    Category: Timing}
+\DoxyCodeLine{    Architecture: *}
+\DoxyCodeLine{    Types: Contributed}
+\DoxyCodeLine{    Versions: [3.0.0, 3.1.0, 3.1.1, 3.1.2, 3.1.3, 3.1.5, 3.2.0]}
+
+\end{DoxyCode}
+
+
+Our favourite is {\ttfamily FTDebouncer}, let\textquotesingle{}s install it by running\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli lib install FTDebouncer}
+\DoxyCodeLine{FTDebouncer depends on FTDebouncer@1.3.0}
+\DoxyCodeLine{Downloading FTDebouncer@1.3.0...}
+\DoxyCodeLine{FTDebouncer@1.3.0 downloaded}
+\DoxyCodeLine{Installing FTDebouncer@1.3.0...}
+\DoxyCodeLine{Installed FTDebouncer@1.3.0}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md29}{}\doxysection{Using the $<$tt$>$daemon$<$/tt$>$ mode and the g\+RPC interface}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md29}
+Arduino CLI can be launched as a g\+RPC server via the {\ttfamily daemon} command.
+
+The \href{https://github.com/arduino/arduino-cli/blob/master/client_example}{\texttt{ client\+\_\+example}} folder contains a sample client code that shows how to interact with the g\+RPC server. Available services and messages are detailed in the g\+RPC reference pages.
+
+To provide observability for the g\+RPC server activities besides logs, the {\ttfamily daemon} mode activates and exposes by default a \href{https://prometheus.io/}{\texttt{ Prometheus}} endpoint (\href{http://localhost:9090/metrics}{\texttt{ http\+://localhost\+:9090/metrics}}) that can be fetched for metrics data like\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\# TYPE daemon\_compile counter}
+\DoxyCodeLine{daemon\_compile\{buildProperties="{}"{},exportFile="{}"{},fqbn="{}arduino:samd:mkr1000"{},installationID="{}ed6f1f22-\/1fbe-\/4b1f-\/84be-\/84d035b6369c"{},jobs="{}0"{},libraries="{}"{},preprocess="{}false"{},quiet="{}false"{},showProperties="{}false"{},sketchPath="{}5ff767c6fa5a91230f5cb4e267c889aa61489ab2c4f70f35f921f934c1462cb6"{},success="{}true"{},verbose="{}true"{},vidPid="{}"{},warnings="{}"{}\} 1 1580385724726}
+\DoxyCodeLine{}
+\DoxyCodeLine{\# TYPE daemon\_board\_list counter}
+\DoxyCodeLine{daemon\_board\_list\{installationID="{}ed6f1f22-\/1fbe-\/4b1f-\/84be-\/84d035b6369c"{},success="{}true"{}\} 1 1580385724833}
+
+\end{DoxyCode}
+
+
+The metrics settings are exposed via the {\ttfamily metrics} section in the CLI configuration\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{metrics:}
+\DoxyCodeLine{  enabled: true}
+\DoxyCodeLine{  addr: :9090}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md30}{}\doxysection{Configuration keys}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md30}
+
+\begin{DoxyItemize}
+\item {\ttfamily board\+\_\+manager}
+\begin{DoxyItemize}
+\item {\ttfamily additional\+\_\+urls} -\/ the URLs to any additional Boards Manager package index files needed for your boards platforms.
+\end{DoxyItemize}
+\item {\ttfamily daemon} -\/ options related to running Arduino CLI as a \href{https://grpc.io}{\texttt{ g\+RPC}} server.
+\begin{DoxyItemize}
+\item {\ttfamily port} -\/ TCP port used for g\+RPC client connections.
+\end{DoxyItemize}
+\item {\ttfamily directories} -\/ directories used by Arduino CLI.
+\begin{DoxyItemize}
+\item {\ttfamily data} -\/ directory used to store Boards/\+Library Manager index files and Boards Manager platform installations.
+\item {\ttfamily downloads} -\/ directory used to stage downloaded archives during Boards/\+Library Manager installations.
+\item {\ttfamily user} -\/ the equivalent of the Arduino IDE\textquotesingle{}s \href{sketch-specification.md\#sketchbook}{\texttt{ "{}sketchbook"{} directory}}. Library Manager installations are made to the {\ttfamily libraries} subdirectory of the user directory.
+\end{DoxyItemize}
+\item {\ttfamily library} -\/ configuration options relating to Arduino libraries.
+\begin{DoxyItemize}
+\item {\ttfamily enable\+\_\+unsafe\+\_\+install} -\/ set to {\ttfamily true} to enable the use of the {\ttfamily -\/-\/git-\/url} and {\ttfamily -\/-\/zip-\/file} flags with \`{}arduino-\/cli lib install\`{}. These are considered \char`\"{}unsafe\char`\"{} installation methods because they allow installing files that have not passed through the Library Manager submission process.
+\end{DoxyItemize}
+\item {\ttfamily logging} -\/ configuration options for Arduino CLI\textquotesingle{}s logs.
+\begin{DoxyItemize}
+\item {\ttfamily file} -\/ path to the file where logs will be written.
+\item {\ttfamily format} -\/ output format for the logs. Allowed values are {\ttfamily text} or {\ttfamily json}.
+\item {\ttfamily level} -\/ messages with this level and above will be logged. Valid levels are\+: {\ttfamily trace}, {\ttfamily debug}, {\ttfamily info}, {\ttfamily warn}, {\ttfamily error}, {\ttfamily fatal}, {\ttfamily panic}.
+\end{DoxyItemize}
+\item {\ttfamily metrics} -\/ settings related to the collection of data used for continued improvement of Arduino CLI.
+\begin{DoxyItemize}
+\item {\ttfamily addr} -\/ TCP port used for metrics communication.
+\item {\ttfamily enabled} -\/ controls the use of metrics.
+\end{DoxyItemize}
+\item {\ttfamily sketch} -\/ configuration options relating to Arduino sketches.
+\begin{DoxyItemize}
+\item {\ttfamily always\+\_\+export\+\_\+binaries} -\/ set to {\ttfamily true} to make \`{}arduino-\/cli compile\`{} always save binaries to the sketch folder. This is the equivalent of using the \href{commands/arduino-cli_compile.md\#options}{\texttt{ {\ttfamily -\/-\/export-\/binaries}}} flag.
+\end{DoxyItemize}
+\item {\ttfamily updater} -\/ configuration options related to Arduino CLI updates
+\begin{DoxyItemize}
+\item {\ttfamily enable\+\_\+notification} -\/ set to {\ttfamily false} to disable notifications of new Arduino CLI releases, defaults to {\ttfamily true}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md31}{}\doxysection{Configuration methods}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md31}
+Arduino CLI may be configured in three ways\+:
+
+
+\begin{DoxyEnumerate}
+\item Command line flags
+\end{DoxyEnumerate}
+\begin{DoxyEnumerate}
+\item Environment variables
+\end{DoxyEnumerate}
+\begin{DoxyEnumerate}
+\item Configuration file
+\end{DoxyEnumerate}
+
+If a configuration option is configured by multiple methods, the value set by the method highest on the above list overwrites the ones below it.
+
+If a configuration option is not set, Arduino CLI uses a default value.
+
+\`{}arduino-\/cli config dump\`{} displays the current configuration values.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md32}{}\doxysubsection{Command line flags}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md32}
+Arduino CLI\textquotesingle{}s command line flags are documented in the command line help and the Arduino CLI command reference.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md33}{}\doxysubsubsection{Example}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md33}
+Setting an additional Boards Manager URL using the \href{commands/arduino-cli_config.md\#options-inherited-from-parent-commands}{\texttt{ {\ttfamily -\/-\/additional-\/urls}}} command line flag\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ arduino-\/cli core update-\/index -\/-\/additional-\/urls https://downloads.arduino.cc/packages/package\_staging\_index.json}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md34}{}\doxysubsection{Environment variables}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md34}
+All configuration options can be set via environment variables. The variable names start with {\ttfamily ARDUINO}, followed by the configuration key names, with each component separated by {\ttfamily \+\_\+}. For example, the {\ttfamily ARDUINO\+\_\+\+DIRECTORIES\+\_\+\+USER} environment variable sets the {\ttfamily directories.\+user} configuration option.
+
+On Linux or mac\+OS, you can use the \href{https://ss64.com/bash/export.html}{\texttt{ {\ttfamily export} command}} to set environment variables. On Windows cmd, you can use the \href{https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/set_1}{\texttt{ {\ttfamily set} command}}.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md35}{}\doxysubsubsection{Example}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md35}
+Setting an additional Boards Manager URL using the {\ttfamily ARDUINO\+\_\+\+BOARD\+\_\+\+MANAGER\+\_\+\+ADDITIONAL\+\_\+\+URLS} environment variable\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ export ARDUINO\_BOARD\_MANAGER\_ADDITIONAL\_URLS=https://downloads.arduino.cc/packages/package\_staging\_index.json}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md36}{}\doxysubsection{Configuration file}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md36}
+\`{}arduino-\/cli config init\`{} creates or updates a configuration file with the current configuration settings.
+
+This allows saving the options set by command line flags or environment variables. For example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{arduino-\/cli config init -\/-\/additional-\/urls https://downloads.arduino.cc/packages/package\_staging\_index.json}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md37}{}\doxysubsubsection{File name}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md37}
+The configuration file must be named {\ttfamily arduino-\/cli}, with the appropriate file extension for the file\textquotesingle{}s format.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md38}{}\doxysubsubsection{Supported formats}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md38}
+{\ttfamily arduino-\/cli config init} creates a YAML file, however a variety of common formats are supported\+:
+
+
+\begin{DoxyItemize}
+\item \href{https://www.json.org}{\texttt{ JSON}}
+\item \href{https://github.com/toml-lang/toml}{\texttt{ TOML}}
+\item \href{https://en.wikipedia.org/wiki/YAML}{\texttt{ YAML}}
+\item \href{https://en.wikipedia.org/wiki/.properties}{\texttt{ Java properties file}}
+\item \href{https://github.com/hashicorp/hcl}{\texttt{ HCL}}
+\item envfile
+\item \href{https://en.wikipedia.org/wiki/INI_file}{\texttt{ INI}}
+\end{DoxyItemize}\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md39}{}\doxysubsubsection{Locations}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md39}
+Configuration files in the following locations are recognized by Arduino CLI\+:
+
+
+\begin{DoxyEnumerate}
+\item Location specified by the \`{}-\/-\/config-\/file\`{} command line flag
+\end{DoxyEnumerate}
+\begin{DoxyEnumerate}
+\item Current working directory
+\end{DoxyEnumerate}
+\begin{DoxyEnumerate}
+\item Any parent directory of the current working directory (more immediate parents having higher precedence)
+\end{DoxyEnumerate}
+\begin{DoxyEnumerate}
+\item Arduino CLI data directory (as configured by {\ttfamily directories.\+data})
+\end{DoxyEnumerate}
+
+If multiple configuration files are present, the one highest on the above list is used. Configuration files are not combined.
+
+The location of the active configuration file can be determined by running the command\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{arduino-\/cli config dump -\/-\/verbose}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md40}{}\doxysubsubsection{Example}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md40}
+Setting an additional Boards Manager URL using a YAML format configuration file\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{board\_manager:}
+\DoxyCodeLine{  additional\_urls:}
+\DoxyCodeLine{    -\/ https://downloads.arduino.cc/packages/package\_staging\_index.json}
+
+\end{DoxyCode}
+
+
+Doing the same using a TOML format file\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{[board\_manager]}
+\DoxyCodeLine{additional\_urls = [ "{}https://downloads.arduino.cc/packages/package\_staging\_index.json"{} ]}
+
+\end{DoxyCode}
+
+
+This is the specification for Arduino sketches.
+
+The programs that run on Arduino boards are called \char`\"{}sketches\char`\"{}. This term was inherited from \href{https://processing.org/}{\texttt{ Processing}}, upon which the Arduino IDE and the core API were based.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md41}{}\doxysection{Sketch folders and files}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md41}
+The sketch root folder name and code file names must start with a basic letter ({\ttfamily A}-\/{\ttfamily Z} or {\ttfamily a}-\/{\ttfamily z}) or number ({\ttfamily 0}-\/{\ttfamily 9}), followed by basic letters, numbers, underscores ({\ttfamily \+\_\+}), dots ({\ttfamily .}) and dashes ({\ttfamily -\/}). The maximum length is 63 characters.
+
+Support for names starting with a number was added in Arduino IDE 1.\+8.\+4.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md42}{}\doxysubsection{Sketch root folder}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md42}
+Because many Arduino sketches only contain a single .ino file, it\textquotesingle{}s easy to think of that file as the sketch. However, it is the folder that is the sketch. The reason is that sketches may consist of multiple code files and the folder is what groups those files into a single program.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md43}{}\doxysubsection{Primary sketch file}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md43}
+Every sketch must contain a {\ttfamily .ino} file with a file name matching the sketch root folder name.
+
+{\ttfamily .pde} is also supported but {\bfseries{deprecated}} and will be removed in the future, using the {\ttfamily .ino} extension is strongly recommended.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md44}{}\doxysubsection{Additional code files}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md44}
+Sketches may consist of multiple code files.
+
+The following extensions are supported\+:
+
+
+\begin{DoxyItemize}
+\item .ino -\/ \href{https://www.arduino.cc/reference/en/}{\texttt{ Arduino language}} files.
+\item .pde -\/ Alternate extension for Arduino language files. This file extension is also used by Processing sketches. .ino is recommended to avoid confusion. $\ast$$\ast${\ttfamily .pde} extension is deprecated and will be removed in the future.$\ast$$\ast$
+\item .cpp -\/ C++ files.
+\item .c -\/ C Files.
+\item .S -\/ Assembly language files.
+\item .h -\/ Header files.
+\item .tpp, .ipp -\/ Header files (available from Arduino CLI 0.\+19.\+0).
+\end{DoxyItemize}
+
+For information about how each of these files and other parts of the sketch are used during compilation, see the Sketch build process documentation.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md45}{}\doxysubsection{$<$tt$>$src$<$/tt$>$ subfolder}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md45}
+The contents of the {\ttfamily src} subfolder are compiled recursively. Unlike the code files in the sketch root folder, these files are not shown as tabs in the IDEs.
+
+This is useful for files you don\textquotesingle{}t want to expose to the sketch user via the IDE\textquotesingle{}s interface. It can be used to bundle libraries with the sketch in order to make it a self-\/contained project.
+
+Arduino language files under the {\ttfamily src} folder are not supported.
+
+
+\begin{DoxyItemize}
+\item In Arduino IDE 1.\+6.\+5-\/r5 and older, no recursive compilation was done.
+\item In Arduino IDE 1.\+6.\+6 -\/ 1.\+6.\+9, recursive compilation was done of all subfolders of the sketch folder.
+\item In Arduino IDE 1.\+6.\+10 and newer, recursive compilation is limited to the {\ttfamily src} subfolder of the sketch folder.
+\end{DoxyItemize}\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md46}{}\doxysubsection{$<$tt$>$data$<$/tt$>$ subfolder}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md46}
+The {\ttfamily data} folder is used to add additional files to the sketch, which will not be compiled.
+
+Files added to the sketch via the Arduino IDE\textquotesingle{}s {\bfseries{Sketch \texorpdfstring{$>$}{>} Add File...}} are placed in the {\ttfamily data} folder.
+
+The Arduino IDE\textquotesingle{}s {\bfseries{File \texorpdfstring{$>$}{>} Save As...}} only copies the code files in the sketch root folder and the full contents of the {\ttfamily data} folder, so any non-\/code files outside the {\ttfamily data} folder are stripped.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md47}{}\doxysubsection{Metadata}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md47}
+Arduino CLI and Arduino Web Editor use a file named sketch.\+json, located in the sketch root folder, to store sketch metadata.
+
+The {\ttfamily cpu} key contains the board configuration information. This can be set via \`{}arduino-\/cli board attach\`{} or by selecting a board in the Arduino Web Editor while the sketch is open. With this configuration set, it is not necessary to specify the {\ttfamily -\/-\/fqbn} or {\ttfamily -\/-\/port} flags to the \`{}arduino-\/cli compile\`{} or \`{}arduino-\/cli upload\`{} commands when compiling or uploading the sketch.
+
+The {\ttfamily included\+\_\+libs} key defines the library versions the Arduino Web Editor uses when the sketch is compiled. This is Arduino Web Editor specific because all versions of all the Library Manager libraries are pre-\/installed in Arduino Web Editor, while only one version of each library may be installed when using the other Arduino development software.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md48}{}\doxysubsection{Secrets}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md48}
+Arduino Web Editor has a \href{https://create.arduino.cc/projecthub/Arduino_Genuino/store-your-sensitive-data-safely-when-sharing-a-sketch-e7d0f0}{\texttt{ "{}Secret tab"{} feature}} that makes it easy to share sketches without accidentally exposing sensitive data (e.\+g., passwords or tokens). The Arduino Web Editor automatically generates macros for any identifier in the sketch which starts with {\ttfamily SECRET\+\_\+} and contains all uppercase characters.
+
+When you download a sketch from Arduino Web Editor that contains a Secret tab, the empty {\ttfamily \#define} directives for the secrets are in a file named arduino\+\_\+secrets.\+h, with an {\ttfamily \#include} directive to that file at the top of the primary sketch file. This is hidden when viewing the sketch in Arduino Web Editor.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md49}{}\doxysubsection{Documentation}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md49}
+Image and text files in common formats which are present in the sketch root folder are displayed in tabs in the Arduino Web Editor.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md50}{}\doxysubsection{Sketch file structure example}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md50}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Foo}
+\DoxyCodeLine{|\_ arduino\_secrets.h}
+\DoxyCodeLine{|\_ Abc.ino}
+\DoxyCodeLine{|\_ Def.cpp}
+\DoxyCodeLine{|\_ Def.h}
+\DoxyCodeLine{|\_ Foo.ino}
+\DoxyCodeLine{|\_ Ghi.c}
+\DoxyCodeLine{|\_ Ghi.h}
+\DoxyCodeLine{|\_ Jkl.h}
+\DoxyCodeLine{|\_ Jkl.S}
+\DoxyCodeLine{|\_ sketch.json}
+\DoxyCodeLine{|\_ data}
+\DoxyCodeLine{|  |\_ Schematic.pdf}
+\DoxyCodeLine{|\_ src}
+\DoxyCodeLine{   |\_ SomeLib}
+\DoxyCodeLine{      |\_ library.properties}
+\DoxyCodeLine{      |\_ src}
+\DoxyCodeLine{         |\_ SomeLib.h}
+\DoxyCodeLine{         |\_ SomeLib.cpp}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md51}{}\doxysection{Sketchbook}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md51}
+The Arduino IDE provides a \char`\"{}sketchbook\char`\"{} folder (analogous to Arduino CLI\textquotesingle{}s \char`\"{}user directory\char`\"{}). In addition to being the place where user libraries and manually installed platforms are installed, the sketchbook is a convenient place to store sketches. Sketches in the sketchbook folder appear under the Arduino IDE\textquotesingle{}s {\bfseries{File \texorpdfstring{$>$}{>} Sketchbook}} menu. However, there is no requirement to store sketches in the sketchbook folder.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md52}{}\doxysection{Library/\+Boards Manager links}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md52}
+A URI in a comment in the form {\ttfamily \href{http://librarymanager}{\texttt{ http\+://librarymanager}}\#SEARCH\+\_\+\+TERM} will open a search for SEARCH\+\_\+\+TERM in \href{https://www.arduino.cc/en/guide/libraries\#toc3}{\texttt{ Library Manager}} when clicked in the Arduino IDE.
+
+A URI in a comment in the form {\ttfamily \href{http://boardsmanager}{\texttt{ http\+://boardsmanager}}\#SEARCH\+\_\+\+TERM} will open a search for SEARCH\+\_\+\+TERM in \href{https://www.arduino.cc/en/Guide/Cores}{\texttt{ Boards Manager}} when clicked in the Arduino IDE.
+
+This can be used to offer the user an easy way to install dependencies of the sketch.
+
+This feature is only available when using the Arduino IDE, so be sure to provide supplementary documentation to help the users of other development software install the sketch dependencies.
+
+This feature was added in Arduino IDE 1.\+6.\+9.\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md53}{}\doxysubsection{Example}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md53}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ \{c++\}}
+\DoxyCodeLine{// install the Arduino SAMD Boards platform to add support for your MKR WiFi 1010 board}
+\DoxyCodeLine{// if using the Arduino IDE, click here: http://boardsmanager\#SAMD}
+\DoxyCodeLine{}
+\DoxyCodeLine{// install the WiFiNINA library via Library Manager}
+\DoxyCodeLine{// if using the Arduino IDE, click here: http://librarymanager\#WiFiNINA}
+\DoxyCodeLine{\#include <WiFiNINA.h>}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md54}{}\doxysection{See also}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md54}
+
+\begin{DoxyItemize}
+\item Sketch build process documentation
+\item \href{https://www.arduino.cc/en/Reference/StyleGuide}{\texttt{ Style guide for example sketches}}
+\end{DoxyItemize}\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md55}{}\doxysection{Boards}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md55}
+gustavocampos@\+GUSTAVOs-\/MBP .ssh \% arduino-\/cli core list ID Installed Latest Name arduino\+:avr 1.\+8.\+3 1.\+8.\+4 Arduino AVR Boards arduino\+:megaavr 1.\+8.\+7 1.\+8.\+7 Arduino mega\+AVR Boards arduino\+:sam 1.\+6.\+12 1.\+6.\+12 Arduino SAM Boards (32-\/bits ARM Cortex-\/\+M3) arduino\+:samd 1.\+8.\+11 1.\+8.\+12 Arduino SAMD Boards (32-\/bits ARM Cortex-\/\+M0+) esp32\+:esp32 1.\+0.\+6 1.\+0.\+6 ESP32 Arduino esp8266\+:esp8266 3.\+0.\+2 3.\+0.\+2 ESP8266 Boards (3.\+0.\+2) Maixduino\+:k210 0.\+3.\+11 0.\+3.\+11 Maixduino\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md56}{}\doxysection{repos}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md56}
+\href{https://raw.githubusercontent.com/sparkfun/Arduino_Boards/master/IDE_Board_Manager/package_sparkfun_index.json}{\texttt{ https\+://raw.\+githubusercontent.\+com/sparkfun/\+Arduino\+\_\+\+Boards/master/\+IDE\+\_\+\+Board\+\_\+\+Manager/package\+\_\+sparkfun\+\_\+index.\+json}} \href{https://dl.espressif.com/dl/package_esp32_index.json}{\texttt{ https\+://dl.\+espressif.\+com/dl/package\+\_\+esp32\+\_\+index.\+json}} \href{http://arduino.esp8266.com/stable/package_esp8266com_index.json}{\texttt{ http\+://arduino.\+esp8266.\+com/stable/package\+\_\+esp8266com\+\_\+index.\+json}} \href{https://raw.githubusercontent.com/stm32duino/BoardManagerFiles/master/package_stmicroelectronics_index.json}{\texttt{ https\+://raw.\+githubusercontent.\+com/stm32duino/\+Board\+Manager\+Files/master/package\+\_\+stmicroelectronics\+\_\+index.\+json}} \href{https://raw.githubusercontent.com/damellis/attiny/ide-1.6.x-boards-manager/package_damellis_attiny_index.json}{\texttt{ https\+://raw.\+githubusercontent.\+com/damellis/attiny/ide-\/1.\+6.\+x-\/boards-\/manager/package\+\_\+damellis\+\_\+attiny\+\_\+index.\+json}} \href{http://dl.sipeed.com/MAIX/Maixduino/package_Maixduino_k210_index.json}{\texttt{ http\+://dl.\+sipeed.\+com/\+MAIX/\+Maixduino/package\+\_\+\+Maixduino\+\_\+k210\+\_\+index.\+json}}\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md57}{}\doxysection{Full TODAY\textquotesingle{}s boards}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md57}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Board Name                          FQBN}
+\DoxyCodeLine{3D printer boards                   STMicroelectronics:stm32:3dprinter}
+\DoxyCodeLine{4D Systems gen4 IoD Range           esp8266:esp8266:gen4iod}
+\DoxyCodeLine{AI Thinker ESP32-\/CAM                esp32:esp32:esp32cam}
+\DoxyCodeLine{ALKS ESP32                          esp32:esp32:alksesp32}
+\DoxyCodeLine{ATtiny24/44/84                      attiny:avr:ATtinyX4}
+\DoxyCodeLine{ATtiny25/45/85                      attiny:avr:ATtinyX5}
+\DoxyCodeLine{Adafruit Circuit Playground         arduino:avr:circuitplay32u4cat}
+\DoxyCodeLine{Adafruit Circuit Playground Express arduino:samd:adafruit\_circuitplayground\_m0}
+\DoxyCodeLine{Adafruit ESP32 Feather              esp32:esp32:featheresp32}
+\DoxyCodeLine{Adafruit Feather HUZZAH ESP8266     esp8266:esp8266:huzzah}
+\DoxyCodeLine{Amperka WiFi Slot                   esp8266:esp8266:wifi\_slot}
+\DoxyCodeLine{Arduino                             esp8266:esp8266:arduino-\/esp8266}
+\DoxyCodeLine{Arduino BT                          arduino:avr:bt}
+\DoxyCodeLine{Arduino Due (Native USB Port)       arduino:sam:arduino\_due\_x}
+\DoxyCodeLine{Arduino Due (Programming Port)      arduino:sam:arduino\_due\_x\_dbg}
+\DoxyCodeLine{Arduino Duemilanove or Diecimila    arduino:avr:diecimila}
+\DoxyCodeLine{Arduino Esplora                     arduino:avr:esplora}
+\DoxyCodeLine{Arduino Ethernet                    arduino:avr:ethernet}
+\DoxyCodeLine{Arduino Fio                         arduino:avr:fio}
+\DoxyCodeLine{Arduino Gemma                       arduino:avr:gemma}
+\DoxyCodeLine{Arduino Industrial 101              arduino:avr:chiwawa}
+\DoxyCodeLine{Arduino Leonardo                    arduino:avr:leonardo}
+\DoxyCodeLine{Arduino Leonardo ETH                arduino:avr:leonardoeth}
+\DoxyCodeLine{Arduino M0                          arduino:samd:mzero\_bl}
+\DoxyCodeLine{Arduino M0 Pro (Native USB Port)    arduino:samd:mzero\_pro\_bl}
+\DoxyCodeLine{Arduino M0 Pro (Programming Port)   arduino:samd:mzero\_pro\_bl\_dbg}
+\DoxyCodeLine{Arduino MKR FOX 1200                arduino:samd:mkrfox1200}
+\DoxyCodeLine{Arduino MKR GSM 1400                arduino:samd:mkrgsm1400}
+\DoxyCodeLine{Arduino MKR NB 1500                 arduino:samd:mkrnb1500}
+\DoxyCodeLine{Arduino MKR Vidor 4000              arduino:samd:mkrvidor4000}
+\DoxyCodeLine{Arduino MKR WAN 1300                arduino:samd:mkrwan1300}
+\DoxyCodeLine{Arduino MKR WAN 1310                arduino:samd:mkrwan1310}
+\DoxyCodeLine{Arduino MKR WiFi 1010               arduino:samd:mkrwifi1010}
+\DoxyCodeLine{Arduino MKR1000                     arduino:samd:mkr1000}
+\DoxyCodeLine{Arduino MKRZERO                     arduino:samd:mkrzero}
+\DoxyCodeLine{Arduino Mega ADK                    arduino:avr:megaADK}
+\DoxyCodeLine{Arduino Mega or Mega 2560           arduino:avr:mega}
+\DoxyCodeLine{Arduino Micro                       arduino:avr:micro}
+\DoxyCodeLine{Arduino Mini                        arduino:avr:mini}
+\DoxyCodeLine{Arduino NANO 33 IoT                 arduino:samd:nano\_33\_iot}
+\DoxyCodeLine{Arduino NG or older                 arduino:avr:atmegang}
+\DoxyCodeLine{Arduino Nano                        arduino:avr:nano}
+\DoxyCodeLine{Arduino Nano 33 BLE                 arduino:mbed\_nano:nano33ble}
+\DoxyCodeLine{Arduino Nano Every                  arduino:megaavr:nona4809}
+\DoxyCodeLine{Arduino Nano RP2040 Connect         arduino:mbed\_nano:nanorp2040connect}
+\DoxyCodeLine{Arduino Pro or Pro Mini             arduino:avr:pro}
+\DoxyCodeLine{Arduino Robot Control               arduino:avr:robotControl}
+\DoxyCodeLine{Arduino Robot Motor                 arduino:avr:robotMotor}
+\DoxyCodeLine{Arduino Tian                        arduino:samd:tian}
+\DoxyCodeLine{Arduino Uno                         arduino:avr:uno}
+\DoxyCodeLine{Arduino Uno Mini                    arduino:avr:unomini}
+\DoxyCodeLine{Arduino Uno WiFi                    arduino:avr:unowifi}
+\DoxyCodeLine{Arduino Uno WiFi Rev2               arduino:megaavr:uno2018}
+\DoxyCodeLine{Arduino Yún                         arduino:avr:yun}
+\DoxyCodeLine{Arduino Yún Mini                    arduino:avr:yunmini}
+\DoxyCodeLine{Arduino Zero (Native USB Port)      arduino:samd:arduino\_zero\_native}
+\DoxyCodeLine{Arduino Zero (Programming Port)     arduino:samd:arduino\_zero\_edbg}
+\DoxyCodeLine{BPI-\/BIT                             esp32:esp32:bpi-\/bit}
+\DoxyCodeLine{Blues Wireless boards               STMicroelectronics:stm32:BluesW}
+\DoxyCodeLine{D-\/duino-\/32                          esp32:esp32:d-\/duino-\/32}
+\DoxyCodeLine{DOIT ESP-\/Mx DevKit (ESP8285)        esp8266:esp8266:espmxdevkit}
+\DoxyCodeLine{DOIT ESP32 DEVKIT V1                esp32:esp32:esp32doit-\/devkit-\/v1}
+\DoxyCodeLine{DOIT ESPduino32                     esp32:esp32:esp32doit-\/espduino}
+\DoxyCodeLine{Digistump Oak                       esp8266:esp8266:oak}
+\DoxyCodeLine{Discovery                           STMicroelectronics:stm32:Disco}
+\DoxyCodeLine{Dongsen Tech Pocket 32              esp32:esp32:pocket\_32}
+\DoxyCodeLine{ESP32 Dev Module                    esp32:esp32:esp32}
+\DoxyCodeLine{ESP32 FM DevKit                     esp32:esp32:fm-\/devkit}
+\DoxyCodeLine{ESP32 Pico Kit                      esp32:esp32:pico32}
+\DoxyCodeLine{ESP32 Wrover Module                 esp32:esp32:esp32wrover}
+\DoxyCodeLine{ESP32vn IoT Uno                     esp32:esp32:esp32vn-\/iot-\/uno}
+\DoxyCodeLine{ESPDuino (ESP-\/13 Module)            esp8266:esp8266:espduino}
+\DoxyCodeLine{ESPea32                             esp32:esp32:espea32}
+\DoxyCodeLine{ESPectro Core                       esp8266:esp8266:espectro}
+\DoxyCodeLine{ESPectro32                          esp32:esp32:espectro32}
+\DoxyCodeLine{ESPino (ESP-\/12 Module)              esp8266:esp8266:espino}
+\DoxyCodeLine{ESPresso Lite 1.0                   esp8266:esp8266:espresso\_lite\_v1}
+\DoxyCodeLine{ESPresso Lite 2.0                   esp8266:esp8266:espresso\_lite\_v2}
+\DoxyCodeLine{ET-\/Board                            esp32:esp32:ET-\/Board}
+\DoxyCodeLine{Elecgator boards                    STMicroelectronics:stm32:Elecgator}
+\DoxyCodeLine{Electronic SweetPeas -\/ ESP320       esp32:esp32:esp320}
+\DoxyCodeLine{Electronic speed controllers        STMicroelectronics:stm32:ESC\_board}
+\DoxyCodeLine{Eval                                STMicroelectronics:stm32:Eval}
+\DoxyCodeLine{FireBeetle-\/ESP32                    esp32:esp32:firebeetle32}
+\DoxyCodeLine{Frog Board ESP32                    esp32:esp32:frogboard}
+\DoxyCodeLine{Garatronic-\/McHobby                  STMicroelectronics:stm32:Garatronic}
+\DoxyCodeLine{Generic ESP8266 Module              esp8266:esp8266:generic}
+\DoxyCodeLine{Generic ESP8285 Module              esp8266:esp8266:esp8285}
+\DoxyCodeLine{Generic Flight Controllers          STMicroelectronics:stm32:GenFlight}
+\DoxyCodeLine{Generic STM32F0 series              STMicroelectronics:stm32:GenF0}
+\DoxyCodeLine{Generic STM32F1 series              STMicroelectronics:stm32:GenF1}
+\DoxyCodeLine{Generic STM32F2 series              STMicroelectronics:stm32:GenF2}
+\DoxyCodeLine{Generic STM32F3 series              STMicroelectronics:stm32:GenF3}
+\DoxyCodeLine{Generic STM32F4 series              STMicroelectronics:stm32:GenF4}
+\DoxyCodeLine{Generic STM32F7 series              STMicroelectronics:stm32:GenF7}
+\DoxyCodeLine{Generic STM32G0 series              STMicroelectronics:stm32:GenG0}
+\DoxyCodeLine{Generic STM32G4 series              STMicroelectronics:stm32:GenG4}
+\DoxyCodeLine{Generic STM32H7 Series              STMicroelectronics:stm32:GenH7}
+\DoxyCodeLine{Generic STM32L0 series              STMicroelectronics:stm32:GenL0}
+\DoxyCodeLine{Generic STM32L1 series              STMicroelectronics:stm32:GenL1}
+\DoxyCodeLine{Generic STM32L4 series              STMicroelectronics:stm32:GenL4}
+\DoxyCodeLine{Generic STM32L5 series              STMicroelectronics:stm32:GenL5}
+\DoxyCodeLine{Generic STM32U5 series              STMicroelectronics:stm32:GenU5}
+\DoxyCodeLine{Generic STM32WB series              STMicroelectronics:stm32:GenWB}
+\DoxyCodeLine{Generic STM32WL series              STMicroelectronics:stm32:GenWL}
+\DoxyCodeLine{HONEYLemon                          esp32:esp32:honeylemon}
+\DoxyCodeLine{Heltec WiFi Kit 32                  esp32:esp32:heltec\_wifi\_kit\_32}
+\DoxyCodeLine{Heltec WiFi LoRa 32                 esp32:esp32:heltec\_wifi\_lora\_32}
+\DoxyCodeLine{Heltec WiFi LoRa 32(V2)             esp32:esp32:heltec\_wifi\_lora\_32\_V2}
+\DoxyCodeLine{Heltec Wireless Stick               esp32:esp32:heltec\_wireless\_stick}
+\DoxyCodeLine{Heltec Wireless Stick Lite          esp32:esp32:heltec\_wireless\_stick\_lite}
+\DoxyCodeLine{Hornbill ESP32 Dev                  esp32:esp32:hornbill32dev}
+\DoxyCodeLine{Hornbill ESP32 Minima               esp32:esp32:hornbill32minima}
+\DoxyCodeLine{IMBRIOS LOGSENS\_V1P1                esp32:esp32:imbrios-\/logsens-\/v1p1}
+\DoxyCodeLine{INEX OpenKB                         esp32:esp32:OpenKB}
+\DoxyCodeLine{ITEAD Sonoff                        esp8266:esp8266:sonoff}
+\DoxyCodeLine{IntoRobot Fig                       esp32:esp32:intorobot-\/fig}
+\DoxyCodeLine{Invent One                          esp8266:esp8266:inventone}
+\DoxyCodeLine{KITS ESP32 EDU                      esp32:esp32:kits-\/edu}
+\DoxyCodeLine{LOLIN D32                           esp32:esp32:d32}
+\DoxyCodeLine{LOLIN D32 PRO                       esp32:esp32:d32\_pro}
+\DoxyCodeLine{LOLIN(WEMOS) D1 R2 \& mini           esp8266:esp8266:d1\_mini}
+\DoxyCodeLine{LOLIN(WEMOS) D1 mini (clone)        esp8266:esp8266:d1\_mini\_clone}
+\DoxyCodeLine{LOLIN(WEMOS) D1 mini Lite           esp8266:esp8266:d1\_mini\_lite}
+\DoxyCodeLine{LOLIN(WEMOS) D1 mini Pro            esp8266:esp8266:d1\_mini\_pro}
+\DoxyCodeLine{LOLIN(WeMos) D1 R1                  esp8266:esp8266:d1}
+\DoxyCodeLine{Labplus mPython                     esp32:esp32:mPython}
+\DoxyCodeLine{LamLoei AIoT DaaN Board             Maixduino:k210:aiotdaan}
+\DoxyCodeLine{Lifely Agrumino Lemon v4            esp8266:esp8266:agruminolemon}
+\DoxyCodeLine{LilyPad Arduino                     arduino:avr:lilypad}
+\DoxyCodeLine{LilyPad Arduino USB                 arduino:avr:LilyPadUSB}
+\DoxyCodeLine{Linino One                          arduino:avr:one}
+\DoxyCodeLine{LoPy                                esp32:esp32:lopy}
+\DoxyCodeLine{LoPy4                               esp32:esp32:lopy4}
+\DoxyCodeLine{LoRa boards                         STMicroelectronics:stm32:LoRa}
+\DoxyCodeLine{M5Stack-\/ATOM                        esp32:esp32:m5stack-\/atom}
+\DoxyCodeLine{M5Stack-\/Core-\/ESP32                  esp32:esp32:m5stack-\/core-\/esp32}
+\DoxyCodeLine{M5Stack-\/Core2                       esp32:esp32:m5stack-\/core2}
+\DoxyCodeLine{M5Stack-\/CoreInk                     esp32:esp32:m5stack-\/coreink}
+\DoxyCodeLine{M5Stack-\/FIRE                        esp32:esp32:m5stack-\/fire}
+\DoxyCodeLine{M5Stack-\/Timer-\/CAM                   esp32:esp32:m5stack-\/timer-\/cam}
+\DoxyCodeLine{M5Stick-\/C                           esp32:esp32:m5stick-\/c}
+\DoxyCodeLine{MGBOT IOTIK 32A                     esp32:esp32:mgbot-\/iotik32a}
+\DoxyCodeLine{MGBOT IOTIK 32B                     esp32:esp32:mgbot-\/iotik32b}
+\DoxyCodeLine{MH ET LIVE ESP32DevKIT              esp32:esp32:mhetesp32devkit}
+\DoxyCodeLine{MH ET LIVE ESP32MiniKit             esp32:esp32:mhetesp32minikit}
+\DoxyCodeLine{MagicBit                            esp32:esp32:magicbit}
+\DoxyCodeLine{Metro ESP-\/32                        esp32:esp32:metro\_esp-\/32}
+\DoxyCodeLine{Microduino-\/CoreESP32                esp32:esp32:CoreESP32}
+\DoxyCodeLine{Midatronics boards                  STMicroelectronics:stm32:Midatronics}
+\DoxyCodeLine{Nano32                              esp32:esp32:nano32}
+\DoxyCodeLine{Node32s                             esp32:esp32:node32s}
+\DoxyCodeLine{NodeMCU 0.9 (ESP-\/12 Module)         esp8266:esp8266:nodemcu}
+\DoxyCodeLine{NodeMCU 1.0 (ESP-\/12E Module)        esp8266:esp8266:nodemcuv2}
+\DoxyCodeLine{NodeMCU-\/32S                         esp32:esp32:nodemcu-\/32s}
+\DoxyCodeLine{Noduino Quantum                     esp32:esp32:quantum}
+\DoxyCodeLine{Nucleo-\/144                          STMicroelectronics:stm32:Nucleo\_144}
+\DoxyCodeLine{Nucleo-\/32                           STMicroelectronics:stm32:Nucleo\_32}
+\DoxyCodeLine{Nucleo-\/64                           STMicroelectronics:stm32:Nucleo\_64}
+\DoxyCodeLine{ODROID ESP32                        esp32:esp32:odroid\_esp32}
+\DoxyCodeLine{OLIMEX ESP32-\/DevKit-\/LiPo            esp32:esp32:esp32-\/DevKitLipo}
+\DoxyCodeLine{OLIMEX ESP32-\/EVB                    esp32:esp32:esp32-\/evb}
+\DoxyCodeLine{OLIMEX ESP32-\/GATEWAY                esp32:esp32:esp32-\/gateway}
+\DoxyCodeLine{OLIMEX ESP32-\/PoE                    esp32:esp32:esp32-\/poe}
+\DoxyCodeLine{OLIMEX ESP32-\/PoE-\/ISO                esp32:esp32:esp32-\/poe-\/iso}
+\DoxyCodeLine{OROCA EduBot                        esp32:esp32:oroca\_edubot}
+\DoxyCodeLine{Olimex MOD-\/WIFI-\/ESP8266(-\/DEV)       esp8266:esp8266:modwifi}
+\DoxyCodeLine{Onehorse ESP32 Dev Module           esp32:esp32:onehorse32dev}
+\DoxyCodeLine{Phoenix 1.0                         esp8266:esp8266:phoenix\_v1}
+\DoxyCodeLine{Phoenix 2.0                         esp8266:esp8266:phoenix\_v2}
+\DoxyCodeLine{Piranha ESP-\/32                      esp32:esp32:piranha\_esp-\/32}
+\DoxyCodeLine{ProtoCentral HealthyPi 4            esp32:esp32:healthypi4}
+\DoxyCodeLine{Pycom GPy                           esp32:esp32:gpy}
+\DoxyCodeLine{S.ODI Ultra v1                      esp32:esp32:S\_ODI\_Ultra}
+\DoxyCodeLine{STM32MP1 series coprocessor         STMicroelectronics:stm32:STM32MP1}
+\DoxyCodeLine{Schirmilabs Eduino WiFi             esp8266:esp8266:eduinowifi}
+\DoxyCodeLine{Seeed Wio Link                      esp8266:esp8266:wiolink}
+\DoxyCodeLine{Senses's WEIZEN                     esp32:esp32:sensesiot\_weizen}
+\DoxyCodeLine{Silicognition wESP32                esp32:esp32:wesp32}
+\DoxyCodeLine{Sipeed Maix Bit Board               Maixduino:k210:bit}
+\DoxyCodeLine{Sipeed Maix Bit-\/Mic Board           Maixduino:k210:bitm}
+\DoxyCodeLine{Sipeed Maix Go Board                Maixduino:k210:go}
+\DoxyCodeLine{Sipeed Maix One Dock Board          Maixduino:k210:m1}
+\DoxyCodeLine{Sipeed Maixduino Board              Maixduino:k210:mduino}
+\DoxyCodeLine{SparkFun Blynk Board                esp8266:esp8266:blynk}
+\DoxyCodeLine{SparkFun ESP32 Thing                esp32:esp32:esp32thing}
+\DoxyCodeLine{SparkFun ESP32 Thing Plus           esp32:esp32:esp32thing\_plus}
+\DoxyCodeLine{SparkFun ESP8266 Thing              esp8266:esp8266:thing}
+\DoxyCodeLine{SparkFun ESP8266 Thing Dev          esp8266:esp8266:thingdev}
+\DoxyCodeLine{SparkFun LoRa Gateway 1-\/Channel     esp32:esp32:sparkfun\_lora\_gateway\_1-\/channel}
+\DoxyCodeLine{SweetPea ESP-\/210                    esp8266:esp8266:esp210}
+\DoxyCodeLine{T-\/Beam                              esp32:esp32:t-\/beam}
+\DoxyCodeLine{TTGO LoRa32-\/OLED V1                 esp32:esp32:ttgo-\/lora32-\/v1}
+\DoxyCodeLine{TTGO LoRa32-\/OLED v2.1.6             esp32:esp32:ttgo-\/lora32-\/v21new}
+\DoxyCodeLine{TTGO T-\/Watch                        esp32:esp32:twatch}
+\DoxyCodeLine{TTGO T1                             esp32:esp32:ttgo-\/t1}
+\DoxyCodeLine{TTGO T7 V1.3 Mini32                 esp32:esp32:ttgo-\/t7-\/v13-\/mini32}
+\DoxyCodeLine{TTGO T7 V1.4 Mini32                 esp32:esp32:ttgo-\/t7-\/v14-\/mini32}
+\DoxyCodeLine{ThaiEasyElec's ESPino               esp8266:esp8266:espinotee}
+\DoxyCodeLine{ThaiEasyElec's ESPino32             esp32:esp32:espino32}
+\DoxyCodeLine{TinyPICO                            esp32:esp32:tinypico}
+\DoxyCodeLine{Turta IoT Node                      esp32:esp32:turta\_iot\_node}
+\DoxyCodeLine{VintLabs ESP32 Devkit               esp32:esp32:vintlabs-\/devkit-\/v1}
+\DoxyCodeLine{WEMOS D1 MINI ESP32                 esp32:esp32:d1\_mini32}
+\DoxyCodeLine{WEMOS LOLIN32                       esp32:esp32:lolin32}
+\DoxyCodeLine{WEMOS LOLIN32 Lite                  esp32:esp32:lolin32-\/lite}
+\DoxyCodeLine{WeMos WiFi\&Bluetooth Battery        esp32:esp32:WeMosBat}
+\DoxyCodeLine{WiFi Kit 8                          esp8266:esp8266:wifi\_kit\_8}
+\DoxyCodeLine{WiFiduino                           esp8266:esp8266:wifiduino}
+\DoxyCodeLine{WiFiduino32                         esp32:esp32:wifiduino32}
+\DoxyCodeLine{WiPy 3.0                            esp32:esp32:wipy3}
+\DoxyCodeLine{Widora AIR                          esp32:esp32:widora-\/air}
+\DoxyCodeLine{WifInfo                             esp8266:esp8266:wifinfo}
+\DoxyCodeLine{XinaBox CW01                        esp8266:esp8266:cw01}
+\DoxyCodeLine{XinaBox CW02                        esp32:esp32:cw02}
+\DoxyCodeLine{u-\/blox NINA-\/W10 series (ESP32)      esp32:esp32:nina\_w10}
+
+\end{DoxyCode}
+\hypertarget{md_examples__arduino__r_e_a_d_m_e_autotoc_md58}{}\doxysection{Hints for bluepill STM32\+F103}\label{md_examples__arduino__r_e_a_d_m_e_autotoc_md58}
+Exemple compilation/upload\+:
+
+{\ttfamily arduino-\/cli compile -\/v -\/b STMicroelectronics\+:stm32\+:\+Gen\+F1\+:pnum=BLUEPILL\+\_\+\+F103\+C8,usb=CDCgen -\/upload -\/p \char`\"{}.\char`\"{} .}
+
+If you see the error\+: `Error during Upload\+: Property \textquotesingle{}upload.\+tool.\+serial' is undefined\`{} please, Add the following line anywhere in the STM32 boards.\+txt file, otherwise\+: {\ttfamily Gen\+F1.\+menu.\+upload\+\_\+method.\+swd\+Method.\+upload.\+tool.\+default=stm32\+Cube\+Prog} 

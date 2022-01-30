@@ -15,7 +15,7 @@ class \mbox{\hyperlink{classthread_1_1atomicx_1_1queue_1_1_q_item}{QItem}}
 \mbox{\hyperlink{classthread_1_1atomicx_1_1queue_add5bbf800088cdfc80a1755313a581f0}{queue}} ()=delete
 \item 
 \mbox{\hyperlink{classthread_1_1atomicx_1_1queue_ae5da8d8eb6ac0252579b9564b6b43ac7}{queue}} (size\+\_\+t n\+QSize)
-\begin{DoxyCompactList}\small\item\em Thread Safe Queue constructor. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{class_thread}{Thread}} Safe Queue constructor. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{classthread_1_1atomicx_1_1queue_a4b4d6999fddf5e8d33c533b8c697219e}{Push\+Back}} (T item)
 \begin{DoxyCompactList}\small\item\em Push an object to the end of the queue, if the queue is full, it waits till there is a space. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{classthread_1_1atomicx_1_1queue_a82b4525142d10193c74403b1a37acaf8}{Push\+Front}} (T item)
@@ -37,6 +37,10 @@ class thread\+::atomicx\+::queue$<$ T $>$}
  \hypertarget{classthread_1_1atomicx_1_1queue_autotoc_md7}{}\doxysubsubsection{QUEUE FOR IPC IMPLEMENTATION}\label{classthread_1_1atomicx_1_1queue_autotoc_md7}
 
 
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00327}{327}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
+
+
 \doxysubsection{Constructor \& Destructor Documentation}
 \mbox{\Hypertarget{classthread_1_1atomicx_1_1queue_add5bbf800088cdfc80a1755313a581f0}\label{classthread_1_1atomicx_1_1queue_add5bbf800088cdfc80a1755313a581f0}} 
 \index{thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}!queue@{queue}}
@@ -54,13 +58,17 @@ class thread\+::atomicx\+::queue$<$ T $>$}
 
 
 
-Thread Safe Queue constructor. 
+\mbox{\hyperlink{class_thread}{Thread}} Safe Queue constructor. 
 
 
 \begin{DoxyParams}{Parameters}
 {\em n\+QSize} & Max number of objects to hold \\
 \hline
 \end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00338}{338}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
 
 
 \doxysubsection{Member Function Documentation}
@@ -78,6 +86,10 @@ Get the Max number of object in the queue can hold.
 \begin{DoxyReturn}{Returns}
 size\+\_\+t The max number of object 
 \end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00476}{476}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
 \mbox{\Hypertarget{classthread_1_1atomicx_1_1queue_a903751d841f38886ed3c2b19dc3ea3af}\label{classthread_1_1atomicx_1_1queue_a903751d841f38886ed3c2b19dc3ea3af}} 
 \index{thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}!GetSize@{GetSize}}
 \index{GetSize@{GetSize}!thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}}
@@ -92,6 +104,10 @@ Get the number of the objects in the queue.
 \begin{DoxyReturn}{Returns}
 size\+\_\+t Number of the objects in the queue 
 \end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00466}{466}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
 \mbox{\Hypertarget{classthread_1_1atomicx_1_1queue_aaaf321a852cb004fa2ad8af214b1ebde}\label{classthread_1_1atomicx_1_1queue_aaaf321a852cb004fa2ad8af214b1ebde}} 
 \index{thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}!IsFull@{IsFull}}
 \index{IsFull@{IsFull}!thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}}
@@ -106,6 +122,10 @@ Check if the queue is full.
 \begin{DoxyReturn}{Returns}
 true for yes, otherwise false 
 \end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00486}{486}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
 \mbox{\Hypertarget{classthread_1_1atomicx_1_1queue_ad2ceaec28d52d07f07e049d523535620}\label{classthread_1_1atomicx_1_1queue_ad2ceaec28d52d07f07e049d523535620}} 
 \index{thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}!Pop@{Pop}}
 \index{Pop@{Pop}!thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}}
@@ -120,6 +140,10 @@ Pop an Item from the beggining of queue. Is no object there is no object in the 
 \begin{DoxyReturn}{Returns}
 T return the object stored. 
 \end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00436}{436}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
 \mbox{\Hypertarget{classthread_1_1atomicx_1_1queue_a4b4d6999fddf5e8d33c533b8c697219e}\label{classthread_1_1atomicx_1_1queue_a4b4d6999fddf5e8d33c533b8c697219e}} 
 \index{thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}!PushBack@{PushBack}}
 \index{PushBack@{PushBack}!thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}}
@@ -139,6 +163,10 @@ Push an object to the end of the queue, if the queue is full, it waits till ther
 \begin{DoxyReturn}{Returns}
 true if it was able to push a object in the queue, false otherwise 
 \end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00349}{349}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
 \mbox{\Hypertarget{classthread_1_1atomicx_1_1queue_a82b4525142d10193c74403b1a37acaf8}\label{classthread_1_1atomicx_1_1queue_a82b4525142d10193c74403b1a37acaf8}} 
 \index{thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}!PushFront@{PushFront}}
 \index{PushFront@{PushFront}!thread::atomicx::queue$<$ T $>$@{thread::atomicx::queue$<$ T $>$}}
@@ -158,6 +186,10 @@ Push an object to the beggining of the queue, if the queue is full, it waits til
 \begin{DoxyReturn}{Returns}
 true if it was able to push a object in the queue, false otherwise 
 \end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00394}{394}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}

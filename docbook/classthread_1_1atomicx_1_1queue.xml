@@ -1,0 +1,238 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_classthread_1_1atomicx_1_1queue" xml:lang="en-US">
+<title>thread::atomicx::queue&lt; T &gt; Class Template Reference</title>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary></indexterm>
+<para>
+<computeroutput>#include &lt;atomicx.hpp&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Data Structures    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_classthread_1_1atomicx_1_1queue_1_1_q_item">QItem</link></para>
+
+<para>Queue Item object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_classthread_1_1atomicx_1_1queue_1add5bbf800088cdfc80a1755313a581f0">queue</link> ()=delete</para>
+</listitem>
+            <listitem><para><link linkend="_classthread_1_1atomicx_1_1queue_1ae5da8d8eb6ac0252579b9564b6b43ac7">queue</link> (size_t nQSize)</para>
+
+<para>Thread Safe Queue constructor. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_classthread_1_1atomicx_1_1queue_1a4b4d6999fddf5e8d33c533b8c697219e">PushBack</link> (T item)</para>
+
+<para>Push an object to the end of the queue, if the queue is full, it waits till there is a space. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_classthread_1_1atomicx_1_1queue_1a82b4525142d10193c74403b1a37acaf8">PushFront</link> (T item)</para>
+
+<para>Push an object to the beggining of the queue, if the queue is full, it waits till there is a space. </para>
+</listitem>
+            <listitem><para>T <link linkend="_classthread_1_1atomicx_1_1queue_1ad2ceaec28d52d07f07e049d523535620">Pop</link> ()</para>
+
+<para>Pop an Item from the beggining of queue. Is no object there is no object in the queue, it waits for it. </para>
+</listitem>
+            <listitem><para>size_t <link linkend="_classthread_1_1atomicx_1_1queue_1a903751d841f38886ed3c2b19dc3ea3af">GetSize</link> ()</para>
+
+<para>Get the number of the objects in the queue. </para>
+</listitem>
+            <listitem><para>size_t <link linkend="_classthread_1_1atomicx_1_1queue_1a21f16fa6b97d5c76d81279ff21983689">GetMaxSize</link> ()</para>
+
+<para>Get the Max number of object in the queue can hold. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_classthread_1_1atomicx_1_1queue_1aaaf321a852cb004fa2ad8af214b1ebde">IsFull</link> ()</para>
+
+<para>Check if the queue is full. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+<simplesect><title>template&lt;typename T&gt;
+class thread::atomicx::queue&lt; T &gt;</title></simplesect>
+
+<para><informaltable frame='bottom'><tgroup cols='1'><colspec align='center'/><tbody><row><entry align='center'>
+</entry></row></tbody></tgroup></informaltable>
+ </para>
+<section xml:id="_classthread_1_1atomicx_1_1queue_1autotoc_md7">
+<title>QUEUE FOR IPC IMPLEMENTATION</title>
+</section>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_classthread_1_1atomicx_1_1queue_1add5bbf800088cdfc80a1755313a581f0"/><section>
+    <title>queue()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>queue</primary><secondary>thread::atomicx::queue&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary><secondary>queue</secondary></indexterm>
+<computeroutput>template&lt;typename T &gt; </computeroutput><para><computeroutput><link linkend="_classthread_1_1atomicx_1_1queue">thread::atomicx::queue</link>&lt; T &gt;::queue ( )<computeroutput>[delete]</computeroutput></computeroutput></para></section>
+<anchor xml:id="_classthread_1_1atomicx_1_1queue_1ae5da8d8eb6ac0252579b9564b6b43ac7"/><section>
+    <title>queue()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>queue</primary><secondary>thread::atomicx::queue&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary><secondary>queue</secondary></indexterm>
+<computeroutput>template&lt;typename T &gt; </computeroutput><para><computeroutput><link linkend="_classthread_1_1atomicx_1_1queue">thread::atomicx::queue</link>&lt; T &gt;::queue (size_t nQSize)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Thread Safe Queue constructor. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>nQSize</entry><entry>
+<para>Max number of objects to hold </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_classthread_1_1atomicx_1_1queue_1a21f16fa6b97d5c76d81279ff21983689"/><section>
+    <title>GetMaxSize()</title>
+<indexterm><primary>GetMaxSize</primary><secondary>thread::atomicx::queue&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary><secondary>GetMaxSize</secondary></indexterm>
+<computeroutput>template&lt;typename T &gt; </computeroutput><para><computeroutput>size_t <link linkend="_classthread_1_1atomicx_1_1queue">thread::atomicx::queue</link>&lt; T &gt;::GetMaxSize ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Get the Max number of object in the queue can hold. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>size_t The max number of object </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1queue_1a903751d841f38886ed3c2b19dc3ea3af"/><section>
+    <title>GetSize()</title>
+<indexterm><primary>GetSize</primary><secondary>thread::atomicx::queue&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary><secondary>GetSize</secondary></indexterm>
+<computeroutput>template&lt;typename T &gt; </computeroutput><para><computeroutput>size_t <link linkend="_classthread_1_1atomicx_1_1queue">thread::atomicx::queue</link>&lt; T &gt;::GetSize ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Get the number of the objects in the queue. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>size_t Number of the objects in the queue </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1queue_1aaaf321a852cb004fa2ad8af214b1ebde"/><section>
+    <title>IsFull()</title>
+<indexterm><primary>IsFull</primary><secondary>thread::atomicx::queue&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary><secondary>IsFull</secondary></indexterm>
+<computeroutput>template&lt;typename T &gt; </computeroutput><para><computeroutput>bool <link linkend="_classthread_1_1atomicx_1_1queue">thread::atomicx::queue</link>&lt; T &gt;::IsFull ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Check if the queue is full. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>true for yes, otherwise false </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1queue_1ad2ceaec28d52d07f07e049d523535620"/><section>
+    <title>Pop()</title>
+<indexterm><primary>Pop</primary><secondary>thread::atomicx::queue&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary><secondary>Pop</secondary></indexterm>
+<computeroutput>template&lt;typename T &gt; </computeroutput><para><computeroutput>T <link linkend="_classthread_1_1atomicx_1_1queue">thread::atomicx::queue</link>&lt; T &gt;::Pop ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Pop an Item from the beggining of queue. Is no object there is no object in the queue, it waits for it. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>T return the object stored. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1queue_1a4b4d6999fddf5e8d33c533b8c697219e"/><section>
+    <title>PushBack()</title>
+<indexterm><primary>PushBack</primary><secondary>thread::atomicx::queue&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary><secondary>PushBack</secondary></indexterm>
+<computeroutput>template&lt;typename T &gt; </computeroutput><para><computeroutput>bool <link linkend="_classthread_1_1atomicx_1_1queue">thread::atomicx::queue</link>&lt; T &gt;::PushBack (T item)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Push an object to the end of the queue, if the queue is full, it waits till there is a space. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>item</entry><entry>
+<para>The object to be pushed into the queue</para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>true if it was able to push a object in the queue, false otherwise </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1queue_1a82b4525142d10193c74403b1a37acaf8"/><section>
+    <title>PushFront()</title>
+<indexterm><primary>PushFront</primary><secondary>thread::atomicx::queue&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>thread::atomicx::queue&lt; T &gt;</primary><secondary>PushFront</secondary></indexterm>
+<computeroutput>template&lt;typename T &gt; </computeroutput><para><computeroutput>bool <link linkend="_classthread_1_1atomicx_1_1queue">thread::atomicx::queue</link>&lt; T &gt;::PushFront (T item)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Push an object to the beggining of the queue, if the queue is full, it waits till there is a space. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>item</entry><entry>
+<para>The object to be pushed into the queue</para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>true if it was able to push a object in the queue, false otherwise </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+atomicx/<link linkend="_atomicx_8hpp">atomicx.hpp</link></section>
+</section>

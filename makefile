@@ -79,6 +79,7 @@ MAIN = demo_atomix.bin
 
 all:    $(MAIN)
 	@echo  AtomicX binary $(MAIN) has beem compilled
+	Doxygen
 
 $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)

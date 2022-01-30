@@ -76,6 +76,8 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><hr  />
  <h2><a class="anchor" id="autotoc_md11"></a>
 SMART LOCK IMPLEMENTATION</h2>
+
+<p class="definition">Definition at line <a class="el" href="atomicx_8hpp_source.html#l00696">696</a> of file <a class="el" href="atomicx_8hpp_source.html">atomicx.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aeeda698323932853965044d34a191ebf" name="aeeda698323932853965044d34a191ebf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeeda698323932853965044d34a191ebf">&#9670;&nbsp;</a></span>IsLocked()</h2>
@@ -94,6 +96,8 @@ SMART LOCK IMPLEMENTATION</h2>
 
 <p>Check if a exclusive lock has been already accquired. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if yes, otherwise false </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="atomicx_8cpp_source.html#l00580">580</a> of file <a class="el" href="atomicx_8cpp_source.html">atomicx.cpp</a>.</p>
 
 </div>
 </div>
@@ -115,6 +119,8 @@ SMART LOCK IMPLEMENTATION</h2>
 <p>Check how many shared locks are accquired. </p>
 <dl class="section return"><dt>Returns</dt><dd>size_t Number of threads holding shared locks </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="atomicx_8cpp_source.html#l00575">575</a> of file <a class="el" href="atomicx_8cpp_source.html">atomicx.cpp</a>.</p>
+
 </div>
 </div>
 <a id="a0c77ddee2ad50c1aa7564ad2084b6e75" name="a0c77ddee2ad50c1aa7564ad2084b6e75"></a>
@@ -134,6 +140,8 @@ SMART LOCK IMPLEMENTATION</h2>
 
 <p>Exclusive/binary lock the smart lock. </p>
 <dl class="section note"><dt>Note</dt><dd>Once <a class="el" href="classthread_1_1atomicx_1_1mutex.html#a0c77ddee2ad50c1aa7564ad2084b6e75" title="Exclusive/binary lock the smart lock.">Lock()</a> methos is called, if any thread held a shared lock, the Lock will wait for it to finish in order to acquire the exclusive lock, and all other threads that needs to a shared lock will wait till Lock is accquired and released. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="atomicx_8cpp_source.html#l00515">515</a> of file <a class="el" href="atomicx_8cpp_source.html">atomicx.cpp</a>.</p>
 
 </div>
 </div>
@@ -155,6 +163,8 @@ SMART LOCK IMPLEMENTATION</h2>
 <p>Shared Lock for the smart Lock. </p>
 <dl class="section note"><dt>Note</dt><dd>Shared lock can only be accquired if no Exclusive lock is waiting or already accquired a exclusive lock, In contrast, if at least one thread holds a shared lock, any exclusive lock can only be accquired once it is released. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="atomicx_8cpp_source.html#l00546">546</a> of file <a class="el" href="atomicx_8cpp_source.html">atomicx.cpp</a>.</p>
+
 </div>
 </div>
 <a id="aa7ac0e33713c28e55ac3a30ecbb10ebe" name="aa7ac0e33713c28e55ac3a30ecbb10ebe"></a>
@@ -173,6 +183,8 @@ SMART LOCK IMPLEMENTATION</h2>
 </div><div class="memdoc">
 
 <p>Release the current shared lock. </p>
+
+<p class="definition">Definition at line <a class="el" href="atomicx_8cpp_source.html#l00561">561</a> of file <a class="el" href="atomicx_8cpp_source.html">atomicx.cpp</a>.</p>
 
 </div>
 </div>
@@ -193,11 +205,13 @@ SMART LOCK IMPLEMENTATION</h2>
 
 <p>Release the exclusive lock. </p>
 
+<p class="definition">Definition at line <a class="el" href="atomicx_8cpp_source.html#l00530">530</a> of file <a class="el" href="atomicx_8cpp_source.html">atomicx.cpp</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>atomicx/<a class="el" href="atomicx_8hpp_source.html">atomicx.hpp</a></li>
-<li>atomicx/<a class="el" href="atomicx_8cpp.html">atomicx.cpp</a></li>
+<li>atomicx/<a class="el" href="atomicx_8cpp_source.html">atomicx.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

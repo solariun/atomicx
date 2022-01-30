@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_classthread_1_1atomicx_1_1mutex" xml:lang="en-US">
+<title>thread::atomicx::mutex Class Reference</title>
+<indexterm><primary>thread::atomicx::mutex</primary></indexterm>
+<para>
+<computeroutput>#include &lt;atomicx.hpp&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>void <link linkend="_classthread_1_1atomicx_1_1mutex_1a0c77ddee2ad50c1aa7564ad2084b6e75">Lock</link> ()</para>
+
+<para>Exclusive/binary lock the smart lock. </para>
+</listitem>
+            <listitem><para>void <link linkend="_classthread_1_1atomicx_1_1mutex_1a74dc56d113bb2f7fbde82d1d9422a01b">Unlock</link> ()</para>
+
+<para>Release the exclusive lock. </para>
+</listitem>
+            <listitem><para>void <link linkend="_classthread_1_1atomicx_1_1mutex_1ab0e0c89eb46152f8095535891069ff3c">SharedLock</link> ()</para>
+
+<para>Shared Lock for the smart Lock. </para>
+</listitem>
+            <listitem><para>void <link linkend="_classthread_1_1atomicx_1_1mutex_1aa7ac0e33713c28e55ac3a30ecbb10ebe">SharedUnlock</link> ()</para>
+
+<para>Release the current shared lock. </para>
+</listitem>
+            <listitem><para>size_t <link linkend="_classthread_1_1atomicx_1_1mutex_1ae66c669f09c131182805680aa894d18d">IsShared</link> ()</para>
+
+<para>Check how many shared locks are accquired. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_classthread_1_1atomicx_1_1mutex_1aeeda698323932853965044d34a191ebf">IsLocked</link> ()</para>
+
+<para>Check if a exclusive lock has been already accquired. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para><informaltable frame='bottom'><tgroup cols='1'><colspec align='center'/><tbody><row><entry align='center'>
+</entry></row></tbody></tgroup></informaltable>
+ </para>
+<section xml:id="_classthread_1_1atomicx_1_1mutex_1autotoc_md11">
+<title>SMART LOCK IMPLEMENTATION</title>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_classthread_1_1atomicx_1_1mutex_1aeeda698323932853965044d34a191ebf"/><section>
+    <title>IsLocked()</title>
+<indexterm><primary>IsLocked</primary><secondary>thread::atomicx::mutex</secondary></indexterm>
+<indexterm><primary>thread::atomicx::mutex</primary><secondary>IsLocked</secondary></indexterm>
+<para><computeroutput>bool thread::atomicx::mutex::IsLocked ( )</computeroutput></para><para>
+
+<para>Check if a exclusive lock has been already accquired. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>true if yes, otherwise false </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1mutex_1ae66c669f09c131182805680aa894d18d"/><section>
+    <title>IsShared()</title>
+<indexterm><primary>IsShared</primary><secondary>thread::atomicx::mutex</secondary></indexterm>
+<indexterm><primary>thread::atomicx::mutex</primary><secondary>IsShared</secondary></indexterm>
+<para><computeroutput>size_t thread::atomicx::mutex::IsShared ( )</computeroutput></para><para>
+
+<para>Check how many shared locks are accquired. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>size_t Number of threads holding shared locks </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1mutex_1a0c77ddee2ad50c1aa7564ad2084b6e75"/><section>
+    <title>Lock()</title>
+<indexterm><primary>Lock</primary><secondary>thread::atomicx::mutex</secondary></indexterm>
+<indexterm><primary>thread::atomicx::mutex</primary><secondary>Lock</secondary></indexterm>
+<para><computeroutput>void thread::atomicx::mutex::Lock ( )</computeroutput></para><para>
+
+<para>Exclusive/binary lock the smart lock. </para>
+</para>
+
+<para><note><title>Note</title>
+
+<para>Once <link linkend="_classthread_1_1atomicx_1_1mutex_1a0c77ddee2ad50c1aa7564ad2084b6e75">Lock()</link> methos is called, if any thread held a shared lock, the Lock will wait for it to finish in order to acquire the exclusive lock, and all other threads that needs to a shared lock will wait till Lock is accquired and released. </para>
+</note>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1mutex_1ab0e0c89eb46152f8095535891069ff3c"/><section>
+    <title>SharedLock()</title>
+<indexterm><primary>SharedLock</primary><secondary>thread::atomicx::mutex</secondary></indexterm>
+<indexterm><primary>thread::atomicx::mutex</primary><secondary>SharedLock</secondary></indexterm>
+<para><computeroutput>void thread::atomicx::mutex::SharedLock ( )</computeroutput></para><para>
+
+<para>Shared Lock for the smart Lock. </para>
+</para>
+
+<para><note><title>Note</title>
+
+<para>Shared lock can only be accquired if no Exclusive lock is waiting or already accquired a exclusive lock, In contrast, if at least one thread holds a shared lock, any exclusive lock can only be accquired once it is released. </para>
+</note>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1mutex_1aa7ac0e33713c28e55ac3a30ecbb10ebe"/><section>
+    <title>SharedUnlock()</title>
+<indexterm><primary>SharedUnlock</primary><secondary>thread::atomicx::mutex</secondary></indexterm>
+<indexterm><primary>thread::atomicx::mutex</primary><secondary>SharedUnlock</secondary></indexterm>
+<para><computeroutput>void thread::atomicx::mutex::SharedUnlock ( )</computeroutput></para><para>
+
+<para>Release the current shared lock. </para>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1mutex_1a74dc56d113bb2f7fbde82d1d9422a01b"/><section>
+    <title>Unlock()</title>
+<indexterm><primary>Unlock</primary><secondary>thread::atomicx::mutex</secondary></indexterm>
+<indexterm><primary>thread::atomicx::mutex</primary><secondary>Unlock</secondary></indexterm>
+<para><computeroutput>void thread::atomicx::mutex::Unlock ( )</computeroutput></para><para>
+
+<para>Release the exclusive lock. </para>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+atomicx/<link linkend="_atomicx_8hpp">atomicx.hpp</link>atomicx/<link linkend="_atomicx_8cpp">atomicx.cpp</link></section>
+</section>

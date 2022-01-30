@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<book xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_index" xml:lang="en-US">
+    <info>
+    <title>AtomicX</title>
+    </info>
+<chapter>
+    <title>Namespace Documentation</title>
+<xi:include href="namespacethread.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</chapter>
+<chapter>
+    <title>Data Structure Documentation</title>
+    <xi:include href="classthread_1_1atomicx_1_1aiterator.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="structthread_1_1atomicx_1_1_message.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx_1_1mutex.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx_1_1queue_1_1_q_item.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx_1_1queue.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx_1_1semaphore.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx_1_1smart__ptr.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx_1_1smart_mutex.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx_1_1smart_semaphore.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="classthread_1_1atomicx_1_1_timeout.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</chapter>
+<chapter>
+    <title>File Documentation</title>
+    <xi:include href="atomicx_8cpp.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="atomicx_8hpp.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="atomicx_8hpp_source.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</chapter>
+<index/>
+</book>

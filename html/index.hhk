@@ -7,8 +7,40 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8hpp.html#a5f79904e0c0abe4f6120ed97f66b3802"><param name="Name" value="ATOMICX_TIME_MAX"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8hpp.html#a6709a36e8f5c263de8fa27d54af04351"><param name="Name" value="ATOMICX_VERSION"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8hpp.html#a9d360e18456ac266a0f910a16b076727"><param name="Name" value="ATOMIC_VERSION_LABEL"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="md_examples__arduino__r_e_a_d_m_e.html"><param name="Name" value="Arduino procedures"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="md__r_e_a_d_m_e.html"><param name="Name" value="AtomicX"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8hpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="Atomicx_GetTick"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8hpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="atomicx.hpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="Atomicx_GetTick"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="Atomicx_GetTick"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="Atomicx_GetTick"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="simple.cpp"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8hpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="Atomicx_SleepTick"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8hpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="atomicx.hpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="Atomicx_SleepTick"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="Atomicx_SleepTick"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="Atomicx_SleepTick"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="simple.cpp"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ae43c2d0de94878ce0602a3b40d4deeba"><param name="Name" value="BrokerHandler"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1semaphore.html#ad75031cc128b92ac9c88c53506ac6d43"><param name="Name" value="GetCount"></OBJECT>
   <UL>
@@ -41,7 +73,22 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#a63ea759f0af906db9d39ccccfee859ae"><param name="Name" value="thread::atomicx::smartSemaphore"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue.html#a21f16fa6b97d5c76d81279ff21983689"><param name="Name" value="GetMaxSize"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a0ed0a8fc141fe5b3592dc334a83604ba"><param name="Name" value="GetName"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a0ed0a8fc141fe5b3592dc334a83604ba"><param name="Name" value="SelfManagedThread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="Name" value="GetName"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="Name" value="Thread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="Name" value="GetName"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="Name" value="ThreadConsummer"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a06fba915b6d19dd927f28a7b88fa566b"><param name="Name" value="GetName"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a06fba915b6d19dd927f28a7b88fa566b"><param name="Name" value="thread::atomicx"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html#a7caa17d0a0791fe555b1fccbaf2b1f5e"><param name="Name" value="GetNext"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a075d951e2432e1e06f04691e3b83b2d5"><param name="Name" value="GetNice"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#a6e899e672b813241bfb308c4cd0a2b8a"><param name="Name" value="GetRefCounter"></OBJECT>
@@ -64,13 +111,13 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#a423e4e0cafcbc1475434035933929383"><param name="Name" value="thread::atomicx::smartSemaphore"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad335842d925985e2ea56639c5eda0f22"><param name="Name" value="HasSubscriptions"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad335842d925985e2ea56639c5eda0f22"><param name="Name" value="thread::atomicx"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ab6b7c287310a686e589c57947084124b"><param name="Name" value="HasSubscriptions"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ab6b7c287310a686e589c57947084124b"><param name="Name" value="thread::atomicx"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad335842d925985e2ea56639c5eda0f22"><param name="Name" value="HasSubscriptions"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad335842d925985e2ea56639c5eda0f22"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#af86a54fe9571c2fbab03c9f62f453ad5"><param name="Name" value="HasWaitings"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#a00a33f0aab15379311afc3fe20863594"><param name="Name" value="IsAcquired"></OBJECT>
@@ -97,6 +144,18 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#ac28470eb9269efba7b924b2d2a924839"><param name="Name" value="IsTimedout"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#afe8508e74933406cb48630d4b0767317"><param name="Name" value="IsValid"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad4512ab7de89d7cfd6b5d60c2d986b3e"><param name="Name" value="IsWaiting"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="ListAllThreads"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="ListAllThreads"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="ListAllThreads"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="simple.cpp"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1mutex.html#a0c77ddee2ad50c1aa7564ad2084b6e75"><param name="Name" value="Lock"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1mutex.html#a0c77ddee2ad50c1aa7564ad2084b6e75"><param name="Name" value="thread::atomicx::mutex"></OBJECT>
@@ -113,13 +172,13 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a3a7a1c5a1e645c09c0ff0a6c355404c5"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad1d6b634c9c90c1c15acc391f2b97671"><param name="Name" value="Notify"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad1d6b634c9c90c1c15acc391f2b97671"><param name="Name" value="thread::atomicx"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8b3845a6f977e4fc9644e996d4102d75"><param name="Name" value="Notify"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8b3845a6f977e4fc9644e996d4102d75"><param name="Name" value="thread::atomicx"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad1d6b634c9c90c1c15acc391f2b97671"><param name="Name" value="Notify"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad1d6b634c9c90c1c15acc391f2b97671"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a401db852c22e1982ae5c184ec93423c0"><param name="Name" value="Notify"></OBJECT>
   <UL>
@@ -128,23 +187,23 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a95cb3ab240d8e0c05e70f6d7a55275ab"><param name="Name" value="NotifyType"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8cpp.html#aa55bbb692b1c5e89d3a5c3bee1ce8399"><param name="Name" value="POLY"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue.html#ad2ceaec28d52d07f07e049d523535620"><param name="Name" value="Pop"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#afc67058a34cd39f3f853a7f9a2ae84fd"><param name="Name" value="Publish"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#afc67058a34cd39f3f853a7f9a2ae84fd"><param name="Name" value="thread::atomicx"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a686358de14f2be34e688ee22dd5bc5b8"><param name="Name" value="Publish"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a686358de14f2be34e688ee22dd5bc5b8"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#afc67058a34cd39f3f853a7f9a2ae84fd"><param name="Name" value="Publish"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#afc67058a34cd39f3f853a7f9a2ae84fd"><param name="Name" value="thread::atomicx"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue.html#a4b4d6999fddf5e8d33c533b8c697219e"><param name="Name" value="PushBack"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue.html#a82b4525142d10193c74403b1a37acaf8"><param name="Name" value="PushFront"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html#aafbe1f892b915bdd16770639c075a201"><param name="Name" value="QItem"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html#aafbe1f892b915bdd16770639c075a201"><param name="Name" value="thread::atomicx::queue::QItem"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html#a5f9792e2c6fa5c9e72973fe804ece412"><param name="Name" value="QItem"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html#a5f9792e2c6fa5c9e72973fe804ece412"><param name="Name" value="thread::atomicx::queue::QItem"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html#aafbe1f892b915bdd16770639c075a201"><param name="Name" value="QItem"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html#aafbe1f892b915bdd16770639c075a201"><param name="Name" value="thread::atomicx::queue::QItem"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a1cb98240204ba7c5981ad9ffba095253"><param name="Name" value="SafeNotify"></OBJECT>
   <UL>
@@ -162,6 +221,27 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a5b238f8831ae0cb3a53c685123e5a5d8"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html"><param name="Name" value="SelfManagedThread"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html"><param name="Name" value="SelfManagedThread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a0ed0a8fc141fe5b3592dc334a83604ba"><param name="Name" value="GetName"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html"><param name="Name" value="SelfManagedThread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a2d30c45f4f0ef4fb42c217954760ace5"><param name="Name" value="SelfManagedThread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html"><param name="Name" value="SelfManagedThread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a32fabc24520ab27991288c95012500fd"><param name="Name" value="StackOverflowHandler"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html"><param name="Name" value="SelfManagedThread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a0cec343208a5fd0b7053173dff8f676f"><param name="Name" value="run"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html"><param name="Name" value="SelfManagedThread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a138c956b6f18a2f132656682727d06e7"><param name="Name" value="~SelfManagedThread"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#a3e76e4c3e7c50ea6b79b10ce352ea6b4"><param name="Name" value="Set"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#aee21cbd30a48efbf3a55817ad9bfe3e3"><param name="Name" value="SetDynamicNice"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue_1_1_q_item.html#a458fd02eb19f4f54c29049fd2fe11b82"><param name="Name" value="SetNext"></OBJECT>
@@ -176,8 +256,27 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_mutex.html#aa5b3d280151b1a303aa065a67f7b0620"><param name="Name" value="thread::atomicx::smartMutex"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1mutex.html#aa7ac0e33713c28e55ac3a30ecbb10ebe"><param name="Name" value="SharedUnlock"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a32fabc24520ab27991288c95012500fd"><param name="Name" value="StackOverflowHandler"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a32fabc24520ab27991288c95012500fd"><param name="Name" value="SelfManagedThread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="Name" value="StackOverflowHandler"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="Name" value="Thread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="Name" value="StackOverflowHandler"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="Name" value="ThreadConsummer"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8f358048df310da5b3f0b669605fc197"><param name="Name" value="StackOverflowHandler"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8f358048df310da5b3f0b669605fc197"><param name="Name" value="thread::atomicx"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a64de6117b863b3d2edd217798d9c27f4"><param name="Name" value="Start"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a7e4e0bf42bafa19be930b43b72d244f7"><param name="Name" value="SyncNotify"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a7e4e0bf42bafa19be930b43b72d244f7"><param name="Name" value="thread::atomicx"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a91a943d6b7dbce240fb8bc611edead6b"><param name="Name" value="SyncNotify"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a91a943d6b7dbce240fb8bc611edead6b"><param name="Name" value="thread::atomicx"></OBJECT>
@@ -186,34 +285,81 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#aad548d78d129a70a9e68862e06d4db9d"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a7e4e0bf42bafa19be930b43b72d244f7"><param name="Name" value="SyncNotify"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html"><param name="Name" value="Thread"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html"><param name="Name" value="Thread"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a7e4e0bf42bafa19be930b43b72d244f7"><param name="Name" value="thread::atomicx"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#a559f2b688c4e0253ec63c96b0134c9e4"><param name="Name" value="GetName"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#a5fbf489b1b2c30845205e81f60de4459"><param name="Name" value="Timeout"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html"><param name="Name" value="Thread"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#a5fbf489b1b2c30845205e81f60de4459"><param name="Name" value="thread::atomicx::Timeout"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#adde299b6fa14ff11ef4faec885b594e2"><param name="Name" value="StackOverflowHandler"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html"><param name="Name" value="Thread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#abf713b001718a3ef105fc7e3117ea845"><param name="Name" value="Thread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html"><param name="Name" value="Thread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#a783a2eaf51eca955a2047bd0c5430269"><param name="Name" value="Thread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html"><param name="Name" value="Thread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="Name" value="run"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html"><param name="Name" value="Thread"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="Name" value="~Thread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html"><param name="Name" value="ThreadConsummer"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html"><param name="Name" value="ThreadConsummer"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a8f43ca53185da80dbbe8c8c5497f7583"><param name="Name" value="GetName"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html"><param name="Name" value="ThreadConsummer"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a520f01bc5ae0029ca1c5726792ad2dd2"><param name="Name" value="StackOverflowHandler"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html"><param name="Name" value="ThreadConsummer"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#aecf65e0216a374d0e303c6214c2dfba6"><param name="Name" value="ThreadConsummer"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html"><param name="Name" value="ThreadConsummer"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#ac1aad1f98fc8dda927c5f9bda3955a18"><param name="Name" value="ThreadConsummer"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html"><param name="Name" value="ThreadConsummer"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="Name" value="run"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html"><param name="Name" value="ThreadConsummer"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a223ba01a7508400bd77b45a3a21165c4"><param name="Name" value="~ThreadConsummer"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#ab81fcb48a2158258262e2ac702ce12d7"><param name="Name" value="Timeout"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#ab81fcb48a2158258262e2ac702ce12d7"><param name="Name" value="thread::atomicx::Timeout"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1mutex.html#a74dc56d113bb2f7fbde82d1d9422a01b"><param name="Name" value="Unlock"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a51434a435b3470ee885272a18e7838bb"><param name="Name" value="Wait"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#a5fbf489b1b2c30845205e81f60de4459"><param name="Name" value="Timeout"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a51434a435b3470ee885272a18e7838bb"><param name="Name" value="thread::atomicx"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#a5fbf489b1b2c30845205e81f60de4459"><param name="Name" value="thread::atomicx::Timeout"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1mutex.html#a74dc56d113bb2f7fbde82d1d9422a01b"><param name="Name" value="Unlock"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_upgrade_usb_asp_8txt.html#a75f191ba2f425ac4badca959673b72f5"><param name="Name" value="UpgradeUsbAsp.txt"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#aae81685ea59341f64a4b3d8cc5886563"><param name="Name" value="Wait"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#aae81685ea59341f64a4b3d8cc5886563"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a407be004173a7db41834eb58fb8f4436"><param name="Name" value="WaitBrokerMessage"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a51434a435b3470ee885272a18e7838bb"><param name="Name" value="Wait"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a407be004173a7db41834eb58fb8f4436"><param name="Name" value="thread::atomicx"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a51434a435b3470ee885272a18e7838bb"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a1cfdab652a4a90fa8c760d9ee3a802fb"><param name="Name" value="WaitBrokerMessage"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a1cfdab652a4a90fa8c760d9ee3a802fb"><param name="Name" value="thread::atomicx"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a407be004173a7db41834eb58fb8f4436"><param name="Name" value="WaitBrokerMessage"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a407be004173a7db41834eb58fb8f4436"><param name="Name" value="thread::atomicx"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ab3dd1245396fc470b7b2c6a31a4455ca"><param name="Name" value="Yield"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8b38e8d84d71903a9162bcc541235614"><param name="Name" value="YieldNow"></OBJECT>
@@ -284,12 +430,89 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#abb1519b6cc2f9dbe3521f3cffd011f15"><param name="Name" value="autoStack"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a0e188b4cdad5fb7f9fff7cd1e0f438aa"><param name="Name" value="begin"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a736d1417c7f474e02b2684eebfb96b78"><param name="Name" value="dynamicNice"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a5edc6de37b435c32863ecea4b73e43c9"><param name="Name" value="e1"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a5edc6de37b435c32863ecea4b73e43c9"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a5edc6de37b435c32863ecea4b73e43c9"><param name="Name" value="e1"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a5edc6de37b435c32863ecea4b73e43c9"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8a832099edb224496c7ba204695138c7"><param name="Name" value="end"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad539e1e9bbab631727153dea853aa67facb5e100e5a9a3e7f6d1fd97512215282"><param name="Name" value="error"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a641e79e24059fb3fcaf81ee54a2009be"><param name="Name" value="finish"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_upgrade_usb_asp_8txt.html#a75f191ba2f425ac4badca959673b72f5"><param name="Name" value="issue"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a82633f5364d51f3b5a8dfed1e93007edadce7c4174ce9323904a934a486c41288"><param name="Name" value="lock"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad539e1e9bbab631727153dea853aa67fa8c4291f6956da81515a5c0caec2976d0"><param name="Name" value="look"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="Atomicx_GetTick"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="Atomicx_SleepTick"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="ListAllThreads"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a5edc6de37b435c32863ecea4b73e43c9"><param name="Name" value="e1"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="main"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ae1779946c59866d03daa930a59594c23"><param name="Name" value="nCounter"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ab2b19b7a148d8f9f02bdbef085f99406"><param name="Name" value="nGlobalCount"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a9d6fa07987dd80eb143666b0b0331396"><param name="Name" value="q"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a2990a8de09ebb02bfff296045710595f"><param name="Name" value="sem"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html"><param name="Name" value="main.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a9a032b59690b12747156edc534aad7bb"><param name="Name" value="t1"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="main"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="main"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="main"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="simple.cpp"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structthread_1_1atomicx_1_1_message.html#adbfe67dd267704f30caa11fa719c2157"><param name="Name" value="message"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ae1779946c59866d03daa930a59594c23"><param name="Name" value="nCounter"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ae1779946c59866d03daa930a59594c23"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ae1779946c59866d03daa930a59594c23"><param name="Name" value="nCounter"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ae1779946c59866d03daa930a59594c23"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ab2b19b7a148d8f9f02bdbef085f99406"><param name="Name" value="nGlobalCount"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#ab2b19b7a148d8f9f02bdbef085f99406"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ab2b19b7a148d8f9f02bdbef085f99406"><param name="Name" value="nGlobalCount"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ab2b19b7a148d8f9f02bdbef085f99406"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a82633f5364d51f3b5a8dfed1e93007eda97bc592b27a9ada2d9a4bb418ed0ebed"><param name="Name" value="now"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad539e1e9bbab631727153dea853aa67fa444bcb3a3fcf8389296c49467f27e1d6"><param name="Name" value="ok"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a95cb3ab240d8e0c05e70f6d7a55275abaf97c5d29941bfb1b2fdab0874906ab82"><param name="Name" value="one"></OBJECT>
@@ -307,6 +530,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html#a6d6832be1fa84f72cd3fcbb466f6a85d"><param name="Name" value="operator=="></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#a7f5dbdbf443f8fa749f1470b9efe2675"><param name="Name" value="operator="></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a9d6fa07987dd80eb143666b0b0331396"><param name="Name" value="q"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue.html#add5bbf800088cdfc80a1755313a581f0"><param name="Name" value="queue"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1queue.html#add5bbf800088cdfc80a1755313a581f0"><param name="Name" value="thread::atomicx::queue"></OBJECT>
@@ -327,9 +551,84 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#a505e559bca1ffa9ce1932a7df9fda86d"><param name="Name" value="thread::atomicx::smartSemaphore"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a0cec343208a5fd0b7053173dff8f676f"><param name="Name" value="run"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a0cec343208a5fd0b7053173dff8f676f"><param name="Name" value="SelfManagedThread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="Name" value="run"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#ab7c637c3277500601b36cebbe0341879"><param name="Name" value="Thread"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="Name" value="run"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a24b5c7c3bdf4ecb6c2e7de8eb6584fe6"><param name="Name" value="ThreadConsummer"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8917ef300f396b3d8bc9fdd8aacccf14"><param name="Name" value="run"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8917ef300f396b3d8bc9fdd8aacccf14"><param name="Name" value="thread::atomicx"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a82633f5364d51f3b5a8dfed1e93007eda75101dcdfc88455bcafc9e53e0b06689"><param name="Name" value="running"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a2990a8de09ebb02bfff296045710595f"><param name="Name" value="sem"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a2990a8de09ebb02bfff296045710595f"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a2990a8de09ebb02bfff296045710595f"><param name="Name" value="sem"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a2990a8de09ebb02bfff296045710595f"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="Atomicx_GetTick"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="Atomicx_SleepTick"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="ListAllThreads"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a5edc6de37b435c32863ecea4b73e43c9"><param name="Name" value="e1"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="main"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ae1779946c59866d03daa930a59594c23"><param name="Name" value="nCounter"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#ab2b19b7a148d8f9f02bdbef085f99406"><param name="Name" value="nGlobalCount"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a2990a8de09ebb02bfff296045710595f"><param name="Name" value="sem"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html"><param name="Name" value="semaphore.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a9a032b59690b12747156edc534aad7bb"><param name="Name" value="t1"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1semaphore.html#a79d76e6e1ee01a6677883905e7087e09"><param name="Name" value="semaphore"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html"><param name="Name" value="simple.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#acba4f7fe589a5ea034da546e90039207"><param name="Name" value="Atomicx_GetTick"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html"><param name="Name" value="simple.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#a965c93519ae7ab7036d1acaae0ae025a"><param name="Name" value="Atomicx_SleepTick"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html"><param name="Name" value="simple.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#aa88e34678db26b5b79e0ea15fa30490e"><param name="Name" value="ListAllThreads"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html"><param name="Name" value="simple.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="simple_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4"><param name="Name" value="main"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a82633f5364d51f3b5a8dfed1e93007edac9fab33e9458412c527c3fe8a13ee37d"><param name="Name" value="sleep"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_mutex.html#a5b8fb66f18cb6ee0359a2533da1d006d"><param name="Name" value="smartMutex"></OBJECT>
   <UL>
@@ -339,26 +638,34 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_mutex.html#a9d85d1b131df0b9c0828b24c80dee4ca"><param name="Name" value="thread::atomicx::smartMutex"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#ad7207fe696a6befaadc905f7e757d90d"><param name="Name" value="smartSemaphore"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#ad7207fe696a6befaadc905f7e757d90d"><param name="Name" value="thread::atomicx::smartSemaphore"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#afdadfb55d8eb4d4998112a66b3d29f97"><param name="Name" value="smartSemaphore"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#afdadfb55d8eb4d4998112a66b3d29f97"><param name="Name" value="thread::atomicx::smartSemaphore"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#af41f483cd1d6d3da6058dc9d091fa05a"><param name="Name" value="smart_ptr"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#ad7207fe696a6befaadc905f7e757d90d"><param name="Name" value="smartSemaphore"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#af41f483cd1d6d3da6058dc9d091fa05a"><param name="Name" value="thread::atomicx::smart_ptr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#ad7207fe696a6befaadc905f7e757d90d"><param name="Name" value="thread::atomicx::smartSemaphore"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#abd3bb69e7f9a2e9dedca04f7d93229eb"><param name="Name" value="smart_ptr"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#abd3bb69e7f9a2e9dedca04f7d93229eb"><param name="Name" value="thread::atomicx::smart_ptr"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#af41f483cd1d6d3da6058dc9d091fa05a"><param name="Name" value="smart_ptr"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart__ptr.html#af41f483cd1d6d3da6058dc9d091fa05a"><param name="Name" value="thread::atomicx::smart_ptr"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a82633f5364d51f3b5a8dfed1e93007edaefab200f4775c7a6f73743d4dcd6681a"><param name="Name" value="stackOverflow"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a82633f5364d51f3b5a8dfed1e93007edaea2b2676c28c0db26d39331a336c6b92"><param name="Name" value="start"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a82633f5364d51f3b5a8dfed1e93007edaef399b2d446bb37b7c32ad2cc1b6045b"><param name="Name" value="stop"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a82633f5364d51f3b5a8dfed1e93007edab48b13e73a6ac2a86dc54425dd24d9ff"><param name="Name" value="subscription"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a9a032b59690b12747156edc534aad7bb"><param name="Name" value="t1"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="main_8cpp.html#a9a032b59690b12747156edc534aad7bb"><param name="Name" value="main.cpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a9a032b59690b12747156edc534aad7bb"><param name="Name" value="t1"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="semaphore_8cpp.html#a9a032b59690b12747156edc534aad7bb"><param name="Name" value="semaphore.cpp"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structthread_1_1atomicx_1_1_message.html#ab7457184e0619f80130e947efa491693"><param name="Name" value="tag"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacethread.html"><param name="Name" value="thread"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
@@ -390,20 +697,20 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html"><param name="Name" value="thread::atomicx::Timeout"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#a5fbf489b1b2c30845205e81f60de4459"><param name="Name" value="Timeout"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#ab81fcb48a2158258262e2ac702ce12d7"><param name="Name" value="Timeout"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html"><param name="Name" value="thread::atomicx::Timeout"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#ab81fcb48a2158258262e2ac702ce12d7"><param name="Name" value="Timeout"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1_timeout.html#a5fbf489b1b2c30845205e81f60de4459"><param name="Name" value="Timeout"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html"><param name="Name" value="thread::atomicx::aiterator"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html"><param name="Name" value="thread::atomicx::aiterator"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html#ad0f6b4b6d0fe669b5027b8e6e258e2b1"><param name="Name" value="aiterator"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html"><param name="Name" value="thread::atomicx::aiterator"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html#aaa51d5ea0bc46d03854df6537e3f926e"><param name="Name" value="aiterator"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html"><param name="Name" value="thread::atomicx::aiterator"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html#ad0f6b4b6d0fe669b5027b8e6e258e2b1"><param name="Name" value="aiterator"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1aiterator.html"><param name="Name" value="thread::atomicx::aiterator"></OBJECT>
   <UL>
@@ -742,15 +1049,15 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8b3845a6f977e4fc9644e996d4102d75"><param name="Name" value="Notify"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
-  <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a401db852c22e1982ae5c184ec93423c0"><param name="Name" value="Notify"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ad1d6b634c9c90c1c15acc391f2b97671"><param name="Name" value="Notify"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a8b3845a6f977e4fc9644e996d4102d75"><param name="Name" value="Notify"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
@@ -802,15 +1109,15 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a7e4e0bf42bafa19be930b43b72d244f7"><param name="Name" value="SyncNotify"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
+  <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a91a943d6b7dbce240fb8bc611edead6b"><param name="Name" value="SyncNotify"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#aad548d78d129a70a9e68862e06d4db9d"><param name="Name" value="SyncNotify"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a7e4e0bf42bafa19be930b43b72d244f7"><param name="Name" value="SyncNotify"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
@@ -850,11 +1157,11 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ae227c8a72cddade05625f906b56f2cb7"><param name="Name" value="atomicx"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a06c82de06faf2019a9af23bc75886baa"><param name="Name" value="atomicx"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#a06c82de06faf2019a9af23bc75886baa"><param name="Name" value="atomicx"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ae227c8a72cddade05625f906b56f2cb7"><param name="Name" value="atomicx"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html"><param name="Name" value="thread::atomicx"></OBJECT>
   <UL>
@@ -961,6 +1268,9 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="atomicx_8hpp.html#a7cb51f5c2b5cad3766f19eb69c92793b"><param name="Name" value="atomicx.hpp"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_self_managed_thread.html#a138c956b6f18a2f132656682727d06e7"><param name="Name" value="~SelfManagedThread"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread.html#a37d9edd3a1a776cbc27dedff949c9726"><param name="Name" value="~Thread"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_thread_consummer.html#a223ba01a7508400bd77b45a3a21165c4"><param name="Name" value="~ThreadConsummer"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx.html#ac460ddbc6a7201689a762fb8d3c35397"><param name="Name" value="~atomicx"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_mutex.html#a554ae8131db4aee6906c0e76d80a9dff"><param name="Name" value="~smartMutex"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classthread_1_1atomicx_1_1smart_semaphore.html#a95216c06f59aedcda133b31793142f26"><param name="Name" value="~smartSemaphore"></OBJECT>
