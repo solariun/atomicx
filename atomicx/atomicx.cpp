@@ -389,6 +389,11 @@ namespace thread
 
         ms_pCurrent->m_aStatus = aTypes::running;
 
+        if (ms_pCurrent->m_flags.dynamicNice == true)
+        {
+            ms_pCurrent->m_nice = ((ms_pCurrent->m_LastUserExecTime) + ms_pCurrent->m_nice) / 2;
+        }
+
         return true;
     }
 
@@ -442,8 +447,16 @@ namespace thread
         }
     }
 
+    void atomicx::SetDefaultParameters ()
+    {
+        m_flags.autoStack = false;
+        m_flags.dynamicNice = false;
+    }
+
     atomicx::atomicx(size_t nStackSize, int nStackIncreasePace) : m_context{}, m_stackSize(nStackSize), m_stackIncreasePace(nStackIncreasePace), m_stack(nullptr)
     {
+        SetDefaultParameters ();
+
         m_flags.autoStack = true;
 
         AddThisThread();
@@ -840,4 +853,13 @@ namespace thread
         return m_stackIncreasePace;
     }
 
+    void atomicx::SetDynamicNice(bool status)
+    {
+        m_flags.dynamicNice = status;
+    }
+
+    bool atomicx::IsDynamicNiceOn()
+    {
+        return m_flags.dynamicNice;
+    }
 }
