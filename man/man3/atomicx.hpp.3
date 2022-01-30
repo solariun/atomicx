@@ -1,0 +1,143 @@
+.TH "atomicx/atomicx.hpp" 3 "Sun Jan 30 2022" "AtomicX" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+atomicx/atomicx.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdint\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <setjmp\&.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBthread::atomicx\fP"
+.br
+.ti -1c
+.RI "class \fBthread::atomicx::Timeout\fP"
+.br
+.RI "\fBTimeout\fP Check object\&. "
+.ti -1c
+.RI "class \fBthread::atomicx::aiterator\fP"
+.br
+.ti -1c
+.RI "class \fBthread::atomicx::smart_ptr< T >\fP"
+.br
+.ti -1c
+.RI "class \fBthread::atomicx::queue< T >\fP"
+.br
+.ti -1c
+.RI "class \fBthread::atomicx::queue< T >::QItem\fP"
+.br
+.RI "Queue Item object\&. "
+.ti -1c
+.RI "class \fBthread::atomicx::semaphore\fP"
+.br
+.ti -1c
+.RI "class \fBthread::atomicx::smartSemaphore\fP"
+.br
+.ti -1c
+.RI "class \fBthread::atomicx::mutex\fP"
+.br
+.ti -1c
+.RI "class \fBthread::atomicx::smartMutex\fP"
+.br
+.RI "RII compliance lock/shared lock to auto unlock on destruction\&. "
+.ti -1c
+.RI "struct \fBthread::atomicx::Message\fP"
+.br
+.in -1c
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBthread\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBATOMICX_VERSION\fP   '1\&.2\&.1'"
+.br
+.ti -1c
+.RI "#define \fBATOMIC_VERSION_LABEL\fP   'AtomicX v' ATOMICX_VERSION ' built at ' __TIMESTAMP__"
+.br
+.ti -1c
+.RI "#define \fBATOMICX_TIME_MAX\fP   ((\fBatomicx_time\fP) ~0)"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "using \fBatomicx_time\fP = uint32_t"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fByield\fP (void)"
+.br
+.ti -1c
+.RI "\fBatomicx_time\fP \fBAtomicx_GetTick\fP (void)"
+.br
+.RI "Implement the custom Tick acquisition\&. "
+.ti -1c
+.RI "void \fBAtomicx_SleepTick\fP (\fBatomicx_time\fP nSleep)"
+.br
+.RI "Implement a custom sleep, usually based in the same GetTick granularity\&. "
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define ATOMIC_VERSION_LABEL   'AtomicX v' ATOMICX_VERSION ' built at ' __TIMESTAMP__"
+
+.SS "#define ATOMICX_TIME_MAX   ((\fBatomicx_time\fP) ~0)"
+
+.SS "#define ATOMICX_VERSION   '1\&.2\&.1'"
+
+.SH "Typedef Documentation"
+.PP 
+.SS "using \fBatomicx_time\fP =  uint32_t"
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBatomicx_time\fP Atomicx_GetTick (void)"
+
+.PP
+Implement the custom Tick acquisition\&. 
+.PP
+\fBReturns\fP
+.RS 4
+atomicx_time 
+.RE
+.PP
+
+.SS "void Atomicx_SleepTick (\fBatomicx_time\fP nSleep)"
+
+.PP
+Implement a custom sleep, usually based in the same GetTick granularity\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInSleep\fP How long custom tick to wait
+.RE
+.PP
+\fBNote\fP
+.RS 4
+This function is particularly special, since it give freedom to tweak the processor power consuption if necessary 
+.RE
+.PP
+
+.SS "void yield (void)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AtomicX from the source code\&.

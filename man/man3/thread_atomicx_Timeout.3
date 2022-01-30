@@ -1,0 +1,121 @@
+.TH "thread::atomicx::Timeout" 3 "Sun Jan 30 2022" "AtomicX" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+thread::atomicx::Timeout \- \fBTimeout\fP Check object\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atomicx\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTimeout\fP ()=delete"
+.br
+.ti -1c
+.RI "\fBTimeout\fP (\fBatomicx_time\fP nTimoutValue)"
+.br
+.RI "Construct a new \fBTimeout\fP object\&. "
+.ti -1c
+.RI "void \fBSet\fP (\fBatomicx_time\fP nTimoutValue)"
+.br
+.RI "Set a timeout from now\&. "
+.ti -1c
+.RI "bool \fBIsTimedout\fP ()"
+.br
+.RI "Check wether it has timeout\&. "
+.ti -1c
+.RI "\fBatomicx_time\fP \fBGetRemaining\fP ()"
+.br
+.RI "Get the remaining time till timeout\&. "
+.ti -1c
+.RI "\fBatomicx_time\fP \fBGetDurationSince\fP (\fBatomicx_time\fP startTime)"
+.br
+.RI "Get the Time Since specific point in time\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBTimeout\fP Check object\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "thread::atomicx::Timeout::Timeout ()\fC [delete]\fP"
+
+.SS "thread::atomicx::Timeout::Timeout (\fBatomicx_time\fP nTimoutValue)"
+
+.PP
+Construct a new \fBTimeout\fP object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInTimoutValue\fP \fBTimeout\fP value to be calculated
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To decrease the amount of memory, \fBTimeout\fP does not save the start time\&. Special use case: if nTimeoutValue == 0, IsTimedout is always false\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBatomicx_time\fP thread::atomicx::Timeout::GetDurationSince (\fBatomicx_time\fP startTime)"
+
+.PP
+Get the Time Since specific point in time\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstartTime\fP The specific point in time
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+atomicx_time How long since the point in time
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To decrease the amount of memory, \fBTimeout\fP does not save the start time\&. 
+.RE
+.PP
+
+.SS "\fBatomicx_time\fP thread::atomicx::Timeout::GetRemaining ()"
+
+.PP
+Get the remaining time till timeout\&. 
+.PP
+\fBReturns\fP
+.RS 4
+atomicx_time Remaining time till timeout, otherwise 0; 
+.RE
+.PP
+
+.SS "bool thread::atomicx::Timeout::IsTimedout ()"
+
+.PP
+Check wether it has timeout\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if it timeout otherwise 0 
+.RE
+.PP
+
+.SS "void thread::atomicx::Timeout::Set (\fBatomicx_time\fP nTimoutValue)"
+
+.PP
+Set a timeout from now\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInTimoutValue\fP timeout in atomicx_time 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AtomicX from the source code\&.

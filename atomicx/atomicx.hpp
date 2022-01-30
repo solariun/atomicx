@@ -18,6 +18,8 @@
 
 using atomicx_time = uint32_t;
 
+#define ATOMICX_TIME_MAX ((atomicx_time) ~0)
+
 extern "C"
 {
     extern void yield(void);
@@ -962,11 +964,11 @@ namespace thread
         /**
          * @brief Foce the context change explicitly
          *
-         * @param nSleep  default is 0, otherwise it will override the nice and sleep for n custom tick granularity
+         * @param nSleep  default is ATOMICX_TIME_MAX, otherwise it will override the nice and sleep for n custom tick granularity
          *
          * @return true if the context came back correctly, otherwise false
          */
-        bool Yield(atomicx_time nSleep=0);
+        bool Yield(atomicx_time nSleep=ATOMICX_TIME_MAX);
 
         /**
          * @brief Get the Last Execution of User Code

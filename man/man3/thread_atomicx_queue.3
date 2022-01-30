@@ -1,0 +1,160 @@
+.TH "thread::atomicx::queue< T >" 3 "Sun Jan 30 2022" "AtomicX" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+thread::atomicx::queue< T >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atomicx\&.hpp>\fP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBQItem\fP"
+.br
+.RI "Queue Item object\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBqueue\fP ()=delete"
+.br
+.ti -1c
+.RI "\fBqueue\fP (size_t nQSize)"
+.br
+.RI "Thread Safe Queue constructor\&. "
+.ti -1c
+.RI "bool \fBPushBack\fP (T item)"
+.br
+.RI "Push an object to the end of the queue, if the queue is full, it waits till there is a space\&. "
+.ti -1c
+.RI "bool \fBPushFront\fP (T item)"
+.br
+.RI "Push an object to the beggining of the queue, if the queue is full, it waits till there is a space\&. "
+.ti -1c
+.RI "T \fBPop\fP ()"
+.br
+.RI "Pop an Item from the beggining of queue\&. Is no object there is no object in the queue, it waits for it\&. "
+.ti -1c
+.RI "size_t \fBGetSize\fP ()"
+.br
+.RI "Get the number of the objects in the queue\&. "
+.ti -1c
+.RI "size_t \fBGetMaxSize\fP ()"
+.br
+.RI "Get the Max number of object in the queue can hold\&. "
+.ti -1c
+.RI "bool \fBIsFull\fP ()"
+.br
+.RI "Check if the queue is full\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T>
+.br
+class thread::atomicx::queue< T >"
+.PP
+ 
+.SS "QUEUE FOR IPC IMPLEMENTATION"
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T > \fBthread::atomicx::queue\fP< T >::queue ()\fC [delete]\fP"
+
+.SS "template<typename T > \fBthread::atomicx::queue\fP< T >::queue (size_t nQSize)\fC [inline]\fP"
+
+.PP
+Thread Safe Queue constructor\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInQSize\fP Max number of objects to hold 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T > size_t \fBthread::atomicx::queue\fP< T >::GetMaxSize ()\fC [inline]\fP"
+
+.PP
+Get the Max number of object in the queue can hold\&. 
+.PP
+\fBReturns\fP
+.RS 4
+size_t The max number of object 
+.RE
+.PP
+
+.SS "template<typename T > size_t \fBthread::atomicx::queue\fP< T >::GetSize ()\fC [inline]\fP"
+
+.PP
+Get the number of the objects in the queue\&. 
+.PP
+\fBReturns\fP
+.RS 4
+size_t Number of the objects in the queue 
+.RE
+.PP
+
+.SS "template<typename T > bool \fBthread::atomicx::queue\fP< T >::IsFull ()\fC [inline]\fP"
+
+.PP
+Check if the queue is full\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true for yes, otherwise false 
+.RE
+.PP
+
+.SS "template<typename T > T \fBthread::atomicx::queue\fP< T >::Pop ()\fC [inline]\fP"
+
+.PP
+Pop an Item from the beggining of queue\&. Is no object there is no object in the queue, it waits for it\&. 
+.PP
+\fBReturns\fP
+.RS 4
+T return the object stored\&. 
+.RE
+.PP
+
+.SS "template<typename T > bool \fBthread::atomicx::queue\fP< T >::PushBack (T item)\fC [inline]\fP"
+
+.PP
+Push an object to the end of the queue, if the queue is full, it waits till there is a space\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP The object to be pushed into the queue
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if it was able to push a object in the queue, false otherwise 
+.RE
+.PP
+
+.SS "template<typename T > bool \fBthread::atomicx::queue\fP< T >::PushFront (T item)\fC [inline]\fP"
+
+.PP
+Push an object to the beggining of the queue, if the queue is full, it waits till there is a space\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP The object to be pushed into the queue
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if it was able to push a object in the queue, false otherwise 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AtomicX from the source code\&.

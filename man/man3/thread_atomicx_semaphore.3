@@ -1,0 +1,136 @@
+.TH "thread::atomicx::semaphore" 3 "Sun Jan 30 2022" "AtomicX" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+thread::atomicx::semaphore
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atomicx\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsemaphore\fP (size_t nMaxShared)"
+.br
+.RI "Construct a new semaphore with MaxShared allowed\&. "
+.ti -1c
+.RI "bool \fBacquire\fP (\fBatomicx_time\fP nTimeout=0)"
+.br
+.RI "Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout\&. "
+.ti -1c
+.RI "void \fBrelease\fP ()"
+.br
+.RI "Releases one shared lock\&. "
+.ti -1c
+.RI "size_t \fBGetCount\fP ()"
+.br
+.RI "Get How many shared locks at a given moment\&. "
+.ti -1c
+.RI "size_t \fBGetWaitCount\fP ()"
+.br
+.RI "Get how many waiting threads for accquiring context\&. "
+.ti -1c
+.RI "size_t \fBGetMaxAcquired\fP ()"
+.br
+.RI "Get the Max Acquired Number\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static size_t \fBGetMax\fP ()"
+.br
+.RI "Get the maximun accquired context possible\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+ 
+.SS "SEMAPHORES IMPLEMENTATION"
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "thread::atomicx::semaphore::semaphore (size_t nMaxShared)"
+
+.PP
+Construct a new semaphore with MaxShared allowed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInMaxShred\fP Max shared lock 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool thread::atomicx::semaphore::acquire (\fBatomicx_time\fP nTimeout = \fC0\fP)"
+
+.PP
+Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInTimeout\fP default = 0 (indefinitely), How long to wait of accquiring
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if it acquired the context, otherwise timeout returns false 
+.RE
+.PP
+
+.SS "size_t thread::atomicx::semaphore::GetCount ()"
+
+.PP
+Get How many shared locks at a given moment\&. 
+.PP
+\fBReturns\fP
+.RS 4
+size_t Number of shared locks 
+.RE
+.PP
+
+.SS "size_t thread::atomicx::semaphore::GetMax ()\fC [static]\fP"
+
+.PP
+Get the maximun accquired context possible\&. 
+.PP
+\fBReturns\fP
+.RS 4
+size_t 
+.RE
+.PP
+
+.SS "size_t thread::atomicx::semaphore::GetMaxAcquired ()"
+
+.PP
+Get the Max Acquired Number\&. 
+.PP
+\fBReturns\fP
+.RS 4
+size_t The max acquired context number 
+.RE
+.PP
+
+.SS "size_t thread::atomicx::semaphore::GetWaitCount ()"
+
+.PP
+Get how many waiting threads for accquiring context\&. 
+.PP
+\fBReturns\fP
+.RS 4
+size_t Number of waiting threads 
+.RE
+.PP
+
+.SS "void thread::atomicx::semaphore::release ()"
+
+.PP
+Releases one shared lock\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AtomicX from the source code\&.

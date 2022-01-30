@@ -1,0 +1,80 @@
+.TH "thread::atomicx::aiterator" 3 "Sun Jan 30 2022" "AtomicX" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+thread::atomicx::aiterator
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atomicx\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBaiterator\fP ()=delete"
+.br
+.ti -1c
+.RI "\fBaiterator\fP (\fBatomicx\fP *ptr)"
+.br
+.RI "atomicx based constructor "
+.ti -1c
+.RI "\fBatomicx\fP & \fBoperator*\fP () const"
+.br
+.ti -1c
+.RI "\fBatomicx\fP * \fBoperator\->\fP ()"
+.br
+.ti -1c
+.RI "\fBaiterator\fP & \fBoperator++\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBaiterator\fP &a, const \fBaiterator\fP &b)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBaiterator\fP &a, const \fBaiterator\fP &b)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+ 
+.SS "ITERATOR FOR THREAD LISTING"
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "thread::atomicx::aiterator::aiterator ()\fC [delete]\fP"
+
+.SS "thread::atomicx::aiterator::aiterator (\fBatomicx\fP * ptr)"
+
+.PP
+atomicx based constructor 
+.PP
+\fBParameters\fP
+.RS 4
+\fIptr\fP atomicx pointer to iterate 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBatomicx\fP & thread::atomicx::aiterator::operator* () const"
+
+.SS "\fBatomicx::aiterator\fP & thread::atomicx::aiterator::operator++ ()"
+
+.SS "\fBatomicx\fP * thread::atomicx::aiterator::operator\-> ()"
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "bool operator!= (const \fBaiterator\fP & a, const \fBaiterator\fP & b)\fC [friend]\fP"
+
+.SS "bool operator== (const \fBaiterator\fP & a, const \fBaiterator\fP & b)\fC [friend]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AtomicX from the source code\&.

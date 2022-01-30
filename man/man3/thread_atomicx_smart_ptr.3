@@ -1,0 +1,150 @@
+.TH "thread::atomicx::smart_ptr< T >" 3 "Sun Jan 30 2022" "AtomicX" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+thread::atomicx::smart_ptr< T >
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <atomicx\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsmart_ptr\fP (T *p)"
+.br
+.RI "smart pointer constructor "
+.ti -1c
+.RI "\fBsmart_ptr\fP (const \fBsmart_ptr\fP< T > &sa)"
+.br
+.RI "smart pointer overload constructor "
+.ti -1c
+.RI "\fBsmart_ptr\fP< T > & \fBoperator=\fP (const \fBsmart_ptr\fP< T > &sa)"
+.br
+.RI "Smart pointer Assignment operator\&. "
+.ti -1c
+.RI "\fB~smart_ptr\fP (void)"
+.br
+.RI "Smart pointer destructor\&. "
+.ti -1c
+.RI "T * \fBoperator\->\fP (void)"
+.br
+.RI "Smart pointer access operator\&. "
+.ti -1c
+.RI "T & \fBoperator&\fP (void)"
+.br
+.RI "Smart pointer access operator\&. "
+.ti -1c
+.RI "bool \fBIsValid\fP (void)"
+.br
+.RI "Check if the referece still valid\&. "
+.ti -1c
+.RI "size_t \fBGetRefCounter\fP (void)"
+.br
+.RI "Get the Ref Counter of the managed pointer\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T>
+.br
+class thread::atomicx::smart_ptr< T >"
+.PP
+ 
+.SS "SUPLEMENTAR SMART_PTR IMPLEMENTATION"
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T > \fBthread::atomicx::smart_ptr\fP< T >::smart_ptr (T * p)\fC [inline]\fP"
+
+.PP
+smart pointer constructor 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP pointer type T to be managed 
+.RE
+.PP
+
+.SS "template<typename T > \fBthread::atomicx::smart_ptr\fP< T >::smart_ptr (const \fBsmart_ptr\fP< T > & sa)\fC [inline]\fP"
+
+.PP
+smart pointer overload constructor 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsa\fP Smart pointer reference 
+.RE
+.PP
+
+.SS "template<typename T > \fBthread::atomicx::smart_ptr\fP< T >::~\fBsmart_ptr\fP (void)\fC [inline]\fP"
+
+.PP
+Smart pointer destructor\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T > size_t \fBthread::atomicx::smart_ptr\fP< T >::GetRefCounter (void)\fC [inline]\fP"
+
+.PP
+Get the Ref Counter of the managed pointer\&. 
+.PP
+\fBReturns\fP
+.RS 4
+size_t How much active references 
+.RE
+.PP
+
+.SS "template<typename T > bool \fBthread::atomicx::smart_ptr\fP< T >::IsValid (void)\fC [inline]\fP"
+
+.PP
+Check if the referece still valid\&. 
+.PP
+\fBReturns\fP
+.RS 4
+true if the reference still not null, otherwise false 
+.RE
+.PP
+
+.SS "template<typename T > T & \fBthread::atomicx::smart_ptr\fP< T >::operator& (void)\fC [inline]\fP"
+
+.PP
+Smart pointer access operator\&. 
+.PP
+\fBReturns\fP
+.RS 4
+T* Reference for the managed object T 
+.RE
+.PP
+
+.SS "template<typename T > T * \fBthread::atomicx::smart_ptr\fP< T >::operator\-> (void)\fC [inline]\fP"
+
+.PP
+Smart pointer access operator\&. 
+.PP
+\fBReturns\fP
+.RS 4
+T* Pointer for the managed object T 
+.RE
+.PP
+
+.SS "template<typename T > \fBsmart_ptr\fP< T > & \fBthread::atomicx::smart_ptr\fP< T >::operator= (const \fBsmart_ptr\fP< T > & sa)\fC [inline]\fP"
+
+.PP
+Smart pointer Assignment operator\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsa\fP Smart poiter reference
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+smart_ptr<T>& smart pointer this reference\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for AtomicX from the source code\&.
