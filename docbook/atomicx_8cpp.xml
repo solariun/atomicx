@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_atomicx_8cpp" xml:lang="en-US">
+<title>atomicx/atomicx.cpp File Reference</title>
+<indexterm><primary>atomicx/atomicx.cpp</primary></indexterm>
+<programlisting linenumbering="unnumbered">#include &quot;atomicx.hpp&quot;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;setjmp.h&gt;
+#include &lt;stdlib.h&gt;
+</programlisting><simplesect>
+    <title>Namespaces    </title>
+        <itemizedlist>
+            <listitem><para>namespace <link linkend="_namespacethread">thread</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Macros    </title>
+        <itemizedlist>
+            <listitem><para>#define <link linkend="_atomicx_8cpp_1aa55bbb692b1c5e89d3a5c3bee1ce8399">POLY</link>   0x8408</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Functions    </title>
+        <itemizedlist>
+            <listitem><para>void <link linkend="_atomicx_8cpp_1a7cb51f5c2b5cad3766f19eb69c92793b">yield</link> (void)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Macro Definition Documentation</title>
+<anchor xml:id="_atomicx_8cpp_1aa55bbb692b1c5e89d3a5c3bee1ce8399"/><section>
+    <title>POLY</title>
+<indexterm><primary>POLY</primary><secondary>atomicx.cpp</secondary></indexterm>
+<indexterm><primary>atomicx.cpp</primary><secondary>POLY</secondary></indexterm>
+<para><computeroutput>#define POLY   0x8408</computeroutput></para></section>
+</section>
+<section>
+<title>Function Documentation</title>
+<anchor xml:id="_atomicx_8cpp_1a7cb51f5c2b5cad3766f19eb69c92793b"/><section>
+    <title>yield()</title>
+<indexterm><primary>yield</primary><secondary>atomicx.cpp</secondary></indexterm>
+<indexterm><primary>atomicx.cpp</primary><secondary>yield</secondary></indexterm>
+<para><computeroutput>void yield (void )</computeroutput></para></section>
+</section>
+</section>

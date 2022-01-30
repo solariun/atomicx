@@ -1,0 +1,207 @@
+\hypertarget{classthread_1_1atomicx_1_1smart_semaphore}{}\doxysection{thread\+::atomicx\+::smart\+Semaphore Class Reference}
+\label{classthread_1_1atomicx_1_1smart_semaphore}\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+
+
+{\ttfamily \#include $<$atomicx.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_afdadfb55d8eb4d4998112a66b3d29f97}{smart\+Semaphore}} (\mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore}{atomicx\+::semaphore}} \&\mbox{\hyperlink{main_8cpp_a2990a8de09ebb02bfff296045710595f}{sem}})
+\begin{DoxyCompactList}\small\item\em Acquire and managed the semaphore. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_ad7207fe696a6befaadc905f7e757d90d}{smart\+Semaphore}} ()=delete
+\item 
+\mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a95216c06f59aedcda133b31793142f26}{$\sim$smart\+Semaphore}} ()
+\begin{DoxyCompactList}\small\item\em Destroy the smart Semaphore while releasing it. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a86c0c771fc6e940bef97f9eec5d2a6d2}{acquire}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} n\+Timeout=0)
+\begin{DoxyCompactList}\small\item\em Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a505e559bca1ffa9ce1932a7df9fda86d}{release}} ()
+\begin{DoxyCompactList}\small\item\em Releases one shared lock. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a4fb6a49221f2de65200f98d8868081ea}{Get\+Count}} ()
+\begin{DoxyCompactList}\small\item\em Get How many shared locks at a given moment. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a423e4e0cafcbc1475434035933929383}{Get\+Wait\+Count}} ()
+\begin{DoxyCompactList}\small\item\em Get how many waiting threads for accquiring context. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a63ea759f0af906db9d39ccccfee859ae}{Get\+Max\+Acquired}} ()
+\begin{DoxyCompactList}\small\item\em Get the Max Acquired Number. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a00a33f0aab15379311afc3fe20863594}{Is\+Acquired}} ()
+\begin{DoxyCompactList}\small\item\em Report if the \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore}{smart\+Semaphore}} has acquired a shared context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static size\+\_\+t \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore_a5ca716f4fd9ac336d093520b2864e8ce}{Get\+Max}} ()
+\begin{DoxyCompactList}\small\item\em Get the maximun accquired context possible. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00620}{620}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_afdadfb55d8eb4d4998112a66b3d29f97}\label{classthread_1_1atomicx_1_1smart_semaphore_afdadfb55d8eb4d4998112a66b3d29f97}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!smartSemaphore@{smartSemaphore}}
+\index{smartSemaphore@{smartSemaphore}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{smartSemaphore()}{smartSemaphore()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily thread\+::atomicx\+::smart\+Semaphore\+::smart\+Semaphore (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore}{atomicx\+::semaphore}} \&}]{sem }\end{DoxyParamCaption})}
+
+
+
+Acquire and managed the semaphore. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sem} & base semaphore \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00086}{86}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_ad7207fe696a6befaadc905f7e757d90d}\label{classthread_1_1atomicx_1_1smart_semaphore_ad7207fe696a6befaadc905f7e757d90d}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!smartSemaphore@{smartSemaphore}}
+\index{smartSemaphore@{smartSemaphore}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{smartSemaphore()}{smartSemaphore()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily thread\+::atomicx\+::smart\+Semaphore\+::smart\+Semaphore (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_a95216c06f59aedcda133b31793142f26}\label{classthread_1_1atomicx_1_1smart_semaphore_a95216c06f59aedcda133b31793142f26}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!````~smartSemaphore@{$\sim$smartSemaphore}}
+\index{````~smartSemaphore@{$\sim$smartSemaphore}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{$\sim$smartSemaphore()}{~smartSemaphore()}}
+{\footnotesize\ttfamily thread\+::atomicx\+::smart\+Semaphore\+::$\sim$smart\+Semaphore (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Destroy the smart Semaphore while releasing it. 
+
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00089}{89}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_a86c0c771fc6e940bef97f9eec5d2a6d2}\label{classthread_1_1atomicx_1_1smart_semaphore_a86c0c771fc6e940bef97f9eec5d2a6d2}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!acquire@{acquire}}
+\index{acquire@{acquire}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{acquire()}{acquire()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::smart\+Semaphore\+::acquire (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{n\+Timeout = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+
+
+Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Timeout} & default = 0 (indefinitely), How long to wait of accquiring\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if it acquired the context, otherwise timeout returns false 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00094}{94}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_a4fb6a49221f2de65200f98d8868081ea}\label{classthread_1_1atomicx_1_1smart_semaphore_a4fb6a49221f2de65200f98d8868081ea}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!GetCount@{GetCount}}
+\index{GetCount@{GetCount}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{GetCount()}{GetCount()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::smart\+Semaphore\+::\+Get\+Count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get How many shared locks at a given moment. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t Number of shared locks 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00116}{116}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_a5ca716f4fd9ac336d093520b2864e8ce}\label{classthread_1_1atomicx_1_1smart_semaphore_a5ca716f4fd9ac336d093520b2864e8ce}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!GetMax@{GetMax}}
+\index{GetMax@{GetMax}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{GetMax()}{GetMax()}}
+{\footnotesize\ttfamily static size\+\_\+t thread\+::atomicx\+::smart\+Semaphore\+::\+Get\+Max (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Get the maximun accquired context possible. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_a63ea759f0af906db9d39ccccfee859ae}\label{classthread_1_1atomicx_1_1smart_semaphore_a63ea759f0af906db9d39ccccfee859ae}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!GetMaxAcquired@{GetMaxAcquired}}
+\index{GetMaxAcquired@{GetMaxAcquired}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{GetMaxAcquired()}{GetMaxAcquired()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::smart\+Semaphore\+::\+Get\+Max\+Acquired (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the Max Acquired Number. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t The max acquired context number 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00121}{121}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_a423e4e0cafcbc1475434035933929383}\label{classthread_1_1atomicx_1_1smart_semaphore_a423e4e0cafcbc1475434035933929383}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!GetWaitCount@{GetWaitCount}}
+\index{GetWaitCount@{GetWaitCount}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{GetWaitCount()}{GetWaitCount()}}
+{\footnotesize\ttfamily size\+\_\+t thread\+::atomicx\+::smart\+Semaphore\+::\+Get\+Wait\+Count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get how many waiting threads for accquiring context. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t Number of waiting threads 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00126}{126}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_a00a33f0aab15379311afc3fe20863594}\label{classthread_1_1atomicx_1_1smart_semaphore_a00a33f0aab15379311afc3fe20863594}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!IsAcquired@{IsAcquired}}
+\index{IsAcquired@{IsAcquired}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{IsAcquired()}{IsAcquired()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::smart\+Semaphore\+::\+Is\+Acquired (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Report if the \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore}{smart\+Semaphore}} has acquired a shared context. 
+
+\begin{DoxyReturn}{Returns}
+true if it has successfully acquired a shared context otherwise false 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00131}{131}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1smart_semaphore_a505e559bca1ffa9ce1932a7df9fda86d}\label{classthread_1_1atomicx_1_1smart_semaphore_a505e559bca1ffa9ce1932a7df9fda86d}} 
+\index{thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}!release@{release}}
+\index{release@{release}!thread::atomicx::smartSemaphore@{thread::atomicx::smartSemaphore}}
+\doxysubsubsection{\texorpdfstring{release()}{release()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::smart\+Semaphore\+::release (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Releases one shared lock. 
+
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00108}{108}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+atomicx/\mbox{\hyperlink{atomicx_8hpp}{atomicx.\+hpp}}\item 
+atomicx/\mbox{\hyperlink{atomicx_8cpp}{atomicx.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_dir_99dbfd7b783947babdb655c57db1c531" xml:lang="en-US">
+<title>atomicx Directory Reference</title>
+<indexterm><primary>atomicx Directory Reference</primary></indexterm>
+<simplesect>
+    <title>Files    </title>
+        <itemizedlist>
+            <listitem><para>file <link linkend="_atomicx_8cpp">atomicx.cpp</link></para>
+</listitem>
+            <listitem><para>file <link linkend="_atomicx_8hpp">atomicx.hpp</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+</section>

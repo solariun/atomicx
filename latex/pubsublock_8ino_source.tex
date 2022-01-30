@@ -1,0 +1,265 @@
+\hypertarget{pubsublock_8ino_source}{}\doxysection{pubsublock.\+ino}
+\label{pubsublock_8ino_source}\index{examples/Arduino/pubsublock/pubsublock.ino@{examples/Arduino/pubsublock/pubsublock.ino}}
+\mbox{\hyperlink{pubsublock_8ino}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00001}00001 /*}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00003}00003 */}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00004}00004 \#include "{}arduino.h"{}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00005}00005 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00006}00006 \#include "{}atomicx.hpp"{}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00007}00007 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00008}00008 \#include <stdio.h>}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00009}00009 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00010}00010 \#include <string.h>}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00011}00011 \#include <stdint.h>}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00012}00012 \#include <setjmp.h>}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00014}00014 using namespace thread;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00015}00015 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00016}00016 atomicx\_time Atomicx\_GetTick(void)}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00017}00017 \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00018}00018     ::yield();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00019}00019     return millis();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00020}00020 \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00021}00021 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00022}00022 void Atomicx\_SleepTick(atomicx\_time nSleep)}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00023}00023 \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00024}00024     //ListAllThreads();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00025}00025     delay(nSleep);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00026}00026 \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00028}00028 size\_t nDataCount=0;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00029}00029 atomicx::mutex gLock;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00030}00030 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00031}00031 String strTopic = "{}message/topic"{};}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00033}00033 class Consumer : public atomicx}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00034}00034 \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00035}00035 public:}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00036}00036     Consumer(uint32\_t nNice, const char* pszName) : stack\{\}, atomicx (stack), pszName(pszName)}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00037}00037     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00038}00038         SetNice(nNice);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00039}00039     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00040}00040 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00041}00041     const char* GetName () override}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00042}00042     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00043}00043         return pszName;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00044}00044     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00045}00045 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00046}00046     \string~Consumer()}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00047}00047     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00048}00048         Serial.print("{}Deleting Consumer: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00049}00049         Serial.print ("{}, ID: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00050}00050         Serial.println ((size\_t) this);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00051}00051     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00053}00053     bool IsSubscribed (const char* pszKey, size\_t nKeyLenght) override}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00054}00054     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00055}00055         Serial.print (\_\_FUNCTION\_\_);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00056}00056         Serial.print ("{}:"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00057}00057         Serial.print (pszKey);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00058}00058 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00059}00059         if (strncmp (pszKey, strTopic.c\_str(), nKeyLenght) == 0)}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00060}00060         \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00061}00061            Serial.println ("{}:Has Subscriptions....."{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00062}00062         \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00063}00063         else}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00064}00064         \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00065}00065           Serial.println ("{}:Has NO Subscriptions....."{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00066}00066         \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00068}00068         Serial.flush();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00070}00070         return true;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00071}00071     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00073}00073     bool BrokerHandler(const char* pszKey, size\_t nKeyLenght, Message\& message)}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00074}00074     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00075}00075         Serial.print (GetName());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00076}00076         Serial.print ("{}:"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00077}00077         Serial.print (pszKey);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00078}00078         Serial.print ("{}:"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00079}00079         Serial.print (message.tag);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00080}00080         Serial.print ("{}:"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00081}00081         Serial.print (message.message);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00082}00082         Serial.println ("{}: async Handling topic ...."{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00083}00083         Serial.flush();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00084}00084 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00085}00085         return true;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00086}00086     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00087}00087 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00088}00088     void run() noexcept override}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00089}00089     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00090}00090         Message message=\{0,0\};}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00091}00091 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00092}00092         do}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00093}00093         \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00094}00094             WaitBrokerMessage (strTopic.c\_str(), strTopic.length(), message);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00095}00095 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00096}00096             // -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00097}00097 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00098}00098             Serial.print ("{}Executing Consumer "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00099}00099             Serial.print (GetName());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00100}00100             Serial.print ("{}: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00101}00101             Serial.print ((size\_t) this);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00102}00102             Serial.print ("{}: Stack used: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00103}00103             Serial.print (GetUsedStackSize());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00104}00104             Serial.print ("{}, locks/shared:"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00105}00105             Serial.print (gLock.IsLocked());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00106}00106             Serial.print ("{}/"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00107}00107             Serial.print (gLock.IsShared());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00108}00108             Serial.print ("{}, nTag: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00109}00109             Serial.print (message.tag);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00110}00110             Serial.print ("{}, Message: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00111}00111             Serial.println (message.message);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00113}00113             Serial.flush();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00114}00114 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00115}00115         \} while (Yield());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00116}00116     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00117}00117 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00118}00118     void StackOverflowHandler(void) noexcept final}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00119}00119     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00120}00120         Serial.print (\_\_FUNCTION\_\_);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00121}00121         Serial.print ("{}["{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00122}00122         Serial.print (GetName ());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00123}00123         Serial.print ((size\_t) this);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00124}00124         Serial.print ("{}: Stack used "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00125}00125         Serial.print (GetUsedStackSize());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00126}00126         Serial.print ("{}/"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00127}00127         Serial.println (GetStackSize());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00128}00128         Serial.flush();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00129}00129     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00131}00131 private:}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00132}00132     uint8\_t stack[sizeof(size\_t) * 50];}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00133}00133     const char* pszName;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00134}00134 \};}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00135}00135 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00136}00136 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00137}00137 class Producer : public atomicx}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00138}00138 \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00139}00139 public:}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00140}00140     Producer(uint32\_t nNice, const char* pszName) : stack\{\}, atomicx (stack), pszName(pszName)}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00141}00141     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00142}00142         SetNice(nNice);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00143}00143     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00144}00144 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00145}00145     const char* GetName () override}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00146}00146     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00147}00147         return pszName;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00148}00148     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00149}00149 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00150}00150     \string~Producer()}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00151}00151     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00152}00152         Serial.print("{}Deleting "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00153}00153         Serial.println ((size\_t) this);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00154}00154     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00155}00155 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00156}00156     void run() noexcept override}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00157}00157     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00158}00158         size\_t nCount=0;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00159}00159         size\_t nTag = GetID ();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00160}00160 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00161}00161         do}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00162}00162         \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00163}00163             Serial.print ("{}Executing "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00164}00164             Serial.print (GetName());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00165}00165             Serial.print ("{}: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00166}00166             Serial.print (GetName ());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00167}00167             Serial.print ((size\_t) this);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00168}00168             Serial.print ("{}, locks/shared:"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00169}00169             Serial.print (gLock.IsLocked());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00170}00170             Serial.print ("{}/"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00171}00171             Serial.print (gLock.IsShared());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00172}00172 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00173}00173             Serial.print ("{}, Counter: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00174}00174             Serial.println (nCount++);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00175}00175 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00176}00176             Serial.flush();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00177}00177 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00178}00178             Publish (strTopic.c\_str(), strTopic.length(), \{nTag, nCount\});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00179}00179 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00180}00180             //atomicx::smart\_ptr<Consumer> Consumer\_thread (new Consumer(100, "{}t::Consumer"{}));}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00181}00181 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00182}00182         \} while (Yield ());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00183}00183     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00184}00184 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00185}00185     void StackOverflowHandler(void) noexcept final}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00186}00186     \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00187}00187         Serial.print (\_\_FUNCTION\_\_);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00188}00188         Serial.print ("{}["{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00189}00189         Serial.print (GetName ());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00190}00190         Serial.print ((size\_t) this);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00191}00191         Serial.print ("{}: Stack used "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00192}00192         Serial.println (GetUsedStackSize());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00193}00193         Serial.flush();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00194}00194     \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00195}00195 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00196}00196    void ListAllThreads()}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00197}00197    \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00198}00198       size\_t nCount=0;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00199}00199 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00200}00200       Serial.print ("{}Context: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00201}00201       Serial.print (sizeof (atomicx));}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00202}00202       Serial.println ("{}-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00203}00203 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00204}00204       for (auto\& th : *this)}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00205}00205       \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00206}00206           Serial.print (++nCount);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00207}00207           Serial.print ("{}:'"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00208}00208           Serial.print (th.GetName());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00209}00209           Serial.print ("{}' "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00210}00210           Serial.print ((size\_t) \&th);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00211}00211           Serial.print ("{}, Nice: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00212}00212           Serial.print (th.GetNice());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00213}00213           Serial.print ("{}\(\backslash\)t, Stack: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00214}00214           Serial.print (th.GetStackSize());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00215}00215           Serial.print ("{}\(\backslash\)t, UsedStack: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00216}00216           Serial.print(th.GetUsedStackSize());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00217}00217           Serial.print ("{}\(\backslash\)t, Status: "{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00218}00218           Serial.println (th.GetStatus());}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00219}00219 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00220}00220           Serial.flush();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00221}00221       \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00222}00222   \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00223}00223 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00224}00224 private:}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00225}00225     uint8\_t stack[sizeof(size\_t) * 50];}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00226}00226     const char* pszName;}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00227}00227 \};}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00228}00228 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00229}00229 void setup()}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00230}00230 \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00231}00231   Serial.begin (115200);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00232}00232 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00233}00233   while (! Serial) delay (100);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00234}00234 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00235}00235   delay (2000);}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00236}00236 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00237}00237   Serial.println ("{}-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\(\backslash\)n"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00238}00238   Serial.println ("{}Starting up..."{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00239}00239   Serial.println ("{}-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\(\backslash\)n"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00240}00240   Serial.flush();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00241}00241 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00242}00242 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00243}00243   Producer T1(100, "{}Thread 1"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00244}00244   Consumer E1(100, "{}Consumer 1"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00245}00245   Consumer E2(250, "{}Consumer 2"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00246}00246   Consumer E4(500, "{}Consumer 3"{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00247}00247 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00248}00248   T1.ListAllThreads ();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00249}00249 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00250}00250   atomicx::Start();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00251}00251 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00252}00252   Serial.println ("{}Full lock detected..."{});}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00253}00253 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00254}00254   T1.ListAllThreads ();}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00255}00255 \}}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00256}00256 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00257}00257 void loop() \{}
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00258}00258 }
+\DoxyCodeLine{\Hypertarget{pubsublock_8ino_source_l00259}00259 \}}
+
+\end{DoxyCode}

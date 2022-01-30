@@ -1,0 +1,151 @@
+\hypertarget{classthread_1_1atomicx_1_1_timeout}{}\doxysection{thread\+::atomicx\+::Timeout Class Reference}
+\label{classthread_1_1atomicx_1_1_timeout}\index{thread::atomicx::Timeout@{thread::atomicx::Timeout}}
+
+
+\mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} Check object.  
+
+
+
+
+{\ttfamily \#include $<$atomicx.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout_a5fbf489b1b2c30845205e81f60de4459}{Timeout}} ()=delete
+\item 
+\mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout_ab81fcb48a2158258262e2ac702ce12d7}{Timeout}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} n\+Timout\+Value)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout_a3e76e4c3e7c50ea6b79b10ce352ea6b4}{Set}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} n\+Timout\+Value)
+\begin{DoxyCompactList}\small\item\em Set a timeout from now. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout_ac28470eb9269efba7b924b2d2a924839}{Is\+Timedout}} ()
+\begin{DoxyCompactList}\small\item\em Check wether it has timeout. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout_acd51ff00b51d2bde7722492e9f0bf702}{Get\+Remaining}} ()
+\begin{DoxyCompactList}\small\item\em Get the remaining time till timeout. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout_a06e6376b17211c0c78668e3b91309488}{Get\+Duration\+Since}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} start\+Time)
+\begin{DoxyCompactList}\small\item\em Get the Time Since specific point in time. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} Check object. 
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00088}{88}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1_timeout_a5fbf489b1b2c30845205e81f60de4459}\label{classthread_1_1atomicx_1_1_timeout_a5fbf489b1b2c30845205e81f60de4459}} 
+\index{thread::atomicx::Timeout@{thread::atomicx::Timeout}!Timeout@{Timeout}}
+\index{Timeout@{Timeout}!thread::atomicx::Timeout@{thread::atomicx::Timeout}}
+\doxysubsubsection{\texorpdfstring{Timeout()}{Timeout()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily thread\+::atomicx\+::\+Timeout\+::\+Timeout (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1_timeout_ab81fcb48a2158258262e2ac702ce12d7}\label{classthread_1_1atomicx_1_1_timeout_ab81fcb48a2158258262e2ac702ce12d7}} 
+\index{thread::atomicx::Timeout@{thread::atomicx::Timeout}!Timeout@{Timeout}}
+\index{Timeout@{Timeout}!thread::atomicx::Timeout@{thread::atomicx::Timeout}}
+\doxysubsubsection{\texorpdfstring{Timeout()}{Timeout()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily thread\+::atomicx\+::\+Timeout\+::\+Timeout (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{n\+Timout\+Value }\end{DoxyParamCaption})}
+
+
+
+Construct a new \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Timout\+Value} & \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} value to be calculated\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+To decrease the amount of memory, \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} does not save the start time. Special use case\+: if n\+Timeout\+Value == 0, Is\+Timedout is always false. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00136}{136}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1_timeout_a06e6376b17211c0c78668e3b91309488}\label{classthread_1_1atomicx_1_1_timeout_a06e6376b17211c0c78668e3b91309488}} 
+\index{thread::atomicx::Timeout@{thread::atomicx::Timeout}!GetDurationSince@{GetDurationSince}}
+\index{GetDurationSince@{GetDurationSince}!thread::atomicx::Timeout@{thread::atomicx::Timeout}}
+\doxysubsubsection{\texorpdfstring{GetDurationSince()}{GetDurationSince()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} thread\+::atomicx\+::\+Timeout\+::\+Get\+Duration\+Since (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{start\+Time }\end{DoxyParamCaption})}
+
+
+
+Get the Time Since specific point in time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start\+Time} & The specific point in time\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+atomicx\+\_\+time How long since the point in time
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To decrease the amount of memory, \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} does not save the start time. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00158}{158}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1_timeout_acd51ff00b51d2bde7722492e9f0bf702}\label{classthread_1_1atomicx_1_1_timeout_acd51ff00b51d2bde7722492e9f0bf702}} 
+\index{thread::atomicx::Timeout@{thread::atomicx::Timeout}!GetRemaining@{GetRemaining}}
+\index{GetRemaining@{GetRemaining}!thread::atomicx::Timeout@{thread::atomicx::Timeout}}
+\doxysubsubsection{\texorpdfstring{GetRemaining()}{GetRemaining()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} thread\+::atomicx\+::\+Timeout\+::\+Get\+Remaining (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the remaining time till timeout. 
+
+\begin{DoxyReturn}{Returns}
+atomicx\+\_\+time Remaining time till timeout, otherwise 0; 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00151}{151}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1_timeout_ac28470eb9269efba7b924b2d2a924839}\label{classthread_1_1atomicx_1_1_timeout_ac28470eb9269efba7b924b2d2a924839}} 
+\index{thread::atomicx::Timeout@{thread::atomicx::Timeout}!IsTimedout@{IsTimedout}}
+\index{IsTimedout@{IsTimedout}!thread::atomicx::Timeout@{thread::atomicx::Timeout}}
+\doxysubsubsection{\texorpdfstring{IsTimedout()}{IsTimedout()}}
+{\footnotesize\ttfamily bool thread\+::atomicx\+::\+Timeout\+::\+Is\+Timedout (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Check wether it has timeout. 
+
+\begin{DoxyReturn}{Returns}
+true if it timeout otherwise 0 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00146}{146}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+\mbox{\Hypertarget{classthread_1_1atomicx_1_1_timeout_a3e76e4c3e7c50ea6b79b10ce352ea6b4}\label{classthread_1_1atomicx_1_1_timeout_a3e76e4c3e7c50ea6b79b10ce352ea6b4}} 
+\index{thread::atomicx::Timeout@{thread::atomicx::Timeout}!Set@{Set}}
+\index{Set@{Set}!thread::atomicx::Timeout@{thread::atomicx::Timeout}}
+\doxysubsubsection{\texorpdfstring{Set()}{Set()}}
+{\footnotesize\ttfamily void thread\+::atomicx\+::\+Timeout\+::\+Set (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{n\+Timout\+Value }\end{DoxyParamCaption})}
+
+
+
+Set a timeout from now. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Timout\+Value} & timeout in atomicx\+\_\+time \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00141}{141}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+atomicx/\mbox{\hyperlink{atomicx_8hpp}{atomicx.\+hpp}}\item 
+atomicx/\mbox{\hyperlink{atomicx_8cpp}{atomicx.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_classthread_1_1atomicx_1_1smart_semaphore" xml:lang="en-US">
+<title>thread::atomicx::smartSemaphore Class Reference</title>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary></indexterm>
+<para>
+<computeroutput>#include &lt;atomicx.hpp&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1afdadfb55d8eb4d4998112a66b3d29f97">smartSemaphore</link> (<link linkend="_classthread_1_1atomicx_1_1semaphore">atomicx::semaphore</link> &amp;sem)</para>
+
+<para>Acquire and managed the semaphore. </para>
+</listitem>
+            <listitem><para><link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1ad7207fe696a6befaadc905f7e757d90d">smartSemaphore</link> ()=delete</para>
+</listitem>
+            <listitem><para><link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1a95216c06f59aedcda133b31793142f26">~smartSemaphore</link> ()</para>
+
+<para>Destroy the smart Semaphore while releasing it. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1a86c0c771fc6e940bef97f9eec5d2a6d2">acquire</link> (<link linkend="_atomicx_8hpp_1a920b9cf8bd44e31bfb1bfdf4cb1c9080">atomicx_time</link> nTimeout=0)</para>
+
+<para>Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout. </para>
+</listitem>
+            <listitem><para>void <link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1a505e559bca1ffa9ce1932a7df9fda86d">release</link> ()</para>
+
+<para>Releases one shared lock. </para>
+</listitem>
+            <listitem><para>size_t <link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1a4fb6a49221f2de65200f98d8868081ea">GetCount</link> ()</para>
+
+<para>Get How many shared locks at a given moment. </para>
+</listitem>
+            <listitem><para>size_t <link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1a423e4e0cafcbc1475434035933929383">GetWaitCount</link> ()</para>
+
+<para>Get how many waiting threads for accquiring context. </para>
+</listitem>
+            <listitem><para>size_t <link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1a63ea759f0af906db9d39ccccfee859ae">GetMaxAcquired</link> ()</para>
+
+<para>Get the Max Acquired Number. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1a00a33f0aab15379311afc3fe20863594">IsAcquired</link> ()</para>
+
+<para>Report if the <link linkend="_classthread_1_1atomicx_1_1smart_semaphore">smartSemaphore</link> has acquired a shared context. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static size_t <link linkend="_classthread_1_1atomicx_1_1smart_semaphore_1a5ca716f4fd9ac336d093520b2864e8ce">GetMax</link> ()</para>
+
+<para>Get the maximun accquired context possible. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1afdadfb55d8eb4d4998112a66b3d29f97"/><section>
+    <title>smartSemaphore()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>smartSemaphore</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>smartSemaphore</secondary></indexterm>
+<para><computeroutput>thread::atomicx::smartSemaphore::smartSemaphore (<link linkend="_classthread_1_1atomicx_1_1semaphore">atomicx::semaphore</link> &amp; sem)</computeroutput></para><para>
+
+<para>Acquire and managed the semaphore. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>sem</entry><entry>
+<para>base semaphore </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1ad7207fe696a6befaadc905f7e757d90d"/><section>
+    <title>smartSemaphore()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>smartSemaphore</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>smartSemaphore</secondary></indexterm>
+<para><computeroutput>thread::atomicx::smartSemaphore::smartSemaphore ( )<computeroutput>[delete]</computeroutput></computeroutput></para></section>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1a95216c06f59aedcda133b31793142f26"/><section>
+    <title>~smartSemaphore()</title>
+<indexterm><primary>~smartSemaphore</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>~smartSemaphore</secondary></indexterm>
+<para><computeroutput>thread::atomicx::smartSemaphore::~smartSemaphore ( )</computeroutput></para><para>
+
+<para>Destroy the smart Semaphore while releasing it. </para>
+</para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1a86c0c771fc6e940bef97f9eec5d2a6d2"/><section>
+    <title>acquire()</title>
+<indexterm><primary>acquire</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>acquire</secondary></indexterm>
+<para><computeroutput>bool thread::atomicx::smartSemaphore::acquire (<link linkend="_atomicx_8hpp_1a920b9cf8bd44e31bfb1bfdf4cb1c9080">atomicx_time</link> nTimeout = <computeroutput>0</computeroutput>
+)</computeroutput></para><para>
+
+<para>Acquire a shared lock context, if already on max shared allowed, wait till one is release or timeout. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>nTimeout</entry><entry>
+<para>default = 0 (indefinitely), How long to wait of accquiring</para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>true if it acquired the context, otherwise timeout returns false </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1a4fb6a49221f2de65200f98d8868081ea"/><section>
+    <title>GetCount()</title>
+<indexterm><primary>GetCount</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>GetCount</secondary></indexterm>
+<para><computeroutput>size_t thread::atomicx::smartSemaphore::GetCount ( )</computeroutput></para><para>
+
+<para>Get How many shared locks at a given moment. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>size_t Number of shared locks </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1a5ca716f4fd9ac336d093520b2864e8ce"/><section>
+    <title>GetMax()</title>
+<indexterm><primary>GetMax</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>GetMax</secondary></indexterm>
+<para><computeroutput>static size_t thread::atomicx::smartSemaphore::GetMax ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Get the maximun accquired context possible. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>size_t </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1a63ea759f0af906db9d39ccccfee859ae"/><section>
+    <title>GetMaxAcquired()</title>
+<indexterm><primary>GetMaxAcquired</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>GetMaxAcquired</secondary></indexterm>
+<para><computeroutput>size_t thread::atomicx::smartSemaphore::GetMaxAcquired ( )</computeroutput></para><para>
+
+<para>Get the Max Acquired Number. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>size_t The max acquired context number </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1a423e4e0cafcbc1475434035933929383"/><section>
+    <title>GetWaitCount()</title>
+<indexterm><primary>GetWaitCount</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>GetWaitCount</secondary></indexterm>
+<para><computeroutput>size_t thread::atomicx::smartSemaphore::GetWaitCount ( )</computeroutput></para><para>
+
+<para>Get how many waiting threads for accquiring context. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>size_t Number of waiting threads </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1a00a33f0aab15379311afc3fe20863594"/><section>
+    <title>IsAcquired()</title>
+<indexterm><primary>IsAcquired</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>IsAcquired</secondary></indexterm>
+<para><computeroutput>bool thread::atomicx::smartSemaphore::IsAcquired ( )</computeroutput></para><para>
+
+<para>Report if the <link linkend="_classthread_1_1atomicx_1_1smart_semaphore">smartSemaphore</link> has acquired a shared context. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>true if it has successfully acquired a shared context otherwise false </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_classthread_1_1atomicx_1_1smart_semaphore_1a505e559bca1ffa9ce1932a7df9fda86d"/><section>
+    <title>release()</title>
+<indexterm><primary>release</primary><secondary>thread::atomicx::smartSemaphore</secondary></indexterm>
+<indexterm><primary>thread::atomicx::smartSemaphore</primary><secondary>release</secondary></indexterm>
+<para><computeroutput>void thread::atomicx::smartSemaphore::release ( )</computeroutput></para><para>
+
+<para>Releases one shared lock. </para>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+atomicx/<link linkend="_atomicx_8hpp">atomicx.hpp</link>atomicx/<link linkend="_atomicx_8cpp">atomicx.cpp</link></section>
+</section>

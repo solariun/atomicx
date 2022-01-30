@@ -1,0 +1,90 @@
+\hypertarget{simple_8cpp}{}\doxysection{examples/pc/simple/simple.cpp File Reference}
+\label{simple_8cpp}\index{examples/pc/simple/simple.cpp@{examples/pc/simple/simple.cpp}}
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$sys/time.\+h$>$}\newline
+{\ttfamily \#include $<$cstring$>$}\newline
+{\ttfamily \#include $<$cstdint$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$setjmp.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include \char`\"{}atomicx.\+hpp\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_self_managed_thread}{Self\+Managed\+Thread}}
+\item 
+class \mbox{\hyperlink{class_thread}{Thread}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{simple_8cpp_aa88e34678db26b5b79e0ea15fa30490e}{List\+All\+Threads}} ()
+\item 
+\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} \mbox{\hyperlink{simple_8cpp_acba4f7fe589a5ea034da546e90039207}{Atomicx\+\_\+\+Get\+Tick}} (void)
+\begin{DoxyCompactList}\small\item\em Implement the custom Tick acquisition. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{simple_8cpp_a965c93519ae7ab7036d1acaae0ae025a}{Atomicx\+\_\+\+Sleep\+Tick}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} n\+Sleep)
+\begin{DoxyCompactList}\small\item\em Implement a custom sleep, usually based in the same Get\+Tick granularity. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{simple_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{simple_8cpp_acba4f7fe589a5ea034da546e90039207}\label{simple_8cpp_acba4f7fe589a5ea034da546e90039207}} 
+\index{simple.cpp@{simple.cpp}!Atomicx\_GetTick@{Atomicx\_GetTick}}
+\index{Atomicx\_GetTick@{Atomicx\_GetTick}!simple.cpp@{simple.cpp}}
+\doxysubsubsection{\texorpdfstring{Atomicx\_GetTick()}{Atomicx\_GetTick()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} Atomicx\+\_\+\+Get\+Tick (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Implement the custom Tick acquisition. 
+
+\begin{DoxyReturn}{Returns}
+atomicx\+\_\+time 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{simple_8cpp_source_l00033}{33}} of file \mbox{\hyperlink{simple_8cpp_source}{simple.\+cpp}}.
+
+\mbox{\Hypertarget{simple_8cpp_a965c93519ae7ab7036d1acaae0ae025a}\label{simple_8cpp_a965c93519ae7ab7036d1acaae0ae025a}} 
+\index{simple.cpp@{simple.cpp}!Atomicx\_SleepTick@{Atomicx\_SleepTick}}
+\index{Atomicx\_SleepTick@{Atomicx\_SleepTick}!simple.cpp@{simple.cpp}}
+\doxysubsubsection{\texorpdfstring{Atomicx\_SleepTick()}{Atomicx\_SleepTick()}}
+{\footnotesize\ttfamily void Atomicx\+\_\+\+Sleep\+Tick (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{n\+Sleep }\end{DoxyParamCaption})}
+
+
+
+Implement a custom sleep, usually based in the same Get\+Tick granularity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Sleep} & How long custom tick to wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+This function is particularly special, since it give freedom to tweak the processor power consuption if necessary 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{simple_8cpp_source_l00054}{54}} of file \mbox{\hyperlink{simple_8cpp_source}{simple.\+cpp}}.
+
+\mbox{\Hypertarget{simple_8cpp_aa88e34678db26b5b79e0ea15fa30490e}\label{simple_8cpp_aa88e34678db26b5b79e0ea15fa30490e}} 
+\index{simple.cpp@{simple.cpp}!ListAllThreads@{ListAllThreads}}
+\index{ListAllThreads@{ListAllThreads}!simple.cpp@{simple.cpp}}
+\doxysubsubsection{\texorpdfstring{ListAllThreads()}{ListAllThreads()}}
+{\footnotesize\ttfamily void List\+All\+Threads (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{semaphore_8cpp_source_l00144}{144}} of file \mbox{\hyperlink{semaphore_8cpp_source}{semaphore.\+cpp}}.
+
+\mbox{\Hypertarget{simple_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{simple_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
+\index{simple.cpp@{simple.cpp}!main@{main}}
+\index{main@{main}!simple.cpp@{simple.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{simple_8cpp_source_l00149}{149}} of file \mbox{\hyperlink{simple_8cpp_source}{simple.\+cpp}}.
+

@@ -1,0 +1,156 @@
+\hypertarget{atomicx_8hpp}{}\doxysection{atomicx/atomicx.hpp File Reference}
+\label{atomicx_8hpp}\index{atomicx/atomicx.hpp@{atomicx/atomicx.hpp}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$setjmp.\+h$>$}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx}{thread\+::atomicx}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{thread\+::atomicx\+::\+Timeout}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classthread_1_1atomicx_1_1_timeout}{Timeout}} Check object. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1aiterator}{thread\+::atomicx\+::aiterator}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1smart__ptr}{thread\+::atomicx\+::smart\+\_\+ptr$<$ T $>$}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1queue}{thread\+::atomicx\+::queue$<$ T $>$}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1queue_1_1_q_item}{thread\+::atomicx\+::queue$<$ T $>$\+::\+QItem}}
+\begin{DoxyCompactList}\small\item\em Queue Item object. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1semaphore}{thread\+::atomicx\+::semaphore}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_semaphore}{thread\+::atomicx\+::smart\+Semaphore}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1mutex}{thread\+::atomicx\+::mutex}}
+\item 
+class \mbox{\hyperlink{classthread_1_1atomicx_1_1smart_mutex}{thread\+::atomicx\+::smart\+Mutex}}
+\begin{DoxyCompactList}\small\item\em RII compliance lock/shared lock to auto unlock on destruction. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structthread_1_1atomicx_1_1_message}{thread\+::atomicx\+::\+Message}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacethread}{thread}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{atomicx_8hpp_a6709a36e8f5c263de8fa27d54af04351}{ATOMICX\+\_\+\+VERSION}}~\char`\"{}1.\+2.\+1\char`\"{}
+\item 
+\#define \mbox{\hyperlink{atomicx_8hpp_a9d360e18456ac266a0f910a16b076727}{ATOMIC\+\_\+\+VERSION\+\_\+\+LABEL}}~\char`\"{}AtomicX v\char`\"{} ATOMICX\+\_\+\+VERSION \char`\"{} built at \char`\"{} \+\_\+\+\_\+\+TIMESTAMP\+\_\+\+\_\+
+\item 
+\#define \mbox{\hyperlink{atomicx_8hpp_a5f79904e0c0abe4f6120ed97f66b3802}{ATOMICX\+\_\+\+TIME\+\_\+\+MAX}}~((\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}) $\sim$0)
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} = uint32\+\_\+t
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{atomicx_8hpp_a7cb51f5c2b5cad3766f19eb69c92793b}{yield}} (void)
+\item 
+\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} \mbox{\hyperlink{atomicx_8hpp_acba4f7fe589a5ea034da546e90039207}{Atomicx\+\_\+\+Get\+Tick}} (void)
+\begin{DoxyCompactList}\small\item\em Implement the custom Tick acquisition. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{atomicx_8hpp_a965c93519ae7ab7036d1acaae0ae025a}{Atomicx\+\_\+\+Sleep\+Tick}} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} n\+Sleep)
+\begin{DoxyCompactList}\small\item\em Implement a custom sleep, usually based in the same Get\+Tick granularity. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{atomicx_8hpp_a9d360e18456ac266a0f910a16b076727}\label{atomicx_8hpp_a9d360e18456ac266a0f910a16b076727}} 
+\index{atomicx.hpp@{atomicx.hpp}!ATOMIC\_VERSION\_LABEL@{ATOMIC\_VERSION\_LABEL}}
+\index{ATOMIC\_VERSION\_LABEL@{ATOMIC\_VERSION\_LABEL}!atomicx.hpp@{atomicx.hpp}}
+\doxysubsubsection{\texorpdfstring{ATOMIC\_VERSION\_LABEL}{ATOMIC\_VERSION\_LABEL}}
+{\footnotesize\ttfamily \#define ATOMIC\+\_\+\+VERSION\+\_\+\+LABEL~\char`\"{}AtomicX v\char`\"{} ATOMICX\+\_\+\+VERSION \char`\"{} built at \char`\"{} \+\_\+\+\_\+\+TIMESTAMP\+\_\+\+\_\+}
+
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00017}{17}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
+\mbox{\Hypertarget{atomicx_8hpp_a5f79904e0c0abe4f6120ed97f66b3802}\label{atomicx_8hpp_a5f79904e0c0abe4f6120ed97f66b3802}} 
+\index{atomicx.hpp@{atomicx.hpp}!ATOMICX\_TIME\_MAX@{ATOMICX\_TIME\_MAX}}
+\index{ATOMICX\_TIME\_MAX@{ATOMICX\_TIME\_MAX}!atomicx.hpp@{atomicx.hpp}}
+\doxysubsubsection{\texorpdfstring{ATOMICX\_TIME\_MAX}{ATOMICX\_TIME\_MAX}}
+{\footnotesize\ttfamily \#define ATOMICX\+\_\+\+TIME\+\_\+\+MAX~((\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}) $\sim$0)}
+
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00021}{21}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
+\mbox{\Hypertarget{atomicx_8hpp_a6709a36e8f5c263de8fa27d54af04351}\label{atomicx_8hpp_a6709a36e8f5c263de8fa27d54af04351}} 
+\index{atomicx.hpp@{atomicx.hpp}!ATOMICX\_VERSION@{ATOMICX\_VERSION}}
+\index{ATOMICX\_VERSION@{ATOMICX\_VERSION}!atomicx.hpp@{atomicx.hpp}}
+\doxysubsubsection{\texorpdfstring{ATOMICX\_VERSION}{ATOMICX\_VERSION}}
+{\footnotesize\ttfamily \#define ATOMICX\+\_\+\+VERSION~\char`\"{}1.\+2.\+1\char`\"{}}
+
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00016}{16}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}\label{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}} 
+\index{atomicx.hpp@{atomicx.hpp}!atomicx\_time@{atomicx\_time}}
+\index{atomicx\_time@{atomicx\_time}!atomicx.hpp@{atomicx.hpp}}
+\doxysubsubsection{\texorpdfstring{atomicx\_time}{atomicx\_time}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} =  uint32\+\_\+t}
+
+
+
+Definition at line \mbox{\hyperlink{atomicx_8hpp_source_l00019}{19}} of file \mbox{\hyperlink{atomicx_8hpp_source}{atomicx.\+hpp}}.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{atomicx_8hpp_acba4f7fe589a5ea034da546e90039207}\label{atomicx_8hpp_acba4f7fe589a5ea034da546e90039207}} 
+\index{atomicx.hpp@{atomicx.hpp}!Atomicx\_GetTick@{Atomicx\_GetTick}}
+\index{Atomicx\_GetTick@{Atomicx\_GetTick}!atomicx.hpp@{atomicx.hpp}}
+\doxysubsubsection{\texorpdfstring{Atomicx\_GetTick()}{Atomicx\_GetTick()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}} Atomicx\+\_\+\+Get\+Tick (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Implement the custom Tick acquisition. 
+
+\begin{DoxyReturn}{Returns}
+atomicx\+\_\+time 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{semaphore_8cpp_source_l00029}{29}} of file \mbox{\hyperlink{semaphore_8cpp_source}{semaphore.\+cpp}}.
+
+\mbox{\Hypertarget{atomicx_8hpp_a965c93519ae7ab7036d1acaae0ae025a}\label{atomicx_8hpp_a965c93519ae7ab7036d1acaae0ae025a}} 
+\index{atomicx.hpp@{atomicx.hpp}!Atomicx\_SleepTick@{Atomicx\_SleepTick}}
+\index{Atomicx\_SleepTick@{Atomicx\_SleepTick}!atomicx.hpp@{atomicx.hpp}}
+\doxysubsubsection{\texorpdfstring{Atomicx\_SleepTick()}{Atomicx\_SleepTick()}}
+{\footnotesize\ttfamily void Atomicx\+\_\+\+Sleep\+Tick (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\+\_\+time}}}]{n\+Sleep }\end{DoxyParamCaption})}
+
+
+
+Implement a custom sleep, usually based in the same Get\+Tick granularity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Sleep} & How long custom tick to wait\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+This function is particularly special, since it give freedom to tweak the processor power consuption if necessary 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{semaphore_8cpp_source_l00039}{39}} of file \mbox{\hyperlink{semaphore_8cpp_source}{semaphore.\+cpp}}.
+
+\mbox{\Hypertarget{atomicx_8hpp_a7cb51f5c2b5cad3766f19eb69c92793b}\label{atomicx_8hpp_a7cb51f5c2b5cad3766f19eb69c92793b}} 
+\index{atomicx.hpp@{atomicx.hpp}!yield@{yield}}
+\index{yield@{yield}!atomicx.hpp@{atomicx.hpp}}
+\doxysubsubsection{\texorpdfstring{yield()}{yield()}}
+{\footnotesize\ttfamily void yield (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{atomicx_8cpp_source_l00022}{22}} of file \mbox{\hyperlink{atomicx_8cpp_source}{atomicx.\+cpp}}.
+

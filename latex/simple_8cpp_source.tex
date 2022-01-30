@@ -1,0 +1,176 @@
+\hypertarget{simple_8cpp_source}{}\doxysection{simple.\+cpp}
+\label{simple_8cpp_source}\index{examples/pc/simple/simple.cpp@{examples/pc/simple/simple.cpp}}
+\mbox{\hyperlink{simple_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00001}00001 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00002}00002 \textcolor{comment}{//  main.cpp}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00003}00003 \textcolor{comment}{//  atomicx}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00004}00004 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00005}00005 \textcolor{comment}{//  Created by GUSTAVO CAMPOS on 28/08/2021.}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00006}00006 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00007}00007 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00008}00008 \textcolor{preprocessor}{\#include <unistd.h>}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00009}00009 \textcolor{preprocessor}{\#include <sys/time.h>}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00010}00010 \textcolor{preprocessor}{\#include <unistd.h>}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include <cstring>}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include <cstdint>}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00014}00014 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#include <setjmp.h>}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00018}00018 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{atomicx_8hpp}{atomicx.hpp}}"{}}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00020}00020 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespacethread}{thread}};}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00021}00021 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00022}00022 \textcolor{preprocessor}{\#ifdef FAKE\_TIMER}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00023}00023 uint \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}=0;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00024}00024 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00026}00026 \textcolor{keywordtype}{void} \mbox{\hyperlink{simple_8cpp_aa88e34678db26b5b79e0ea15fa30490e}{ListAllThreads}}();}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00028}00028 \textcolor{comment}{/*}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00029}00029 \textcolor{comment}{ * Define the default ticket granularity}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00030}00030 \textcolor{comment}{ * to milliseconds or round tick if -\/DFAKE\_TICKER}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00031}00031 \textcolor{comment}{ * is provided on compilation}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00032}00032 \textcolor{comment}{ */}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00033}\mbox{\hyperlink{simple_8cpp_acba4f7fe589a5ea034da546e90039207}{00033}} \mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\_time}} \mbox{\hyperlink{simple_8cpp_acba4f7fe589a5ea034da546e90039207}{Atomicx\_GetTick}} (\textcolor{keywordtype}{void})}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00034}00034 \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00035}00035 \textcolor{preprocessor}{\#ifndef FAKE\_TIMER}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00036}00036     usleep (20000);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00037}00037     \textcolor{keyword}{struct }timeval tp;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00038}00038     gettimeofday (\&tp, NULL);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00040}00040     \textcolor{keywordflow}{return} (\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\_time}})tp.tv\_sec * 1000 + tp.tv\_usec / 1000;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00041}00041 \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00042}00042     \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}}++;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00043}00043 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00044}00044     \textcolor{keywordflow}{return} \mbox{\hyperlink{semaphore_8cpp_ae1779946c59866d03daa930a59594c23}{nCounter}};}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00045}00045 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00046}00046 \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00048}00048 \textcolor{comment}{/*}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00049}00049 \textcolor{comment}{ * Sleep for few Ticks, since the default ticket granularity}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00050}00050 \textcolor{comment}{ * is set to Milliseconds (if -\/DFAKE\_TICKET provide will it will}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00051}00051 \textcolor{comment}{ * be context switch countings), the thread will sleep for}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00052}00052 \textcolor{comment}{ * the amount of time needed till next thread start.}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00053}00053 \textcolor{comment}{ */}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00054}\mbox{\hyperlink{simple_8cpp_a965c93519ae7ab7036d1acaae0ae025a}{00054}} \textcolor{keywordtype}{void} \mbox{\hyperlink{simple_8cpp_a965c93519ae7ab7036d1acaae0ae025a}{Atomicx\_SleepTick}}(\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\_time}} nSleep)}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00055}00055 \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00056}00056 \textcolor{preprocessor}{\#ifndef FAKE\_TIMER}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00057}00057     usleep ((useconds\_t)nSleep * 1000);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00058}00058 \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00059}00059     \textcolor{keywordflow}{while} (nSleep); usleep(100);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00060}00060 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00061}00061 \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00062}00062 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00063}00063 \textcolor{comment}{/*}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00064}00064 \textcolor{comment}{ * Object that implements thread}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00065}00065 \textcolor{comment}{ */}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00066}\mbox{\hyperlink{class_self_managed_thread}{00066}} \textcolor{keyword}{class }\mbox{\hyperlink{class_self_managed_thread}{SelfManagedThread}} : \textcolor{keyword}{public} \mbox{\hyperlink{classthread_1_1atomicx}{atomicx}}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00067}00067 \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00068}00068 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00069}\mbox{\hyperlink{class_self_managed_thread_a2d30c45f4f0ef4fb42c217954760ace5}{00069}}     \mbox{\hyperlink{class_self_managed_thread_a2d30c45f4f0ef4fb42c217954760ace5}{SelfManagedThread}}(\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\_time}} nNice) : \mbox{\hyperlink{classthread_1_1atomicx}{atomicx}}()}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00070}00070     \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00071}00071         \mbox{\hyperlink{classthread_1_1atomicx_a6663c1d4f9483ee2b00ff01426efb6c7}{SetNice}}(nNice);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00072}00072     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00073}00073 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00074}\mbox{\hyperlink{class_self_managed_thread_a138c956b6f18a2f132656682727d06e7}{00074}}     \mbox{\hyperlink{class_self_managed_thread_a138c956b6f18a2f132656682727d06e7}{\string~SelfManagedThread}}()}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00075}00075     \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00076}00076         std::cout << \textcolor{stringliteral}{"{}Deleting "{}} << \mbox{\hyperlink{class_self_managed_thread_a0ed0a8fc141fe5b3592dc334a83604ba}{GetName}}() << \textcolor{stringliteral}{"{}: "{}} << (size\_t) \textcolor{keyword}{this} << std::endl;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00077}00077     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00079}\mbox{\hyperlink{class_self_managed_thread_a0cec343208a5fd0b7053173dff8f676f}{00079}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_self_managed_thread_a0cec343208a5fd0b7053173dff8f676f}{run}}() noexcept\textcolor{keyword}{ override}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00080}00080 \textcolor{keyword}{    }\{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00081}00081         \textcolor{keywordtype}{size\_t} nCount=0;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00082}00082 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00083}00083         \textcolor{keywordflow}{do}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00084}00084         \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00085}00085             std::cout << \_\_FUNCTION\_\_ << \textcolor{stringliteral}{"{}, Executing "{}} << \mbox{\hyperlink{class_self_managed_thread_a0ed0a8fc141fe5b3592dc334a83604ba}{GetName}}() << \textcolor{stringliteral}{"{}: "{}} << (size\_t) \textcolor{keyword}{this} << \textcolor{stringliteral}{"{}, Counter: "{}} << nCount << std::endl << std::flush;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00086}00086 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00087}00087             nCount++;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00088}00088 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00089}00089         \}  \textcolor{keywordflow}{while} (\mbox{\hyperlink{classthread_1_1atomicx_ab3dd1245396fc470b7b2c6a31a4455ca}{Yield}}());}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00090}00090 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00091}00091     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00092}00092 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00093}\mbox{\hyperlink{class_self_managed_thread_a32fabc24520ab27991288c95012500fd}{00093}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_self_managed_thread_a32fabc24520ab27991288c95012500fd}{StackOverflowHandler}} (\textcolor{keywordtype}{void}) \textcolor{keyword}{noexcept} \textcolor{keyword}{override}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00094}00094     \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00095}00095         std::cout << \_\_FUNCTION\_\_ << \textcolor{stringliteral}{"{}:"{}} << \mbox{\hyperlink{class_self_managed_thread_a0ed0a8fc141fe5b3592dc334a83604ba}{GetName}}() << \textcolor{stringliteral}{"{}\_"{}} << (size\_t) \textcolor{keyword}{this} << \textcolor{stringliteral}{"{}: needed: "{}} << \mbox{\hyperlink{classthread_1_1atomicx_a5bdde2eddb025706719d11632b4450b7}{GetUsedStackSize}}() << \textcolor{stringliteral}{"{}, allocated: "{}} << \mbox{\hyperlink{classthread_1_1atomicx_ad58b1b08bf0c0a3fe62affac1bffe845}{GetStackSize}}() << std::endl;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00096}00096     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00097}00097 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00098}\mbox{\hyperlink{class_self_managed_thread_a0ed0a8fc141fe5b3592dc334a83604ba}{00098}}     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* \mbox{\hyperlink{class_self_managed_thread_a0ed0a8fc141fe5b3592dc334a83604ba}{GetName}} (\textcolor{keywordtype}{void})\textcolor{keyword}{ override}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00099}00099 \textcolor{keyword}{    }\{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00100}00100         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}Self-\/Managed Thread"{}};}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00101}00101     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00102}00102 \};}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00103}00103 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00104}00104 \textcolor{comment}{/*}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00105}00105 \textcolor{comment}{ * Object that implements thread}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00106}00106 \textcolor{comment}{ */}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00107}00107 \textcolor{keyword}{class }\mbox{\hyperlink{class_thread}{Thread}} : \textcolor{keyword}{public} \mbox{\hyperlink{classthread_1_1atomicx}{atomicx}}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00108}00108 \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00109}00109 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00110}\mbox{\hyperlink{class_thread_a783a2eaf51eca955a2047bd0c5430269}{00110}}     \mbox{\hyperlink{class_thread_a783a2eaf51eca955a2047bd0c5430269}{Thread}}(\mbox{\hyperlink{atomicx_8hpp_a920b9cf8bd44e31bfb1bfdf4cb1c9080}{atomicx\_time}} nNice) : \mbox{\hyperlink{classthread_1_1atomicx}{atomicx}}(stack)}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00111}00111     \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00112}00112         \mbox{\hyperlink{classthread_1_1atomicx_a6663c1d4f9483ee2b00ff01426efb6c7}{SetNice}}(nNice);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00113}00113     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00114}00114 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00115}\mbox{\hyperlink{class_thread_a37d9edd3a1a776cbc27dedff949c9726}{00115}}     \mbox{\hyperlink{class_thread_a37d9edd3a1a776cbc27dedff949c9726}{\string~Thread}}()}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00116}00116     \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00117}00117         std::cout << \textcolor{stringliteral}{"{}Deleting "{}} << \mbox{\hyperlink{class_thread_a559f2b688c4e0253ec63c96b0134c9e4}{GetName}}() << \textcolor{stringliteral}{"{}: "{}} << (size\_t) \textcolor{keyword}{this} << std::endl;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00118}00118     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00119}00119 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00120}\mbox{\hyperlink{class_thread_ab7c637c3277500601b36cebbe0341879}{00120}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_thread_ab7c637c3277500601b36cebbe0341879}{run}}() noexcept\textcolor{keyword}{ override}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00121}00121 \textcolor{keyword}{    }\{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00122}00122         \textcolor{keywordtype}{size\_t} nCount=0;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00124}00124         \textcolor{keywordflow}{do}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00125}00125         \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00126}00126             std::cout << \_\_FUNCTION\_\_ << \textcolor{stringliteral}{"{}, Executing "{}} << \mbox{\hyperlink{class_thread_a559f2b688c4e0253ec63c96b0134c9e4}{GetName}}() << \textcolor{stringliteral}{"{}: "{}} << (size\_t) \textcolor{keyword}{this} << \textcolor{stringliteral}{"{}, Counter: "{}} << nCount << std::endl << std::flush;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00127}00127 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00128}00128             nCount++;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00129}00129 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00130}00130         \}  \textcolor{keywordflow}{while} (\mbox{\hyperlink{classthread_1_1atomicx_ab3dd1245396fc470b7b2c6a31a4455ca}{Yield}}());}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00131}00131 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00132}00132     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00133}00133 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00134}\mbox{\hyperlink{class_thread_adde299b6fa14ff11ef4faec885b594e2}{00134}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_thread_adde299b6fa14ff11ef4faec885b594e2}{StackOverflowHandler}} (\textcolor{keywordtype}{void}) \textcolor{keyword}{noexcept} \textcolor{keyword}{override}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00135}00135     \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00136}00136         std::cout << \_\_FUNCTION\_\_ << \textcolor{stringliteral}{"{}:"{}} << \mbox{\hyperlink{class_thread_a559f2b688c4e0253ec63c96b0134c9e4}{GetName}}() << \textcolor{stringliteral}{"{}\_"{}} << (size\_t) \textcolor{keyword}{this} << \textcolor{stringliteral}{"{}: needed: "{}} << \mbox{\hyperlink{classthread_1_1atomicx_a5bdde2eddb025706719d11632b4450b7}{GetUsedStackSize}}() << \textcolor{stringliteral}{"{}, allocated: "{}} << \mbox{\hyperlink{classthread_1_1atomicx_ad58b1b08bf0c0a3fe62affac1bffe845}{GetStackSize}}() << std::endl;}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00137}00137     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00138}00138 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00139}\mbox{\hyperlink{class_thread_a559f2b688c4e0253ec63c96b0134c9e4}{00139}}     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* \mbox{\hyperlink{class_thread_a559f2b688c4e0253ec63c96b0134c9e4}{GetName}} (\textcolor{keywordtype}{void})\textcolor{keyword}{ override}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00140}00140 \textcolor{keyword}{    }\{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00141}00141         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}Thread"{}};}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00142}00142     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00143}00143 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00144}00144 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00145}00145     uint8\_t stack[1024]=\textcolor{stringliteral}{"{}"{}}; \textcolor{comment}{//Static initialization to avoid initialization order problem}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00146}00146 \};}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00147}00147 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00148}00148 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00149}\mbox{\hyperlink{simple_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00149}} \textcolor{keywordtype}{int} \mbox{\hyperlink{simple_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00150}00150 \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00151}00151     \mbox{\hyperlink{class_thread}{Thread}} \mbox{\hyperlink{semaphore_8cpp_a9a032b59690b12747156edc534aad7bb}{t1}}(200);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00152}00152     \mbox{\hyperlink{class_thread}{Thread}} t2(500);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00153}00153 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00154}00154     \mbox{\hyperlink{class_self_managed_thread}{SelfManagedThread}} st1(200);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00155}00155 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00156}00156     \textcolor{comment}{// This must creates threads and destroy on leaving \{\} context}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00157}00157     \{}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00158}00158         \mbox{\hyperlink{class_thread}{Thread}} t3\_1(0);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00159}00159         \mbox{\hyperlink{class_thread}{Thread}} t3\_2(0);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00160}00160         \mbox{\hyperlink{class_thread}{Thread}} t3\_3(0);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00161}00161 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00162}00162         \textcolor{comment}{// since those objects will be destroied here}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00163}00163         \textcolor{comment}{// they should never start and AtomicX should}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00164}00164         \textcolor{comment}{// transparently clean it from the execution list}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00165}00165     \}}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00166}00166 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00167}00167     \mbox{\hyperlink{class_thread}{Thread}} t4(1000);}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00168}00168 }
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00169}00169     atomicx::Start();}
+\DoxyCodeLine{\Hypertarget{simple_8cpp_source_l00170}00170 \}}
+
+\end{DoxyCode}

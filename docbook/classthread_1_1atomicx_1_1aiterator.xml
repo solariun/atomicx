@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_classthread_1_1atomicx_1_1aiterator" xml:lang="en-US">
+<title>thread::atomicx::aiterator Class Reference</title>
+<indexterm><primary>thread::atomicx::aiterator</primary></indexterm>
+<para>
+<computeroutput>#include &lt;atomicx.hpp&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_classthread_1_1atomicx_1_1aiterator_1aaa51d5ea0bc46d03854df6537e3f926e">aiterator</link> ()=delete</para>
+</listitem>
+            <listitem><para><link linkend="_classthread_1_1atomicx_1_1aiterator_1ad0f6b4b6d0fe669b5027b8e6e258e2b1">aiterator</link> (<link linkend="_classthread_1_1atomicx">atomicx</link> *ptr)</para>
+
+<para>atomicx based constructor </para>
+</listitem>
+            <listitem><para><link linkend="_classthread_1_1atomicx">atomicx</link> &amp; <link linkend="_classthread_1_1atomicx_1_1aiterator_1a551cb143a8bff765ca42ee9288669232">operator*</link> () const</para>
+</listitem>
+            <listitem><para><link linkend="_classthread_1_1atomicx">atomicx</link> * <link linkend="_classthread_1_1atomicx_1_1aiterator_1a086a51f1704ffb3a90e3bb53dce9009a">operator-&gt;</link> ()</para>
+</listitem>
+            <listitem><para><link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp; <link linkend="_classthread_1_1atomicx_1_1aiterator_1a1cc6593d9e6af14655cf27e394c02075">operator++</link> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Friends    </title>
+        <itemizedlist>
+            <listitem><para>bool <link linkend="_classthread_1_1atomicx_1_1aiterator_1a6d6832be1fa84f72cd3fcbb466f6a85d">operator==</link> (const <link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp;a, const <link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp;b)</para>
+</listitem>
+            <listitem><para>bool <link linkend="_classthread_1_1atomicx_1_1aiterator_1a8a391b8468be3ca0082e2a3963895c53">operator!=</link> (const <link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp;a, const <link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp;b)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para><informaltable frame='bottom'><tgroup cols='1'><colspec align='center'/><tbody><row><entry align='center'>
+</entry></row></tbody></tgroup></informaltable>
+ </para>
+<section xml:id="_classthread_1_1atomicx_1_1aiterator_1autotoc_md3">
+<title>ITERATOR FOR THREAD LISTING</title>
+</section>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_classthread_1_1atomicx_1_1aiterator_1aaa51d5ea0bc46d03854df6537e3f926e"/><section>
+    <title>aiterator()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>aiterator</primary><secondary>thread::atomicx::aiterator</secondary></indexterm>
+<indexterm><primary>thread::atomicx::aiterator</primary><secondary>aiterator</secondary></indexterm>
+<para><computeroutput>thread::atomicx::aiterator::aiterator ( )<computeroutput>[delete]</computeroutput></computeroutput></para></section>
+<anchor xml:id="_classthread_1_1atomicx_1_1aiterator_1ad0f6b4b6d0fe669b5027b8e6e258e2b1"/><section>
+    <title>aiterator()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>aiterator</primary><secondary>thread::atomicx::aiterator</secondary></indexterm>
+<indexterm><primary>thread::atomicx::aiterator</primary><secondary>aiterator</secondary></indexterm>
+<para><computeroutput>thread::atomicx::aiterator::aiterator (<link linkend="_classthread_1_1atomicx">atomicx</link> * ptr)</computeroutput></para><para>
+
+<para>atomicx based constructor </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>ptr</entry><entry>
+<para>atomicx pointer to iterate </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_classthread_1_1atomicx_1_1aiterator_1a551cb143a8bff765ca42ee9288669232"/><section>
+    <title>operator*()</title>
+<indexterm><primary>operator*</primary><secondary>thread::atomicx::aiterator</secondary></indexterm>
+<indexterm><primary>thread::atomicx::aiterator</primary><secondary>operator*</secondary></indexterm>
+<para><computeroutput><link linkend="_classthread_1_1atomicx">atomicx</link> &amp; thread::atomicx::aiterator::operator* ( ) const</computeroutput></para></section>
+<anchor xml:id="_classthread_1_1atomicx_1_1aiterator_1a1cc6593d9e6af14655cf27e394c02075"/><section>
+    <title>operator++()</title>
+<indexterm><primary>operator++</primary><secondary>thread::atomicx::aiterator</secondary></indexterm>
+<indexterm><primary>thread::atomicx::aiterator</primary><secondary>operator++</secondary></indexterm>
+<para><computeroutput><link linkend="_classthread_1_1atomicx_1_1aiterator">atomicx::aiterator</link> &amp; thread::atomicx::aiterator::operator++ ( )</computeroutput></para></section>
+<anchor xml:id="_classthread_1_1atomicx_1_1aiterator_1a086a51f1704ffb3a90e3bb53dce9009a"/><section>
+    <title>operator-&gt;()</title>
+<indexterm><primary>operator-&gt;</primary><secondary>thread::atomicx::aiterator</secondary></indexterm>
+<indexterm><primary>thread::atomicx::aiterator</primary><secondary>operator-&gt;</secondary></indexterm>
+<para><computeroutput><link linkend="_classthread_1_1atomicx">atomicx</link> * thread::atomicx::aiterator::operator-&gt; ( )</computeroutput></para></section>
+</section>
+<section>
+<title>Friends And Related Function Documentation</title>
+<anchor xml:id="_classthread_1_1atomicx_1_1aiterator_1a8a391b8468be3ca0082e2a3963895c53"/><section>
+    <title>operator!=</title>
+<indexterm><primary>operator!=</primary><secondary>thread::atomicx::aiterator</secondary></indexterm>
+<indexterm><primary>thread::atomicx::aiterator</primary><secondary>operator!=</secondary></indexterm>
+<para><computeroutput>bool operator!= (const <link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp; a, const <link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp; b)<computeroutput>[friend]</computeroutput></computeroutput></para></section>
+<anchor xml:id="_classthread_1_1atomicx_1_1aiterator_1a6d6832be1fa84f72cd3fcbb466f6a85d"/><section>
+    <title>operator==</title>
+<indexterm><primary>operator==</primary><secondary>thread::atomicx::aiterator</secondary></indexterm>
+<indexterm><primary>thread::atomicx::aiterator</primary><secondary>operator==</secondary></indexterm>
+<para><computeroutput>bool operator== (const <link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp; a, const <link linkend="_classthread_1_1atomicx_1_1aiterator">aiterator</link> &amp; b)<computeroutput>[friend]</computeroutput></computeroutput></para></section>
+<para>
+The documentation for this class was generated from the following files:</para>
+atomicx/<link linkend="_atomicx_8hpp">atomicx.hpp</link>atomicx/<link linkend="_atomicx_8cpp">atomicx.cpp</link></section>
+</section>
