@@ -293,7 +293,7 @@ public:
 
             nIndex = (int)nIndex + 1;
 
-            Yield (5);
+            Yield (0);
         }
 
         nIndex = (int)nIndex - (nCount - (nSpeed / 8));
@@ -406,6 +406,8 @@ class Terminal : public thread::atomicx
 public:
     Terminal(atomicx_time nNice) : atomicx()
     {
+        SetNice (nNice);
+        SetDynamicNice (true);
     }
 
     char* GetName()
@@ -427,7 +429,7 @@ protected:
             {
                 vt100::ResetColor ();
                 Serial.flush ();
-                Yield ();
+                Yield (0);
                 vt100::SetLocation (12-((i) / 8), 1);
                 Serial.print (F("\e[K"));
                 Serial.flush ();
@@ -442,7 +444,7 @@ protected:
     {
         for (;;)
         {
-            Yield(0);
+            Yield();
 
             if (Wait (termCmds, 1, 100))
             {
@@ -514,7 +516,7 @@ protected:
         atomicx_time last = GetCurrentTick () + 2000;
         uint8_t nScrollStage = 0;
 
-        Matrix.SetSpeed (3);
+        Matrix.SetSpeed (2);
 
         for(;;)
         {

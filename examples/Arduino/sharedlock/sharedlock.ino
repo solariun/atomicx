@@ -146,13 +146,17 @@ public:
 
             Serial.println (F("Wait for SharedLock"));
             smartMutex sLock(gLock);
-            sLock.SharedLock ();
+            while (sLock.SharedLock (2000) == false)
+            {
+                Serial.print (GetID ());
+                Serial.println(F(": Timeout waiting for shared lock, retrying..."));
+                Serial.flush ();
+            }
 
-            Serial.println (F(">>> SheredLock accquired..."));
+            Serial.print(GetID());
+            Serial.println (F(": >>> SheredLock accquired..."));
 
             nCount = nDataCount;
-
-            ListAllThreads();
 
             Yield();
             // --------------------------------------
@@ -214,24 +218,31 @@ public:
         Serial.println ((size_t) this);
     }
 
+#define EVENTUAL_TIMEOUT 20000
+
     void run() noexcept override
     {
         size_t nCount=0;
+        Timeout waitTimeout(EVENTUAL_TIMEOUT);
 
         for (;;)
         {
             Yield();
 
-            Serial.println (F("Wait for Lock"));
+            Serial.println (F("Wait for Lock")); Serial.flush ();
 
             smartMutex sLock(gLock);
-            sLock.Lock();
+            while (sLock.Lock(1000) == false)
+            {
+                Serial.print (GetID ());
+                Serial.println(F(": Timeout waiting for lock, retrying..."));
+                Serial.flush ();
+            }
 
             Serial.println (F(">>> Locked..."));
-
             Serial.flush ();
 
-            if (Eventual::GetStarted() == false)
+            if (Eventual::GetStarted() == false && waitTimeout.IsTimedout ())
             {
                 Serial.println (F(">>>> Creating EVENTUAL thread... <<<<"));
                 Serial.flush();
@@ -239,7 +250,18 @@ public:
             }
             else
             {
-                Serial.println (F(">>>> EVENTUAL IS TRUE... <<<<"));
+                if (waitTimeout.IsTimedout ())
+                {
+                    waitTimeout.Set(EVENTUAL_TIMEOUT);
+                    Serial.println (F(">>>> EVENTUAL IS TRUE... <<<<"));
+                }
+                else
+                {
+                    Serial.print (F("!!!! > Eventual will be started in "));
+                    Serial.print (waitTimeout.GetRemaining ());
+                    Serial.println (F("ms"));
+                }
+
                 Serial.println ();
             }
 
@@ -263,12 +285,11 @@ public:
 
             nDataCount++;
 
-            Yield (5000);
+            ListAllThreads();
+
+            Yield ();
 
             Serial.println (F("Unlocking"));
-
-            //atomicx::smart_ptr<Consumer> Consumer_thread (new Consumer(100, "t::Consumer"));
-
         }
     }
 
@@ -351,9 +372,11 @@ void setup()
   Serial.flush();
 
 
-  Producer T1(100, u8"Producer 1");
-  Consumer E1(100, u8"Consumer 1");
-  Consumer E4(300, u8"Consumer 3");
+  Producer T1(5000, u8"Producer 1");
+  Consumer E1(1000, u8"Consumer 1");
+  Consumer E2(1000, u8"Consumer 2");
+  Consumer E3(1000, u8"Consumer 3");
+  Consumer E4(1000, u8"Consumer 3");
 
   ListAllThreads ();
 

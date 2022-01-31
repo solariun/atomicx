@@ -361,6 +361,7 @@ public:
     Terminal(uint32_t nNice) : atomicx (0, 10)
     {
         SetNice(nNice);
+        SetDynamicNice (true);
     }
 
     const char* GetName () override
@@ -378,7 +379,7 @@ public:
     {
         int nChars = 0;
 
-        for (;(nChars = Serial.available ()) == 0; YieldNow ());
+        for (;(nChars = Serial.available ()) == 0; Yield (0));
 
         return nChars;
     }

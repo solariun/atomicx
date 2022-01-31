@@ -512,19 +512,23 @@ namespace thread
         return (size_t) m_lockMessage.tag;
     }
 
-    void atomicx::mutex::Lock()
+    bool atomicx::mutex::Lock(atomicx_time ttimeout)
     {
+        Timeout timeout(ttimeout);
+
         auto pAtomic = atomicx::GetCurrent();
 
-        if(pAtomic == nullptr) return;
+        if(pAtomic == nullptr) return false;
 
         // Get exclusive mutex
-        while (bExclusiveLock && pAtomic->Wait(bExclusiveLock, 1));
+        while (bExclusiveLock) if  (! pAtomic->Wait(bExclusiveLock, 1, timeout.GetRemaining())) return false;
 
         bExclusiveLock = true;
 
         // Wait all shared locks to be done
-        while (nSharedLockCount && pAtomic->Wait(nSharedLockCount,2));
+        while (nSharedLockCount) if (! pAtomic->Wait(nSharedLockCount,2, timeout.GetRemaining())) return false;
+
+        return true;
     }
 
     void atomicx::mutex::Unlock()
@@ -543,19 +547,21 @@ namespace thread
         }
     }
 
-    void atomicx::mutex::SharedLock()
+    bool atomicx::mutex::SharedLock(atomicx_time ttimeout)
     {
         auto pAtomic = atomicx::GetCurrent();
 
-        if(pAtomic == nullptr) return;
+        if(pAtomic == nullptr) return false;
 
         // Wait for exclusive mutex
-        while (bExclusiveLock > 0 && pAtomic->Wait(bExclusiveLock, 1));
+        while (bExclusiveLock > 0) if (! pAtomic->Wait(bExclusiveLock, 1, ttimeout)) return false;
 
         nSharedLockCount++;
 
         // Notify Other locks procedures
         pAtomic->Notify (nSharedLockCount, 2, NotifyType::one);
+
+        return true;
     }
 
     void atomicx::mutex::SharedUnlock()
@@ -598,29 +604,33 @@ namespace thread
         }
     }
 
-    bool atomicx::smartMutex::SharedLock()
+    bool atomicx::smartMutex::SharedLock(atomicx_time ttimeout)
     {
         bool bRet = false;
 
         if (m_lockType == '\0')
         {
-            m_lock.SharedLock();
-            m_lockType = 'S';
-            bRet = true;
+            if (m_lock.SharedLock(ttimeout))
+            {
+                m_lockType = 'S';
+                bRet = true;
+            }
         }
 
         return bRet;
     }
 
-    bool atomicx::smartMutex::Lock()
+    bool atomicx::smartMutex::Lock(atomicx_time ttimeout)
     {
         bool bRet = false;
 
         if (m_lockType == '\0')
         {
-            m_lock.Lock();
-            m_lockType = 'L';
-            bRet = true;
+            if (m_lock.Lock(ttimeout))
+            {
+                m_lockType = 'L';
+                bRet = true;
+            }
         }
 
         return bRet;
