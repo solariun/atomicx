@@ -704,7 +704,7 @@ namespace thread
              *       lock, and all other threads that needs to a shared lock will wait till
              *       Lock is accquired and released.
              */
-            void Lock();
+            bool Lock(atomicx_time ttimeout=0);
 
             /**
              * @brief Release the exclusive lock
@@ -718,7 +718,7 @@ namespace thread
              *       In contrast, if at least one thread holds a shared lock, any exclusive lock can only be accquired once it
              *       is released.
              */
-            void SharedLock();
+            bool SharedLock(atomicx_time ttimeout=0);
 
             /**
              * @brief Release the current shared lock
@@ -771,14 +771,14 @@ namespace thread
                  *
                  * @return true if accquired, false if another accquisition was already done
                  */
-                bool SharedLock();
+                bool SharedLock(atomicx_time ttimeout=0);
 
                 /**
                  * @brief Accquire a exclusive Lock
                  *
                  * @return true if accquired, false if another accquisition was already done
                  */
-                bool Lock();
+                bool Lock(atomicx_time ttimeout=0);
 
                 /**
                  * @brief Check how many shared locks are accquired

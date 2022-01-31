@@ -79,7 +79,6 @@ MAIN = demo_atomix.bin
 
 all:    $(MAIN)
 	@echo  AtomicX binary $(MAIN) has beem compilled
-	Doxygen
 
 $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
@@ -100,3 +99,7 @@ depend: $(SRCS)
 $(info CPX_DIR:$(CPX_DIR))
 $(info SRCS:$(SRCS))
 # DO NOT DELETE THIS LINE -- make depend needs it
+
+document:
+	@echo  AtomicX Generating documents
+	Doxygen

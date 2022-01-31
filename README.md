@@ -10,13 +10,15 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+* `mutex` and `smartMutex` now have timeout, by using `lock(<timeout time>)` and `sharedLock(<timeout time>)`, if no timeout is  given: `lock()` or `sharedLock()` wait indefinitely (fully back compatible with existing code)
+
 ## Version 1.2.1
 
 * Adding Dynamic Nice, now it is possible to let the kernel set the best performance for your thread, for this `SetNice(*initial nice*)` and than `SetDynamicNice(true)` in the constructor of your thread. The kernel will be able to always adjust your thread for Best performance, but, it will leave no room for sleeps between threads, increasing power consumption, it is powerful but use it carefully.
 
 * Added `YieldNow()` the higher priority context change, it will allow other threads to work, but will, also return faster than others
 
-* **`smartSemaphore`**, Used to compliance with RII, once used in the thread context, it takes a semaphore to be initialized and expose the same methods, although it manages the local context, and ones it it gets out of context, due to leaving  {} or a functions, for example the semaphore shared context is released if ever taken during the smartSemaphore instantiated object life cycle. The same is available for `mutex`, called `smartMutex`, follows the same principle.
+* **`smartSemaphore`**, Used to compliance with RAII, once used in the thread context, it takes a semaphore to be initialized and expose the same methods, although it manages the local context, and ones it it gets out of context, due to leaving  {} or a functions, for example the semaphore shared context is released if ever taken during the smartSemaphore instantiated object life cycle. The same is available for `mutex`, called `smartMutex`, follows the same principle.
 
 * **IMPORTANT**, Introducing Semaphores, `atomicx::semaphore(<How many shared>)`, now you can use methods (`acquire()` or `acquire(timeout)`) and `release()` along with `GetCount`, `GetMaxAcquired`, `GetWaitCount` and static method `GetMax` to return the maximum shared you can use to instantiate.  Examples for Arduino and PC where also introduced and fully tested.
 
@@ -75,7 +77,8 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 * `finish()` method will be call every time `run()` is returned, this allow special cases like eventual threads to self-destroy itself, otherwise the object would be only a memory leak.... see examples on `main.cpp`
 
-* `smartMutex` RAII compliance, allow mutex or shared mutex to be auto release on object destruction.
+* `smartMutex` RAII (Resource Acquisition Is Initialization) compliance, allow mutex or shared mutex to be auto release on object destruction.
+    - Further reading about RAII : https://en.cppreference.com/w/cpp/language/raii
 
 * **IMPORTANT** Now Notifications (Wait/Notify) can be timedout. if Tick based time is given, the waiting procedure will only stay blocked during it. (NO SPIN LOCK, REAL STATE BLOCK)
 * **IMPORTANT** `LookForWaitings` block for timeout time will a wait for specific refVar/tag is available, otherwise timeout, can be used sync wait and notify availability
