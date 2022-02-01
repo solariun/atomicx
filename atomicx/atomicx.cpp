@@ -549,12 +549,13 @@ namespace thread
 
     bool atomicx::mutex::SharedLock(atomicx_time ttimeout)
     {
+        Timeout timeout(ttimeout);
         auto pAtomic = atomicx::GetCurrent();
 
         if(pAtomic == nullptr) return false;
 
         // Wait for exclusive mutex
-        while (bExclusiveLock > 0) if (! pAtomic->Wait(bExclusiveLock, 1, ttimeout)) return false;
+        while (bExclusiveLock > 0) if (! pAtomic->Wait(bExclusiveLock, 1, timeout.GetRemaining())) return false;
 
         nSharedLockCount++;
 

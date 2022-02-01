@@ -372,11 +372,11 @@ void setup()
   Serial.flush();
 
 
-  Producer T1(5000, u8"Producer 1");
-  Consumer E1(1000, u8"Consumer 1");
-  Consumer E2(1000, u8"Consumer 2");
-  Consumer E3(1000, u8"Consumer 3");
-  Consumer E4(1000, u8"Consumer 3");
+  Producer T1(2500, u8"Producer 1");
+  Consumer E1(500, u8"Consumer 1");
+  Consumer E2(500, u8"Consumer 2");
+  Consumer E3(500, u8"Consumer 3");
+  Consumer E4(500, u8"Consumer 3");
 
   ListAllThreads ();
 
