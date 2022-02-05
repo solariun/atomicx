@@ -350,7 +350,7 @@ namespace thread
                     m_stackSize = m_stacUsedkSize + m_stackIncreasePace;
                 }
 
-                if ((m_stack = (uint8_t*) malloc (m_stacUsedkSize)) == nullptr)
+                if ((m_stack = (uint8_t*) malloc (m_stackSize)) == nullptr)
                 {
                     m_aStatus = aTypes::stackOverflow;
                 }
