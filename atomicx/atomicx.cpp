@@ -206,7 +206,7 @@ namespace thread
     {
         atomicx* pItem = ms_paFirst;
 
-        do
+        if (pItem != nullptr) do
         {
             if (ms_pCurrent->m_nTargetTime == 0 && pItem->m_nTargetTime > 0)
             {
@@ -261,6 +261,11 @@ namespace thread
                 default:
                     return false;
             }
+        }
+
+        if (ms_pCurrent->m_flags.dynamicNice == true)
+        {
+            ms_pCurrent->m_nice = ((ms_pCurrent->m_LastUserExecTime) + ms_pCurrent->m_nice) / 2;
         }
 
         return true;
@@ -325,8 +330,8 @@ namespace thread
         }
 
         volatile uint8_t nStackEnd=0;
-        m_pStaskEnd = &nStackEnd;
-        m_stacUsedkSize = (size_t) (m_pStaskStart - m_pStaskEnd);
+        ms_pCurrent->m_pStaskEnd = &nStackEnd;
+        ms_pCurrent->m_stacUsedkSize = static_cast<size_t>(ms_pCurrent->m_pStaskStart - ms_pCurrent->m_pStaskEnd + 1);
 
         if (m_stacUsedkSize > m_stackSize || m_stack == nullptr)
         {
@@ -350,7 +355,7 @@ namespace thread
                     m_stackSize = m_stacUsedkSize + m_stackIncreasePace;
                 }
 
-                if ((m_stack = (uint8_t*) malloc (m_stacUsedkSize)) == nullptr)
+                if ((m_stack = (volatile uint8_t*) malloc (m_stackSize)) == nullptr)
                 {
                     m_aStatus = aTypes::stackOverflow;
                 }
@@ -378,22 +383,16 @@ namespace thread
         }
         else
         {
-            ms_pCurrent->m_stacUsedkSize = (size_t) (ms_pCurrent->m_pStaskStart - &nStackEnd);
             if (memcpy((void*) ms_pCurrent->m_pStaskEnd, (const void*) ms_pCurrent->m_stack, ms_pCurrent->m_stacUsedkSize) != (void*) ms_pCurrent->m_pStaskEnd)
             {
                 return false;
             }
+
+            ms_pCurrent->m_aStatus = aTypes::running;
+        
+            ms_pCurrent->m_lastResumeUserTime = Atomicx_GetTick ();
         }
-
-        ms_pCurrent->m_lastResumeUserTime = GetCurrentTick ();
-
-        ms_pCurrent->m_aStatus = aTypes::running;
-
-        if (ms_pCurrent->m_flags.dynamicNice == true)
-        {
-            ms_pCurrent->m_nice = ((ms_pCurrent->m_LastUserExecTime) + ms_pCurrent->m_nice) / 2;
-        }
-
+        
         return true;
     }
 

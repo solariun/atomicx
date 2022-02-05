@@ -15,6 +15,10 @@ arduino-cli board listall esp8266:esp8266:wifi
 
 arduino-cli board listall avr
 
+arduino-cli lib install  "Adafruit AMG88xx Library" 
+
+arduino-cli lib search AMG88
+
 ```
 
 ## Compiling and uploading
@@ -34,6 +38,8 @@ arduino-cli compile -u -p "$1"  -b esp32:esp32:heltec_wifi_kit_32  "$2"
 arduino-cli compile -u  -p "$1" -b Arduino_STM32:STM32F1:genericSTM32F103C:upload_method=jlinkMethod,opt=o3std "$2"
 
 arduino-cli compile -v -b esp8266:esp8266:wifi_kit_8:baud=921600 -upload -p "<serial>" "<arduino>"
+
+arduino-cli compile -v -b esp8266:esp8266:nodemcuv2:baud=921600 -upload -p "<serial>" "<arduino>"
 
 arduino-cli compile -b arduino:mbed_nano:nano33ble -upload -p "<serial>" "<arduino>"
 

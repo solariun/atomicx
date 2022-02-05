@@ -45,7 +45,6 @@ size_t GetFreeRam () {
 
 atomicx_time Atomicx_GetTick(void)
 {
-    ::yield();
     return millis();
 }
 
@@ -260,11 +259,9 @@ public:
 
         for (;;)
         {
-            Yield ();
-
             size_t nMessage = 0;
 
-            if (Wait (nMessage, motorsContext, (size_t) MotorStatus::request, 100))
+            if (Wait (nMessage, motorsContext, (size_t) MotorStatus::request, GetNice ()))
             {
                 Serial.print ("Motor "); Serial.print ((char) ('A' + nCurrentMotor));
                 Serial.println (":Notification received.");
@@ -295,12 +292,9 @@ public:
                     Serial.print ((char) ('A' + nCurrentMotor));
                     Serial.println (F(": System was not notified.\n"));
                 }
-
-                Serial.flush ();
             }
 
             m_motor.volts = static_cast<float>(random (2000, 2700)) / 100.0;
-
         }
     }
 
@@ -476,9 +470,7 @@ public:
     }
 };
 
-
 // -------------------------------------------------------------------------------------------
-
 
 /**
  * @brief SYSTEM THREAD
