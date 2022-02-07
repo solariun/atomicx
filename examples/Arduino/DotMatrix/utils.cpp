@@ -1,4 +1,6 @@
 
+#include <string>
+
 #include "arduino.h"
 #include "utils.hpp"
 
@@ -9,34 +11,36 @@ SysCommands sysCmds = SysCommands::none;
 
 // Global functions
 
-void ListAllThreads()
+void ListAllThreads(Stream& client)
 {
     size_t nCount=0;
 
-    Serial.flush();
+    client.flush();
 
-    Serial.println (F("\e[K[THREAD]-----------------------------------------------"));
+    client.println (F("\e[K[THREAD]-----------------------------------------------"));
 
-    Serial.printf ("\e[K>>> Free RAM: %ub\t\n", system_get_free_heap_size ());
-    Serial.printf ("\e[KAtomicX context size: %zub\r\n", sizeof (thread::atomicx));
+    client.printf ("\e[K>>> Free RAM: %ub\r\n", system_get_free_heap_size ());
+    client.printf ("\e[KAtomicX context size: %zub\r\n", sizeof (thread::atomicx));
 
-    Serial.println ("\e[K---------------------------------------------------------");
+    client.println ("\e[K---------------------------------------------------------");
 
     for (auto& th : *(thread::atomicx::GetCurrent()))
     {
-        Serial.printf ("\eK%c%-3u %-8zu '%-12s' nc:%-6u stk:(%6zub/%6zub) sts:(%-3u,%-3u) last: %ums\r\n",
-            thread::atomicx::GetCurrent() == &th ? F("*  ") : F("   "), ++nCount, 
+        client.printf ("\eK%c%-3u %-8zu '%-20s' nc:%-6u stk:(%6zub/%6zub) sts:(%-3u,%-3u) last: %ums\r\n",
+            thread::atomicx::GetCurrent() == &th ? '* ' : ' ', ++nCount, 
             (size_t) th.GetID(), th.GetName(),
             th.GetNice(), th.GetUsedStackSize(), th.GetStackSize(),
             th.GetStatus(), th.GetSubStatus(),
             th.GetLastUserExecTime()
         );
+        
+        client.flush();
 
-        Serial.flush();
+        if (thread::atomicx::GetCurrent ()) thread::atomicx::GetCurrent ()->Yield ();
     }
 
-    Serial.println ("\e[K---------------------------------------------------------");
-    Serial.flush(); Serial.flush();
+    client.println ("\e[K---------------------------------------------------------");
+    client.flush(); Serial.flush();
 
 }
 
@@ -53,6 +57,29 @@ namespace util
             // Wait serial to proper start.
             while (! Serial);
         }
+    }
+
+    // trim from start (in place)
+    void ltrim(std::string &s) 
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+            return !std::isspace(ch);
+        }));
+    }
+
+    // trim from end (in place)
+    void rtrim(std::string &s) 
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+            return !std::isspace(ch);
+        }).base(), s.end());
+    }
+
+    // trim from both ends (in place)
+    void trim(std::string &s) 
+    {
+        ltrim(s);
+        rtrim(s);
     }
 }
 

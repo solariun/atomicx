@@ -1,4 +1,3 @@
-
 ///
 /// @author   GUSTAVO CAMPOS
 /// @author   GUSTAVO CAMPOS
@@ -97,7 +96,7 @@ public:
 
     std::string& operator = (const std::string& strValue);
     std::string& operator() ();
-    
+
     TextScroller (atomicx_time nNice);
 
     TextScroller () = delete;

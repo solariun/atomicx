@@ -31,30 +31,28 @@
     SOFTWARE.
 */
 
-#ifndef __TERMINALCOMMAND_HPP__
-#define __TERMINALCOMMAND_HPP__
+#ifndef __SERIALTERMINAL_HPP__
+#define __SERIALTERMINAL_HPP__
 
 #include "atomicx.hpp"
 #include "Arduino.h"
 #include <assert.h>
 #include <string>
-#include <map>
 
 #include "utils.hpp"
 #include "TerminalInterface.hpp"
 
-namespace commands
+class SerialTerminal : public TerminalInterface
 {
-    class System : public CommandTerminalInterface
-    {
-        public:
-            System();
+public:
+    SerialTerminal() = delete;
+    SerialTerminal (atomicx_time nNice);
 
-        protected:
-            const char* GetCommandDescription() final;
-    
-            bool Execute(Stream& client, const std::string& commandLine);
-    };
+protected:
+    void PrintMOTD() final;
 
-}
+private:
+
+};
+
 #endif

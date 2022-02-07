@@ -42,17 +42,23 @@ enum class SysCommands
 extern SysCommands sysCmds;
 
 // Global functions
-void ListAllThreads();
+void ListAllThreads(Stream& client);
 
 // Namespaced functions and attributes
 namespace util
 {
-    void InitSerial(void);
-
     constexpr size_t GetStackSize(size_t sizeRef)
     {
         return sizeRef * sizeof (size_t);
     }
+
+    void InitSerial(void);
+    
+    void ltrim(std::string &s);
+
+    void rtrim(std::string &s);
+
+    void trim(std::string &s);
 }
 
 namespace vt100

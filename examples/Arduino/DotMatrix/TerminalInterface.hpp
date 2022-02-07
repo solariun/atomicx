@@ -51,11 +51,17 @@
 
 #include "utils.hpp"
 
-class Terminal;
+class TerminalInterface;
 class CommandTerminalInterface;
 
 using CommandTerminalMap = std::map<const std::string, CommandTerminalInterface*>;
 
+#define TERMINAL_BS 8
+
+
+/**
+ * CommandTerminal Interdace class
+ */
 class CommandTerminalInterface
 {
 public:
@@ -63,7 +69,7 @@ public:
 
 protected:
 
-    friend class Terminal;
+    friend class TerminalInterface;
 
     CommandTerminalInterface() = delete;
     CommandTerminalInterface(std::string strCommandNme);
@@ -80,43 +86,35 @@ private:
     const std::string strCommandName;
 };
 
-class Terminal : public thread::atomicx
+/**
+ * Terminal interface class
+ */
+class TerminalInterface : public thread::atomicx
 {
 public:
-    Terminal(atomicx_time nNice);
+    TerminalInterface(atomicx_time nNice, Stream& client);
+    Stream& client (void);
 
 protected:
+    virtual void PrintMOTD ();
+
     friend class CommandTerminalInterface;
 
     static CommandTerminalMap& GetMapCommands ();
 
-    void run() noexcept final
-    {
-        for (;;)
-        {
-            mapCommands ["help"]->Execute (Serial, (const std::string&) strCommandLine);
+    int WaitForSerialData ();
 
-            yield ();
-            
-            mapCommands ["system"]->Execute (Serial, (const std::string&) strCommandLine);
+    bool ReadCommandLine (std::string& readCommand);
 
-            Yield (2000);
-        }
-    }
+    void run() noexcept final;
 
-    void StackOverflowHandler(void) noexcept override
-    {
-        PrintStackOverflow();
-    }
+    void StackOverflowHandler(void) noexcept override;
 
-    const char* GetName ()
-    {
-        return "Terminal";
-    }
+    const char* GetName ();
 
 private:
-    static CommandTerminalMap mapCommands;
-    std::string strCommandLine="";
+    static CommandTerminalMap m_mapCommands;
+    Stream& m_client;
 };
 
 

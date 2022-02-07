@@ -343,8 +343,6 @@ uint8_t ConvertStrCommand (String& strCommand)
 
 // -------------------------------------------------------------------------------------------
 
-#define TERMINAL_BS 8
-
 /**
  * @brief SERIAL COMM
  *

@@ -57,28 +57,31 @@ bool commands::System::Execute(Stream& client, const std::string& commandLine)
     client.printf ("%-20s: [%s]\r\n", "SDK Version", system_get_sdk_version ());
     client.printf ("%-20s: [%uMhz]\r\n", "CPU Freequency", system_get_cpu_freq ());
     client.printf ("%-20s: [%u Bytes]\r\n", "Memory", system_get_free_heap_size ());
-    // if (WiFi.status () != WL_NO_SHIELD)
-    // {
-    //     client.println ("-[Connection]----------------------");
-    //     //client.printf ("%-20s: [%s] (%u)\r\n", "Status", GetWiFiStatus (), WiFi.status ());
-    //     client.printf ("%-20s: [%s]\r\n", "Mac Address", WiFi.macAddress ().c_str ());
-    //     if (WiFi.status () == WL_CONNECTED)
-    //     {
-    //         client.printf ("%-20s: [%s]\r\n", "SSID", WiFi.SSID ().c_str ());
-    //         client.printf ("%-20s: [%d dBm]\r\n", "Signal", WiFi.RSSI ());
-    //         client.printf ("%-20s: [%u Mhz]\r\n", "Channel", WiFi.channel ());
-    //         client.printf ("%-20s: [%s]\r\n", "IPAddress", WiFi.localIP ().toString ().c_str ());
-    //         client.printf ("%-20s: [%s]\r\n", "Net Mask", WiFi.subnetMask ().toString ().c_str ());
-    //         client.printf ("%-20s: [%s]\r\n", "Gateway", WiFi.gatewayIP ().toString ().c_str ());
-    //         client.printf ("%-20s: [%s]\r\n", "DNS", WiFi.dnsIP ().toString ().c_str ());
-    //     }
-    //     else
-    //     {
-    //         client.printf ("Not connected to WiFi...");
-    //     }
-    // }
+
+    if (WiFi.status () != WL_NO_SHIELD)
+    {
+        client.println ("-[Connection]----------------------");
+        client.printf ("%-20s: (%u)\r\n", "Status", WiFi.status ());
+        client.printf ("%-20s: [%s]\r\n", "Mac Address", WiFi.macAddress ().c_str ());
+
+        if (WiFi.status () == WL_CONNECTED)
+        {
+            client.printf ("%-20s: [%s]\r\n", "SSID", WiFi.SSID ().c_str ());
+            client.printf ("%-20s: [%d dBm]\r\n", "Signal", WiFi.RSSI ());
+            client.printf ("%-20s: [%u Mhz]\r\n", "Channel", WiFi.channel ());
+            client.printf ("%-20s: [%s]\r\n", "IPAddress", WiFi.localIP ().toString ().c_str ());
+            client.printf ("%-20s: [%s]\r\n", "Net Mask", WiFi.subnetMask ().toString ().c_str ());
+            client.printf ("%-20s: [%s]\r\n", "Gateway", WiFi.gatewayIP ().toString ().c_str ());
+            client.printf ("%-20s: [%s]\r\n", "DNS", WiFi.dnsIP ().toString ().c_str ());
+        }
+        else
+        {
+            client.println ("Not connected to WiFi...");
+        }
+    }
+
     client.println ("-[Process]----------------------");
-    ListAllThreads ();
+    ListAllThreads (client);
 
     return true;
 }

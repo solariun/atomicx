@@ -31,30 +31,26 @@
     SOFTWARE.
 */
 
-#ifndef __TERMINALCOMMAND_HPP__
-#define __TERMINALCOMMAND_HPP__
-
 #include "atomicx.hpp"
 #include "Arduino.h"
 #include <assert.h>
 #include <string>
-#include <map>
 
 #include "utils.hpp"
 #include "TerminalInterface.hpp"
 
-namespace commands
-{
-    class System : public CommandTerminalInterface
-    {
-        public:
-            System();
+#include "SerialTerminal.hpp"
 
-        protected:
-            const char* GetCommandDescription() final;
-    
-            bool Execute(Stream& client, const std::string& commandLine);
-    };
-
+SerialTerminal::SerialTerminal(atomicx_time nNice) : TerminalInterface(nNice, Serial)
+{ 
+    void InitSerial(void);
 }
-#endif
+
+void SerialTerminal::PrintMOTD ()
+{
+    client().println ("-------------------------------------");
+    client().println ("Dotmatrix OS");
+    client().println ("Welcome to Serial based terminal session.");
+    client().println ("-------------------------------------");
+    client().flush();
+}

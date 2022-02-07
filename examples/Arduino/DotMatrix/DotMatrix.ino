@@ -57,7 +57,7 @@
 
 #include "utils.hpp"
 #include "TextScroller.hpp"
-#include "Terminal.hpp"
+#include "TerminalInterface.hpp"
 
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x < y ? x : y)
@@ -75,6 +75,7 @@ void yield()
         thread::atomicx::GetCurrent()->Yield (1);
     }
 }
+
 // Functions
 
 atomicx_time Atomicx_GetTick(void)
@@ -91,7 +92,6 @@ void Atomicx_SleepTick(atomicx_time nSleep)
   External Threads ---------------------------------------------------
 */
 
-Terminal terminal(10);
 TextScroller Matrix (10);
 
 
@@ -126,8 +126,6 @@ protected:
 
         for(;;)
         {
-            Serial.printf ("System: Waiting for stsCmds on (%zp)\r\n", &sysCmds);
-
             if (Wait (sysCmds, 1, GetNice ()))
             {
                 if (sysCmds == SysCommands::Matrix_Ready)
@@ -178,6 +176,8 @@ void setup()
     
     Matrix.SetSpeed (3);
     
+    TerminalInterface TerminalInterface(10, Serial);
+
     System system (100);
 
     Serial.println (F("Thermal Camera Demo ------------------------------------"));
@@ -190,7 +190,8 @@ void setup()
 
 }
 
-void loop() {
+void loop() 
+{
 }
 
 #endif // __DOTMATRIX_H__
