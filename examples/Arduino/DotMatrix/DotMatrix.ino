@@ -34,8 +34,6 @@
 #ifndef __DOTMATRIX_H__
 #define __DOTMATRIX_H__
 
-
-
 #include <ESP8266WiFi.h>
 
 // Designed for NodeMCU ESP8266
@@ -59,6 +57,7 @@
 
 #include "utils.hpp"
 #include "TextScroller.hpp"
+#include "Terminal.hpp"
 
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x < y ? x : y)
@@ -69,12 +68,17 @@
 #endif
 
 // Utilities
-
+void yield()
+{
+    if (thread::atomicx::GetCurrent() != nullptr) 
+    { 
+        thread::atomicx::GetCurrent()->Yield (1);
+    }
+}
 // Functions
 
 atomicx_time Atomicx_GetTick(void)
 {
-    ::yield();
     return millis();
 }
 
@@ -84,46 +88,12 @@ void Atomicx_SleepTick(atomicx_time nSleep)
 }
 
 /*
-  TERMINAL INTERFACE ---------------------------------------------------
+  External Threads ---------------------------------------------------
 */
 
-class Terminal : public thread::atomicx
-{
-public:
-    Terminal(atomicx_time nNice) : atomicx(250, 50)
-    {
-        SetNice (nNice);
-        SetDynamicNice (true);
-    }
-
-    char* GetName()
-    {
-        return "Terminal";
-    }
-
-protected:
-
-    void run (void) noexcept override
-    {
-        for (;;)
-        {
-            Yield();
-
-            Serial.flush ();
-        }
-    }
-
-    void StackOverflowHandler(void) noexcept override
-    {
-        PrintStackOverflow();
-    }
-
-
-private:
-    char szPixel[15] = "";
-} ;
-
 Terminal terminal(10);
+TextScroller Matrix (10);
+
 
 /*
   SYSTEM CLASS ---------------------------------------------------
@@ -156,37 +126,36 @@ protected:
 
         for(;;)
         {
-            Yield ();
+            Serial.printf ("System: Waiting for stsCmds on (%zp)\r\n", &sysCmds);
 
-            if (Wait (sysCmds, 1, 50))
+            if (Wait (sysCmds, 1, GetNice ()))
             {
                 if (sysCmds == SysCommands::Matrix_Ready)
                 {
-                    // strMatrixText.remove(0);
+                    Matrix = "";
 
-                    // switch (nScrollStage)
-                    // {
-                    //     case 0:
-                    //         strMatrixText.concat (F("Free memory: "));
-                    //         strMatrixText.concat (system_get_free_heap_size ());
-                    //         strMatrixText.concat (F("bytes"));
+                    switch (nScrollStage)
+                    {
+                        case 0:
+                            Matrix = Matrix() + "Free memory: " + std::to_string(system_get_free_heap_size()) + "bytes";
 
-                    //         break;
+                            break;
 
-                    //     case 1:
-                    //         strMatrixText.concat (F("AtomicX, powerful and revolutionary..."));
+                        case 1:
+                            Matrix = Matrix() + "AtomicX, powerful and revolutionary...";
 
-                    //         break;
-                    //     default:
-                    //         strMatrixText.concat (F("AtomicX"));
-                    //         nScrollStage = ~0;
-                    // }
+                            break;
+
+                        default:
+                            Matrix = Matrix() + "AtomicX, running threads: " + std::to_string(GetThreadCount ());
+                            nScrollStage = -1;
+                    }
 
                     nScrollStage++;
                 }
             }
 
-            ListAllThreads ();
+            //Serial.println ("System routine.");
         }
     }
 
@@ -195,51 +164,6 @@ protected:
         PrintStackOverflow();
     }
 };
-
-void ListAllThreads()
-{
-    size_t nCount=0;
-
-    Serial.flush();
-
-    Serial.println (F("\e[K[THREAD]-----------------------------------------------"));
-
-    Serial.print (F("\e[K>>> Free RAM: ")); Serial.println (system_get_free_heap_size ());
-    Serial.print (F("\e[KAtomicX context size: ")); Serial.println (sizeof (thread::atomicx));
-    Serial.print (F("\e[KSystem Context:")); Serial.println (sizeof (System));
-    Serial.print (F("\e[KTerminal Context:")); Serial.println (sizeof (Terminal));
-
-    Serial.println ("\e[K---------------------------------------------------------");
-
-    for (auto& th : *(thread::atomicx::GetCurrent()))
-    {
-        Serial.print (F("\e[K"));
-        Serial.print (thread::atomicx::GetCurrent() == &th ? F("*  ") : F("   "));
-        Serial.print (++nCount);
-        Serial.print (F(":'"));
-        Serial.print (th.GetName());
-        Serial.print (F("' "));
-        Serial.print ((size_t) th.GetID());
-        Serial.print (F("\t| Nice: "));
-        Serial.print (th.GetNice());
-        Serial.print (F("\t| Stack: "));
-        Serial.print (th.GetStackSize());
-        Serial.print ("\t| UsedStack: ");
-        Serial.print (th.GetUsedStackSize());
-        Serial.print (F("\t\t| Stat: "));
-        Serial.print (th.GetStatus());
-        Serial.print (F("\t| SStat: "));
-        Serial.print (th.GetSubStatus());
-        Serial.print (F("\t| LstExecTime: "));
-        Serial.print (th.GetLastUserExecTime());
-        Serial.println (F("ms"));
-        Serial.flush(); Serial.flush();
-    }
-
-    Serial.println ("\e[K---------------------------------------------------------");
-    Serial.flush(); Serial.flush();
-
-}
 
 void setup()
 {
@@ -251,11 +175,8 @@ void setup()
 
     vt100::SetLocation (1,1);
     Serial.println (F(ATOMIC_VERSION_LABEL));
-
-
     
-    TextScroller Matrix (5);
-    Matrix.SetSpeed (2);
+    Matrix.SetSpeed (3);
     
     System system (100);
 

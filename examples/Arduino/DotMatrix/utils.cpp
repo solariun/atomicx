@@ -2,6 +2,44 @@
 #include "arduino.h"
 #include "utils.hpp"
 
+// Global values
+
+TermCommands termCmds = TermCommands::none;
+SysCommands sysCmds = SysCommands::none;
+
+// Global functions
+
+void ListAllThreads()
+{
+    size_t nCount=0;
+
+    Serial.flush();
+
+    Serial.println (F("\e[K[THREAD]-----------------------------------------------"));
+
+    Serial.printf ("\e[K>>> Free RAM: %ub\t\n", system_get_free_heap_size ());
+    Serial.printf ("\e[KAtomicX context size: %zub\r\n", sizeof (thread::atomicx));
+
+    Serial.println ("\e[K---------------------------------------------------------");
+
+    for (auto& th : *(thread::atomicx::GetCurrent()))
+    {
+        Serial.printf ("\eK%c%-3u %-8zu '%-12s' nc:%-6u stk:(%6zub/%6zub) sts:(%-3u,%-3u) last: %ums\r\n",
+            thread::atomicx::GetCurrent() == &th ? F("*  ") : F("   "), ++nCount, 
+            (size_t) th.GetID(), th.GetName(),
+            th.GetNice(), th.GetUsedStackSize(), th.GetStackSize(),
+            th.GetStatus(), th.GetSubStatus(),
+            th.GetLastUserExecTime()
+        );
+
+        Serial.flush();
+    }
+
+    Serial.println ("\e[K---------------------------------------------------------");
+    Serial.flush(); Serial.flush();
+
+}
+
 // Namespaced functions and attributes
 namespace util
 {

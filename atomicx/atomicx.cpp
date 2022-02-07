@@ -46,7 +46,7 @@ namespace thread
 
         while (m_counter >= m_maxShared)
         {
-            if (timeout.IsTimedout () || GetCurrent()->Wait (*this, 1, timeout.GetRemaining()) == false)
+            if (timeout.IsTimedout () || GetCurrent() == nullptr || GetCurrent()->Wait (*this, 1, timeout.GetRemaining()) == false)
             {
                 return false;
             }
@@ -59,7 +59,7 @@ namespace thread
 
     void atomicx::semaphore::release()
     {
-        if (m_counter)
+        if (m_counter && GetCurrent() != nullptr)
         {
             m_counter --;
 
@@ -79,7 +79,7 @@ namespace thread
 
     size_t atomicx::semaphore::GetWaitCount ()
     {
-        return GetCurrent()->HasWaitings (*this, 1);
+        return GetCurrent() != nullptr ? GetCurrent()->HasWaitings (*this, 1) : 0;
     }
 
     // Smart Semaphore, manages the semaphore com comply with RII
@@ -871,5 +871,27 @@ namespace thread
     bool atomicx::IsDynamicNiceOn()
     {
         return m_flags.dynamicNice;
+    }
+
+    atomicx* atomicx::GetThread(size_t threadId)
+    {
+        for (auto& th : *(thread::atomicx::GetCurrent()))
+        {
+            if (reinterpret_cast<size_t>(&th) == threadId)
+            {
+                return &th;
+            }
+        }
+
+        return nullptr;
+    }
+
+    size_t  atomicx::GetThreadCount()
+    {
+        size_t nCounter=0;
+
+        for (auto& th : *(thread::atomicx::GetCurrent())) nCounter++;
+
+        return nCounter;
     }
 }

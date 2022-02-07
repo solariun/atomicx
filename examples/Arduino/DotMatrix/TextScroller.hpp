@@ -95,6 +95,9 @@ class TextScroller : public thread::atomicx
 {
 public:
 
+    std::string& operator = (const std::string& strValue);
+    std::string& operator() ();
+    
     TextScroller (atomicx_time nNice);
 
     TextScroller () = delete;
@@ -129,10 +132,9 @@ private:
     uint8_t nOffset   = 0;
     int nIndex = nNumberDigits * (-1);
 
+    std::string strMatrixText="";
     uint8_t nSpeed;
     
-    std::string strMatrixText="";
-
     LedControl lc;
 };
 

@@ -94,11 +94,16 @@ void TextScroller::run(void)
     for (;;)
     {
         Yield ();
-        
+
         if (show (strMatrixText.c_str(), strMatrixText.length()) == false)
         {
             sysCmds = SysCommands::Matrix_Ready;
-            SyncNotify (sysCmds, 1, 1000);
+            
+            if (! SyncNotify (sysCmds, 1, 1000))
+            {
+                Serial.printf (">>> ERROR, failed to notify System... (%zp)\r\n", &sysCmds);
+                delay (2000);
+            }
         }
     }
 
@@ -140,7 +145,7 @@ TextScroller::TextScroller (atomicx_time nNice) : atomicx(250, 50), nOffset (0),
 
     SetNice (nNice);
 
-    strMatrixText = "Welcome to AtomicX Thermal Camera demo.";
+    strMatrixText = "Welcome to AtomicX DotMatrix WiFi server.";
 }
 
 void TextScroller::SetSpeed(int nSpeed)
@@ -186,4 +191,16 @@ bool TextScroller::show (const char* pszMessage, const uint16_t nMessageLen)
     nIndex = (int)nIndex - (nCount - (nSpeed / 8));
 
     return true;
+}
+
+std::string& TextScroller::operator= (const std::string& strValue)
+{
+    strMatrixText = strValue;
+
+    return strMatrixText;
+}
+
+std::string& TextScroller::operator() ()
+{
+    return strMatrixText;
 }

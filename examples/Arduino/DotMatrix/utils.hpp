@@ -2,6 +2,8 @@
 #ifndef __UTILS_HPP__
 #define __UTILS_HPP__
 
+#include <ESP8266WiFi.h>
+#include "atomicx.hpp"
 #include "arduino.h"
 
 // global functions and attributes
@@ -24,18 +26,23 @@
 
 enum class TermCommands
 {
+    none=0,
     ThermalCam_Update,
     ThreadList_Update
 };
 
-static TermCommands termCmds;
+extern TermCommands termCmds;
 
 enum class SysCommands
 {
+    none = 0,
     Matrix_Ready=10
 };
 
-static SysCommands sysCmds;
+extern SysCommands sysCmds;
+
+// Global functions
+void ListAllThreads();
 
 // Namespaced functions and attributes
 namespace util

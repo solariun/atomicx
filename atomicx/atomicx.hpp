@@ -816,6 +816,16 @@ namespace thread
          */
         static atomicx* GetCurrent();
 
+
+        /**
+         * @brief Get the Thread pointer from a object
+         * 
+         * @param threadId  The thread ID reference
+         * 
+         * @return atomicx* nullprt if not found otherwise the pointer to the thread
+         */
+        static atomicx* GetThread(size_t threadId);
+
         /**
          * @brief Once it is call the process blocks execution and start all threads
          *
@@ -1001,6 +1011,13 @@ namespace thread
          */
         bool IsDynamicNiceOn();
 
+        /**
+         * @brief Return how many threads assigned
+         * 
+         * @return size_t number of assigned threads
+         */
+        size_t GetThreadCount();
+        
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */
