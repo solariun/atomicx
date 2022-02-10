@@ -124,7 +124,7 @@ bool TextScroller::begin()
 {
     // Intentionally delaying to give time to the SPI to start
     delay (1000);
-
+    
     uint8_t nCounter=nNumberDigits;
 
     if (nCounter) do

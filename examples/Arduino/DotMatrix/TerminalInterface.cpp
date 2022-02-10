@@ -31,15 +31,6 @@
     SOFTWARE.
 */
 
-// Designed for NodeMCU ESP8266
-//################# DISPLAY CONNECTIONS ################
-// LED Matrix Pin -> ESP8266 Pin
-// Vcc            -> 3v  (3V on NodeMCU 3V3 on WEMOS)
-// Gnd            -> Gnd (G on NodeMCU)
-// DIN            -> D7  (Same Pin for WEMOS)
-// CS             -> D4  (Same Pin for WEMOS)
-// CLK            -> D5  (Same Pin for WEMOS)
-
 #include "TerminalCommand.hpp"
 #include "TerminalInterface.hpp"
 

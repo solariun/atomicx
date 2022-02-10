@@ -674,170 +674,6 @@ namespace thread
         return (nCRC);
     }
 
-    uint32_t atomicx::GetTopicID (const char* pszTopic, size_t nKeyLenght)
-    {
-        return ((uint32_t) ((crc16 ((const uint8_t*)pszTopic, nKeyLenght, 0) << 15) | crc16 ((const uint8_t*)pszTopic, nKeyLenght, 0x8408)));
-    }
-
-    bool atomicx::HasSubscriptions (const char* pszKey, size_t nKeyLenght)
-    {
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            uint32_t nKeyID = GetTopicID(pszKey, nKeyLenght);
-
-            for (auto& thr : *this)
-            {
-                if (nKeyID == thr.m_TopicId || IsSubscribed (pszKey, nKeyLenght))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    bool atomicx::HasSubscriptions (uint32_t nKeyID)
-    {
-        for (auto& thr : *this)
-        {
-            if (nKeyID == thr.m_TopicId)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    bool atomicx::WaitBrokerMessage (const char* pszKey, size_t nKeyLenght, Message& message)
-    {
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            m_aStatus = aTypes::subscription;
-
-            m_TopicId = GetTopicID(pszKey, nKeyLenght);
-            m_nTargetTime = Atomicx_GetTick();
-
-            m_lockMessage = {0,0};
-
-            Yield();
-
-            message.message = m_lockMessage.message;
-            message.tag = m_lockMessage.tag;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    bool atomicx::WaitBrokerMessage (const char* pszKey, size_t nKeyLenght)
-    {
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            m_aStatus = aTypes::subscription;
-
-            m_TopicId = GetTopicID(pszKey, nKeyLenght);
-            m_nTargetTime = Atomicx_GetTick();
-
-            Yield();
-
-            m_lockMessage = {0,0};
-
-            return true;
-        }
-
-        return false;
-    }
-
-    bool atomicx::SafePublish (const char* pszKey, size_t nKeyLenght, const Message message)
-    {
-        size_t nCounter=0;
-
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            uint32_t nTagId = GetTopicID(pszKey, nKeyLenght);
-
-            for (auto& thr : *this)
-            {
-                if (nTagId == thr.m_TopicId)
-                {
-                    nCounter++;
-
-                    thr.m_aStatus = aTypes::now;
-                    thr.m_TopicId = 0;
-                    thr.m_nTargetTime = Atomicx_GetTick();
-                    thr.m_lockMessage.message = message.message;
-                    thr.m_lockMessage.tag = message.tag;
-                }
-
-                if (thr.IsSubscribed(pszKey, nKeyLenght))
-                {
-                    nCounter++;
-
-                    thr.BrokerHandler(pszKey, nKeyLenght, thr.m_lockMessage);
-                }
-            }
-        }
-
-        return nCounter ? true : false;
-    }
-
-    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght, const Message message)
-    {
-        bool nReturn = SafePublish(pszKey, nKeyLenght, message);
-
-        if (nReturn) Yield();
-
-        return nReturn;
-    }
-
-    bool atomicx::SafePublish (const char* pszKey, size_t nKeyLenght)
-    {
-        size_t nCounter=0;
-
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            uint32_t nTagId = GetTopicID(pszKey, nKeyLenght);
-
-            for (auto& thr : *this)
-            {
-                if (nTagId == thr.m_TopicId)
-                {
-                    nCounter++;
-
-                    thr.m_aStatus = aTypes::now;
-                    thr.m_TopicId = 0;
-                    thr.m_nTargetTime = Atomicx_GetTick();
-                    thr.m_lockMessage = {0,0};
-                }
-
-                if (thr.IsSubscribed(pszKey, nKeyLenght))
-                {
-                    nCounter++;
-
-                    thr.m_lockMessage = {0,0};
-                    thr.BrokerHandler(pszKey, nKeyLenght, thr.m_lockMessage);
-                }
-
-            }
-
-            if (nCounter) Yield();
-        }
-
-        return nCounter ? true : false;
-    }
-
-    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght)
-    {
-        bool nReturn = SafePublish(pszKey, nKeyLenght);
-
-        if (nReturn) Yield();
-
-        return nReturn;
-    }
-
     atomicx_time atomicx::GetCurrentTick(void)
     {
         return Atomicx_GetTick ();
@@ -890,8 +726,25 @@ namespace thread
     {
         size_t nCounter=0;
 
-        for (auto& th : *(thread::atomicx::GetCurrent())) nCounter++;
+        for (auto& th : *(thread::atomicx::GetCurrent()))
+        {
+            (void) th;
+            nCounter++;
+        }
 
         return nCounter;
+    }
+
+    bool atomicx::AsyncWaitHander (size_t refVar, size_t nTag) noexcept
+    {
+        // To avoid unused error
+        (void) refVar; (void) nTag;
+
+        return false;
+    }
+
+    void atomicx::SetAsyncWaitHandler(bool awaitStatus)
+    {
+        m_flags.asyncWait = awaitStatus;
     }
 }
