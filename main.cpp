@@ -140,8 +140,6 @@ private:
     const char* m_pszName;
 };
 
-
-
 void ListAllThreads()
 {
     std::cout << "[Thread]-----------------------------------------------" << std::endl;

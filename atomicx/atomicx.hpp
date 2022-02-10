@@ -1042,16 +1042,10 @@ namespace thread
 
         template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
         {
-                if ((   thr.m_flags.asyncWait == true && 
-                        subType == aSubTypes::wait && 
-                        thr.AsyncWaitHander ((size_t) &refVar, nTag)
-                    ) ||
-                    (
-                        thr.m_aSubStatus == subType &&
-                        thr.m_aStatus == aTypes::wait && 
-                        thr.m_pLockId == (void*) &refVar &&
-                        nTag == thr.m_lockMessage.tag)
-                    )
+                if (thr.m_aSubStatus == subType &&
+                    thr.m_aStatus == aTypes::wait && 
+                    thr.m_pLockId == (void*) &refVar &&
+                    nTag == thr.m_lockMessage.tag)
                 {
                     return true;
                 }
@@ -1142,25 +1136,6 @@ namespace thread
          * SMART WAIT/NOTIFY  IMPLEMENTATION
          * ------------------------------
          */
-
-        /**
-         * @brief Set the Async Wait Handler Enable or disable
-         * 
-         * @param awaitStatus  async wait handler status to be set
-         */
-        void SetAsyncWaitHandler(bool awaitStatus);
-
-        /**
-         * @brief Is thread is marked as asynWait, all notify will call this functions
-         * 
-         * @param refVar    The pointer for the reference used as notifier
-         * @param nTag      The notification meaning
-         * 
-         * @return false if it is not subscribed, otherwise 0
-         * 
-         * @note if not implemented a default implementation will be used returning always zero
-         */
-        virtual bool AsyncWaitHander (size_t refVar, size_t nTag) noexcept;
 
         /**
          * @brief Sync with thread call for a wait (refVar,nTag)
@@ -1590,8 +1565,7 @@ namespace thread
         {
             bool autoStack : 1;
             bool dynamicNice : 1;
-            bool asyncWait : 1;
-        } m_flags = {0,0,0};
+        } m_flags = {0,0};
     };
 }
 
