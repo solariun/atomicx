@@ -10,6 +10,27 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+* Dropping BROKER functionality, and welcoming **Broadcasting** functionality, it will enable a thread to receive all broadcasts asynchronously sent by other threads, only by enabling it and implementing the handler :
+    ```cpp 
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message) 
+    ```
+    and enabling it using the code:
+    
+    ```cpp
+        SetReceiveBroadcast (true);
+    ```
+    The handler will deliver tree parameters:
+    - `size_t MessageReference` that works like a reference of what is the message about;
+    - `size_t Message.message` which is the message payload (could be even an pointer);
+    - `size_t Message.tag` that can be used as a meaning for the message:
+
+    Example:
+    - `messageReference=BROADCAST_IRCAMERA`
+    - `Message.message=CAMERA_DONE`
+    - `Message.tag=CAMERA_READINGS`
+        
+    On this simple example using 'mnemonics', that could have been enum class or directives, a single message was able to inform asynchronously that a IR CAMERA just read something, but could have informed ERROR or even that it was READING...., the approach allows a powerful controller, since you can apply layers on your code making processing really fast and precise and less messages will travel across the systems.
+
 * `mutex` and `smartMutex` now have timeout, by using `lock(<timeout time>)` and `sharedLock(<timeout time>)`, if no timeout is  given: `lock()` or `sharedLock()` wait indefinitely (fully back compatible with existing code)
 
 ## Version 1.2.1
@@ -124,7 +145,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
     * Thread can wait for an event to happen.
     * On event notification a `atomix::message` can be sent/received
 
-* A message broker based on observer pattern
+* (DEPRECATED) A message broker based on observer pattern (NOW DROPPED and REPLACED BY BROADCAST)
     * A thread can use `WaitBroker Message` to wait for any specifc topic asynchronously.
     * Instead of having a `Subcrib` call, the developer will provide a `IsSubscribed` method that the kernel will use to determine if the object/thread is subscribed to a given topic.
     * Broker uses `atomicx::message` to transport information. For inter process Object transport, please use atomicx::queue.

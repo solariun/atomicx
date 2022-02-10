@@ -1042,17 +1042,16 @@ namespace thread
 
         template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
         {
-                if (thr.m_aSubStatus == subType &&
-                    thr.m_aStatus == aTypes::wait && 
-                    thr.m_pLockId == (void*) &refVar &&
-                    nTag == thr.m_lockMessage.tag)
-                {
-                    return true;
-                }
+            if (thr.m_aSubStatus == subType &&
+                thr.m_aStatus == aTypes::wait && 
+                thr.m_pLockId == (void*) &refVar &&
+                nTag == thr.m_lockMessage.tag)
+            {
+                return true;
+            }
 
             return false;
         }
-
         
         /**
          * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
@@ -1122,6 +1121,41 @@ namespace thread
         };
 
         /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * ------------------------------
+         */
+
+        /**
+         * @brief Enable or Disable async broadcast 
+         * 
+         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
+         */
+        void SetReceiveBroadcast (bool bBroadcastStatus);
+
+        /**
+         * @brief Broadcast a message to all threads
+         * 
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         * 
+         * @return size_t 
+         */
+        size_t BroadcastMessage (const size_t messageReference, const Message message);
+
+        /**
+         * @brief The default boradcast handler used to received the message
+         * 
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         */
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
+
+        /**
          * @brief calculate the Topic ID for a given topic text
          *
          * @param pszTopic    Topic Text in C string
@@ -1136,6 +1170,25 @@ namespace thread
          * SMART WAIT/NOTIFY  IMPLEMENTATION
          * ------------------------------
          */
+
+        /**
+         * @brief Set the Async Wait Handler Enable or disable
+         * 
+         * @param awaitStatus  async wait handler status to be set
+         */
+        void SetAsyncWaitHandler(bool awaitStatus);
+
+        /**
+         * @brief Is thread is marked as asynWait, all notify will call this functions
+         * 
+         * @param refVar    The pointer for the reference used as notifier
+         * @param nTag      The notification meaning
+         * 
+         * @return false if it is not subscribed, otherwise 0
+         * 
+         * @note if not implemented a default implementation will be used returning always zero
+         */
+        virtual bool AsyncWaitHander (size_t refVar, size_t nTag) noexcept;
 
         /**
          * @brief Sync with thread call for a wait (refVar,nTag)
@@ -1565,7 +1618,8 @@ namespace thread
         {
             bool autoStack : 1;
             bool dynamicNice : 1;
-        } m_flags = {0,0};
+            bool broadcast : 1;
+        } m_flags = {0,0,0};
     };
 }
 

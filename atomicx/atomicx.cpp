@@ -734,4 +734,38 @@ namespace thread
 
         return nCounter;
     }
+
+    bool atomicx::AsyncWaitHander (size_t refVar, size_t nTag) noexcept
+    {
+        // To avoid unused error
+        (void) refVar; (void) nTag;
+
+        return false;
+    }
+
+    void atomicx::SetReceiveBroadcast (bool bBroadcastStatus)
+    {
+        m_flags.broadcast = bBroadcastStatus;
+    }
+
+    size_t atomicx::BroadcastMessage (const size_t messageReference, const Message message)
+    {
+        size_t nReceived = 0;
+
+        for (auto& thr : *this)
+        {
+            if (thr.m_flags.broadcast == true)
+            {
+                BroadcastHandler (messageReference, message);
+                nReceived++;
+            }
+        }
+
+        return nReceived;
+    }
+
+    void atomicx::BroadcastHandler (const size_t& messageReference, const Message& message)
+    {
+        (void) message; // to avoid unused variable
+    }    
 }
