@@ -34,7 +34,6 @@
 #ifndef __TERMINALCOMMAND_HPP__
 #define __TERMINALCOMMAND_HPP__
 
-#include "atomicx.hpp"
 #include "Arduino.h"
 #include <assert.h>
 #include <string>
@@ -42,6 +41,9 @@
 
 #include "utils.hpp"
 #include "TerminalInterface.hpp"
+#include "TextScroller.hpp"
+
+extern TextScroller Matrix;
 
 namespace commands
 {
@@ -56,5 +58,15 @@ namespace commands
             bool Execute(Stream& client, const std::string& commandLine);
     };
 
+    class Display : public CommandTerminalInterface
+    {
+        public:
+            Display ();
+
+        protected:
+             const char* GetCommandDescription() final;
+    
+            bool Execute(Stream& client, const std::string& commandLine);        
+    };
 }
 #endif

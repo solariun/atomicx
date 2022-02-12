@@ -6,6 +6,10 @@
 #include "atomicx.hpp"
 #include "arduino.h"
 
+constexpr std::size_t operator "" _z ( unsigned long long n )
+    { return n; }
+
+
 // global functions and attributes
 
 #define MAX(x, y) (x > y ? x : y)

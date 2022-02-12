@@ -58,6 +58,17 @@ using CommandTerminalMap = std::map<const std::string, CommandTerminalInterface*
 
 #define TERMINAL_BS 8
 
+/**
+ * @brief Parse a command line option and return the command attribute data for a index or how much data present
+ * 
+ * @param commandLine       Command line text
+ * @param nCommandIndex     index fo the desired command attribute
+ * @param returnText        command attribute data
+ * @param countOnly         if yes will return how much command attributes in the command line
+ * 
+ * @return uint8_t  the index of what was reported or the number or elements if countOnly = true
+ */
+uint8_t ParseOption (const std::string& commandLine, uint8_t nCommandIndex, std::string& returnText, bool countOnly=false);
 
 /**
  * CommandTerminal Interdace class

@@ -9,8 +9,7 @@
 TermCommands termCmds = TermCommands::none;
 SysCommands sysCmds = SysCommands::none;
 
-// Global functions
-
+// Global functions    
 void ListAllThreads(Stream& client)
 {
     size_t nCount=0;

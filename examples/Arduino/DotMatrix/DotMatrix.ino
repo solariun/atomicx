@@ -67,15 +67,6 @@
 #define STAPSK "Creative01000"
 #endif
 
-// Utilities
-void yield()
-{
-    if (thread::atomicx::GetCurrent() != nullptr) 
-    { 
-        thread::atomicx::GetCurrent()->Yield (1);
-    }
-}
-
 // Functions
 
 atomicx_time Atomicx_GetTick(void)
@@ -94,6 +85,8 @@ void Atomicx_SleepTick(atomicx_time nSleep)
 
 TextScroller Matrix (10);
 
+std::string strSystemNextMessage="AtomicX";
+std::string strSystemActive=strSystemNextMessage;
 
 /*
   SYSTEM CLASS ---------------------------------------------------
@@ -135,17 +128,19 @@ protected:
                     switch (nScrollStage)
                     {
                         case 0:
-                            Matrix = Matrix() + "Free memory: " + std::to_string(system_get_free_heap_size()) + "bytes";
-
-                            break;
-
-                        case 1:
-                            Matrix = Matrix() + "AtomicX, powerful and revolutionary...";
-
+                            Matrix = Matrix() + "AtomicX, Free memory: " + std::to_string(system_get_free_heap_size()) + "bytes, threads: " + std::to_string(GetThreadCount ());
+                            Matrix.SetSpeed (4);
                             break;
 
                         default:
-                            Matrix = Matrix() + "AtomicX, running threads: " + std::to_string(GetThreadCount ());
+                            if (strSystemActive != strSystemNextMessage)
+                            {
+                                strSystemActive = strSystemNextMessage;
+                            }
+
+                            Matrix = Matrix() + strSystemActive;
+                            Matrix.SetSpeed (3);
+
                             nScrollStage = -1;
                     }
 

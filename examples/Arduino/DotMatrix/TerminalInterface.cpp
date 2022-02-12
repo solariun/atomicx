@@ -40,9 +40,10 @@ CommandTerminalMap TerminalInterface::m_mapCommands={};
 // Default initializations for commands
 commands::Help l_helpCommandInstance;
 commands::System l_systemCommand;
+commands::Display l_displayCommand;
 
 // Helpper functions
-uint8_t ParseOption (const std::string& commandLine, uint8_t nCommandIndex, std::string& returnText, bool countOnly=false)
+uint8_t ParseOption (const std::string& commandLine, uint8_t nCommandIndex, std::string& returnText, bool countOnly)
 {
     uint8_t nCommandOffSet = 0;
 

@@ -31,27 +31,33 @@
     SOFTWARE.
 */
 
-#include "atomicx.hpp"
-#include "Arduino.h"
 #include <assert.h>
-#include <string>
 #include <map>
+#include <string>
+#include "Arduino.h"
+#include "atomicx.hpp"
 
 #include "utils.hpp"
 
-#include "TerminalCommand.hpp"
+#include "TerminalCommands.hpp"
 
 // Methods implementations
-commands::System::System() : CommandTerminalInterface ("system")
-{return;}
+commands::System::System () : CommandTerminalInterface ("system")
+{
+    return;
+}
 
-const char* commands::System::GetCommandDescription()
+const char* commands::System::GetCommandDescription ()
 {
     return "Print system information";
 }
 
-bool commands::System::Execute(Stream& client, const std::string& commandLine)
+extern std::string strSystemActive;
+
+bool commands::System::Execute (Stream& client, const std::string& commandLine)
 {
+    client.println ("Message displaying ------------------");
+    client.println (strSystemActive.c_str ());
     client.println ("ESP8266 System ------------------");
     client.printf ("%-20s: [%u]\r\n", "Processor ID", system_get_chip_id ());
     client.printf ("%-20s: [%s]\r\n", "SDK Version", system_get_sdk_version ());
@@ -86,4 +92,38 @@ bool commands::System::Execute(Stream& client, const std::string& commandLine)
     return true;
 }
 
+extern std::string strSystemNextMessage;
 
+commands::Display::Display () : CommandTerminalInterface ("display")
+{
+    strSystemNextMessage = "AtomicX terminal command is ready.";
+}
+
+const char* commands::Display::GetCommandDescription ()
+{
+    return "Define a new custom message to be displied.";
+}
+
+bool commands::Display::Execute (Stream& client, const std::string& commandLine)
+{
+    std::string strAttribute = "";
+
+    uint8_t ret = 0;
+
+    if (! ParseOption (commandLine, 1, strAttribute) || strAttribute.length () == 0)
+    {
+        client.print ((short int) strAttribute.length ());
+        client.print (": Error, no attribute provided, please ");
+        client.println (GetCommandDescription ());
+        client.flush ();
+
+        return false;
+    }
+
+    client.printf ("Setting up message: [%s]\r\n", strAttribute.c_str ());
+    client.flush ();
+
+    strSystemNextMessage = strAttribute;
+
+    return true;
+}
