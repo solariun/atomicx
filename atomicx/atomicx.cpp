@@ -735,14 +735,6 @@ namespace thread
         return nCounter;
     }
 
-    bool atomicx::AsyncWaitHander (size_t refVar, size_t nTag) noexcept
-    {
-        // To avoid unused error
-        (void) refVar; (void) nTag;
-
-        return false;
-    }
-
     void atomicx::SetReceiveBroadcast (bool bBroadcastStatus)
     {
         m_flags.broadcast = bBroadcastStatus;

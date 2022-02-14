@@ -42,6 +42,8 @@ commands::Help l_helpCommandInstance;
 commands::System l_systemCommand;
 commands::Display l_displayCommand;
 
+extern std::string strSystemActive;
+
 // Helpper functions
 uint8_t ParseOption (const std::string& commandLine, uint8_t nCommandIndex, std::string& returnText, bool countOnly)
 {
@@ -175,10 +177,13 @@ bool TerminalInterface::ReadCommandLine (std::string& readCommand)
     uint8_t chChar = 0;
     int nChars = 0;
 
-    readCommand = "";
-
     while (nChars || (nChars = WaitForSerialData ()) > 0)
     {
+        if (Wait (strSystemActive, 10, 2))
+        {
+            return false;
+        }
+
         chChar = Serial.read ();
 
         if (chChar == TERMINAL_BS && readCommand.length () > 0)
@@ -220,12 +225,14 @@ void TerminalInterface::run()
 {
     std::string strCommandLine = "";
     std::string strCommand = "";
+    std::string strTerminal = "Terminal";
 
     for (;;)
     {
-        strCommandLine = ""; strCommand = "";
+        strTerminal = "";
+        strTerminal += "\eK" + std::to_string(strSystemActive.length ()) + "len: Terminal>";
 
-        m_client.print ("Terminal> ");
+        m_client.print (strTerminal.c_str ());
         m_client.flush ();
 
         if (ReadCommandLine (strCommandLine) && strCommandLine.length ())
@@ -243,12 +250,10 @@ void TerminalInterface::run()
                     m_client.println ("Command not found, here is the list of avaliable commands:");
                     m_mapCommands ["help"]->Execute(m_client, strCommandLine);
                 }
+
+                strCommandLine = ""; strCommand = "";
             }
         }
-
-        m_client.flush ();
-
-        Yield ();
     }
 }
 

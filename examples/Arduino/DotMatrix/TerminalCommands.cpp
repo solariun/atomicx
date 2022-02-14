@@ -125,5 +125,7 @@ bool commands::Display::Execute (Stream& client, const std::string& commandLine)
 
     strSystemNextMessage = strAttribute;
 
+    thread::atomicx::GetCurrent()->SyncNotify (strSystemActive, 10, 1000);
+
     return true;
 }

@@ -81,6 +81,12 @@ namespace thread
             all = 1
         };
 
+        struct Message
+        {
+            size_t message;
+            size_t tag;
+        };
+
         /**
          * @brief Timeout Check object
          */
@@ -88,6 +94,7 @@ namespace thread
         class Timeout
         {
             public:
+
                 Timeout () = delete;
 
                 /**
@@ -1016,82 +1023,7 @@ namespace thread
          * 
          * @return size_t number of assigned threads
          */
-        size_t GetThreadCount();
-        
-        /**
-         *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
-         */
-    private:
-
-        /**
-         * @brief Set the Default Parameters for constructors
-         *
-         */
-        void SetDefaultParameters ();
-
-        template<typename T> void SetWaitParammeters (T& refVar, size_t nTag, aSubTypes asubType = aSubTypes::wait)
-        {
-            m_TopicId = 0;
-            m_pLockId = (uint8_t*)&refVar;
-            m_aStatus = aTypes::wait;
-            m_aSubStatus = asubType;
-
-            m_lockMessage.tag = nTag;
-            m_lockMessage.message = 0;
-        }
-
-        template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
-        {
-            if (thr.m_aSubStatus == subType &&
-                thr.m_aStatus == aTypes::wait && 
-                thr.m_pLockId == (void*) &refVar &&
-                nTag == thr.m_lockMessage.tag)
-            {
-                return true;
-            }
-
-            return false;
-        }
-        
-        /**
-         * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
-         *
-         * @tparam T        Type of the reference pointer
-         * @param nMessage  The size_t message to be sent
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification
-         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
-         *                  refVar waiting thread will be notified.
-         *
-         * @return true     if at least one got notified, otherwise false.
-         */
-        template<typename T> size_t SafeNotifier(size_t& nMessage, T& refVar, size_t nTag, aSubTypes subType, NotifyType notifyAll=NotifyType::one)
-        {
-            size_t nRet = 0;
-
-            for (auto& thr : *this)
-            {
-                if (IsNotificationEligible (thr, refVar, nTag, subType))
-                {
-                    thr.m_TopicId = 0;
-                    thr.m_aStatus = aTypes::now;
-                    thr.m_nTargetTime = 0;
-                    thr.m_pLockId = nullptr;
-
-                    thr.m_lockMessage.message = nMessage;
-                    thr.m_lockMessage.tag = nTag;
-
-                    nRet++;
-
-                    if (notifyAll == NotifyType::one)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return nRet;
-        }
+        size_t GetThreadCount();  
 
         /**
          * @brief Safely notify all LookForWaitings from a specific reference pointer along with a message without triggering context change
@@ -1109,30 +1041,6 @@ namespace thread
             return SafeNotifier(message, refVar, nTag, aSubTypes::look, NotifyType::all);
         }
 
-    /**
-     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
-     */
-    protected:
-
-        struct Message
-        {
-            size_t tag;
-            size_t message;
-        };
-
-        /**
-         * ------------------------------
-         * MESSAGE BROADCAST IMPLEMENTATION
-         * ------------------------------
-         */
-
-        /**
-         * @brief Enable or Disable async broadcast 
-         * 
-         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
-         */
-        void SetReceiveBroadcast (bool bBroadcastStatus);
-
         /**
          * @brief Broadcast a message to all threads
          * 
@@ -1146,49 +1054,10 @@ namespace thread
         size_t BroadcastMessage (const size_t messageReference, const Message message);
 
         /**
-         * @brief The default boradcast handler used to received the message
-         * 
-         * @param messageReference Works as the signaling
-         * @param message   Message structure with the message
-         *                  message is the payload
-         *                  tag is the meaning
-         */
-        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
-
-        /**
-         * @brief calculate the Topic ID for a given topic text
-         *
-         * @param pszTopic    Topic Text in C string
-         * @param nKeyLenght  Size, in bytes + zero terminated char
-         *
-         * @return uint32_t  The calculated topic ID
-         */
-        uint32_t GetTopicID (const char* pszTopic, size_t nKeyLenght);
-
-        /**
          * ------------------------------
          * SMART WAIT/NOTIFY  IMPLEMENTATION
          * ------------------------------
          */
-
-        /**
-         * @brief Set the Async Wait Handler Enable or disable
-         * 
-         * @param awaitStatus  async wait handler status to be set
-         */
-        void SetAsyncWaitHandler(bool awaitStatus);
-
-        /**
-         * @brief Is thread is marked as asynWait, all notify will call this functions
-         * 
-         * @param refVar    The pointer for the reference used as notifier
-         * @param nTag      The notification meaning
-         * 
-         * @return false if it is not subscribed, otherwise 0
-         * 
-         * @note if not implemented a default implementation will be used returning always zero
-         */
-        virtual bool AsyncWaitHander (size_t refVar, size_t nTag) noexcept;
 
         /**
          * @brief Sync with thread call for a wait (refVar,nTag)
@@ -1544,6 +1413,130 @@ namespace thread
 
             return bRet;
         }
+
+        /**
+         *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
+         */
+    private:
+
+        /**
+         * @brief Set the Default Parameters for constructors
+         *
+         */
+        void SetDefaultParameters ();
+
+        template<typename T> void SetWaitParammeters (T& refVar, size_t nTag, aSubTypes asubType = aSubTypes::wait)
+        {
+            m_TopicId = 0;
+            m_pLockId = (uint8_t*)&refVar;
+            m_aStatus = aTypes::wait;
+            m_aSubStatus = asubType;
+
+            m_lockMessage.tag = nTag;
+            m_lockMessage.message = 0;
+        }
+
+        template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
+        {
+            if (thr.m_aSubStatus == subType &&
+                thr.m_aStatus == aTypes::wait && 
+                thr.m_pLockId == (void*) &refVar &&
+                nTag == thr.m_lockMessage.tag)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
+        /**
+         * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  The size_t message to be sent
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SafeNotifier(size_t& nMessage, T& refVar, size_t nTag, aSubTypes subType, NotifyType notifyAll=NotifyType::one)
+        {
+            size_t nRet = 0;
+
+            for (auto& thr : *this)
+            {
+                if (IsNotificationEligible (thr, refVar, nTag, subType))
+                {
+                    thr.m_TopicId = 0;
+                    thr.m_aStatus = aTypes::now;
+                    thr.m_nTargetTime = 0;
+                    thr.m_pLockId = nullptr;
+
+                    thr.m_lockMessage.message = nMessage;
+                    thr.m_lockMessage.tag = nTag;
+
+                    nRet++;
+
+                    if (notifyAll == NotifyType::one)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return nRet;
+        }
+
+
+    /**
+     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
+     */
+    protected:
+
+        /**
+         * @brief Handler for the async notification
+         * 
+         * @param refVar    ref used for give it reason
+         * @param nTag 
+         * @return true 
+         * @return false 
+         */
+        virtual bool atomicx::AsyncWaitHander (size_t refVar, size_t nTag) noexcept
+        /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * ------------------------------
+         */
+
+        /**
+         * @brief Enable or Disable async broadcast 
+         * 
+         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
+         */
+        void SetReceiveBroadcast (bool bBroadcastStatus);
+
+        /**
+         * @brief The default broadcast handler used to received the message
+         * 
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         */
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
+
+        /**
+         * @brief calculate the Topic ID for a given topic text
+         *
+         * @param pszTopic    Topic Text in C string
+         * @param nKeyLenght  Size, in bytes + zero terminated char
+         *
+         * @return uint32_t  The calculated topic ID
+         */
+        uint32_t GetTopicID (const char* pszTopic, size_t nKeyLenght);
+
 
         /**
          * @brief Set the Stack Increase Pace object
