@@ -213,6 +213,11 @@ namespace thread
 
         if (pItem != nullptr) do
         {
+            if (pItem->m_aStatus == aTypes::stop)
+            {
+                continue;
+            }
+
             if (ms_pCurrent->m_nTargetTime == 0 && pItem->m_nTargetTime > 0)
             {
                 ms_pCurrent = pItem;
@@ -317,28 +322,28 @@ namespace thread
 
     bool atomicx::Yield(atomicx_time nSleep)
     {
-        m_LastUserExecTime = GetCurrentTick () - m_lastResumeUserTime;
+        ms_pCurrent->m_LastUserExecTime = GetCurrentTick () - ms_pCurrent->m_lastResumeUserTime;
 
-        if (m_aStatus == aTypes::running)
+        if (ms_pCurrent->m_aStatus == aTypes::running)
         {
-            m_aStatus = aTypes::sleep;
-            m_aSubStatus = aSubTypes::ok;
-            m_nTargetTime=Atomicx_GetTick() + (nSleep == ATOMICX_TIME_MAX ? m_nice : nSleep);
+            ms_pCurrent->m_aStatus = aTypes::sleep;
+            ms_pCurrent->m_aSubStatus = aSubTypes::ok;
+            ms_pCurrent->m_nTargetTime=Atomicx_GetTick() + (nSleep == ATOMICX_TIME_MAX ? ms_pCurrent->m_nice : nSleep);
         }
-        else if (m_aStatus == aTypes::wait)
+        else if (ms_pCurrent->m_aStatus == aTypes::wait)
         {
-            m_nTargetTime=nSleep > 0 ? nSleep + Atomicx_GetTick() : 0;
+            ms_pCurrent->m_nTargetTime=nSleep > 0 ? nSleep + Atomicx_GetTick() : 0;
         }
         else
         {
-            m_nTargetTime = (atomicx_time)~0;
+            ms_pCurrent->m_nTargetTime = (atomicx_time)~0;
         }
 
         volatile uint8_t nStackEnd=0;
         ms_pCurrent->m_pStaskEnd = &nStackEnd;
         ms_pCurrent->m_stacUsedkSize = static_cast<size_t>(ms_pCurrent->m_pStaskStart - ms_pCurrent->m_pStaskEnd + 1);
 
-        if (m_stacUsedkSize > m_stackSize || m_stack == nullptr)
+        if (ms_pCurrent->m_stacUsedkSize > ms_pCurrent->m_stackSize || ms_pCurrent->m_stack == nullptr)
         {
             /*
             * Controll the auto-stack memory
@@ -348,41 +353,41 @@ namespace thread
             *   to control errors
             */
 
-            if (m_flags.autoStack == true)
+            if (ms_pCurrent->m_flags.autoStack == true)
             {
-                if (m_stack != nullptr)
+                if (ms_pCurrent->m_stack != nullptr)
                 {
-                    free ((void*) m_stack);
+                    free ((void*) ms_pCurrent->m_stack);
                 }
 
-                if (m_stacUsedkSize > m_stackSize)
+                if (ms_pCurrent->m_stacUsedkSize > ms_pCurrent->m_stackSize)
                 {
-                    m_stackSize = m_stacUsedkSize + m_stackIncreasePace;
+                    ms_pCurrent->m_stackSize = ms_pCurrent->m_stacUsedkSize + ms_pCurrent->m_stackIncreasePace;
                 }
 
-                if ((m_stack = (volatile uint8_t*) malloc (m_stackSize)) == nullptr)
+                if ((ms_pCurrent->m_stack = (volatile uint8_t*) malloc (ms_pCurrent->m_stackSize)) == nullptr)
                 {
-                    m_aStatus = aTypes::stackOverflow;
+                    ms_pCurrent->m_aStatus = aTypes::stackOverflow;
                 }
             }
             else
             {
-                m_aStatus = aTypes::stackOverflow;
+                ms_pCurrent->m_aStatus = aTypes::stackOverflow;
             }
 
-            if (m_aStatus == aTypes::stackOverflow)
+            if (ms_pCurrent->m_aStatus == aTypes::stackOverflow)
             {
-                (void) StackOverflowHandler();
+                (void) ms_pCurrent->StackOverflowHandler();
                 abort();
             }
         }
 
-        if (m_aStatus != aTypes::stackOverflow && memcpy((void*)m_stack, (const void*) m_pStaskEnd, m_stacUsedkSize) != (void*) m_stack)
+        if (ms_pCurrent->m_aStatus != aTypes::stackOverflow && memcpy((void*)ms_pCurrent->m_stack, (const void*) ms_pCurrent->m_pStaskEnd, ms_pCurrent->m_stacUsedkSize) != (void*) ms_pCurrent->m_stack)
         {
             return false;
         }
 
-        if (setjmp(m_context) == 0)
+        if (setjmp(ms_pCurrent->m_context) == 0)
         {
             longjmp(ms_joinContext, 1);
         }
@@ -764,5 +769,28 @@ namespace thread
     void atomicx::BroadcastHandler (const size_t& messageReference, const Message& message)
     {
         (void) message; // to avoid unused variable
+    }
+
+    void atomicx::Stop ()
+    {
+        m_aStatus = aTypes::stop;
+        m_aSubStatus = aSubTypes::none;
+        m_nTargetTime = 0;
+
+        Yield();
+    }
+
+    void atomicx::Resume ()
+    {
+        m_aStatus = aTypes::now;
+        m_aSubStatus = aSubTypes::ok;
+        m_nTargetTime = 0;
+
+        Yield();        
+    }
+
+    bool atomicx::IsStopped ()
+    {
+        return  m_aStatus == aTypes::stop;
     }
 }

@@ -68,6 +68,7 @@ namespace thread
 
         enum class aSubTypes : uint8_t
         {
+            none=0,
             error=10,
             ok,
             look,
@@ -957,30 +958,6 @@ namespace thread
         atomicx(size_t nStackSize=0, int nStackIncreasePace=1);
 
         /**
-         * @brief The pure virtual function that runs the thread loop
-         *
-         * @note REQUIRED implementation and once it returns it will execute finish method
-         */
-        virtual void run(void) noexcept = 0;
-
-        /**
-         * @brief Handles the StackOverflow of the current thread
-         *
-         * @note REQUIRED
-         */
-        virtual void StackOverflowHandler(void) noexcept = 0;
-
-        /**
-         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
-         *
-         * @note if not implemented a default "empty" call is used instead
-         */
-        virtual void finish() noexcept
-        {
-            return;
-        }
-
-        /**
          * @brief Return if the current thread's stack memory is automatic
          */
         bool IsStackSelfManaged(void);
@@ -1032,6 +1009,89 @@ namespace thread
          */
         size_t GetThreadCount();
 
+        /**
+         * @brief Atop current thread context
+         */
+        void Stop ();
+
+        /**
+         * @brief Report if the current thread is stopped 
+         * 
+         * @return true if stopped otherwise false
+         */
+        bool IsStopped ();
+        
+        /**
+         * @brief If stooped resume current thread 
+         */
+        void Resume();
+
+        /**
+         * @brief Finish and detach the thread from the pool
+
+         * @return true successfully detached
+         */
+        bool Finish();
+
+    /**
+     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
+     */
+    protected:
+
+        /**
+         * @brief The pure virtual function that runs the thread loop
+         *
+         * @note REQUIRED implementation and once it returns it will execute finish method
+         */
+        virtual void run(void) noexcept = 0;
+
+        /**
+         * @brief Handles the StackOverflow of the current thread
+         *
+         * @note REQUIRED
+         */
+        virtual void StackOverflowHandler(void) noexcept = 0;
+
+        /**
+         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
+         *
+         * @note if not implemented a default "empty" call is used instead
+         */
+        virtual void finish() noexcept
+        {
+            return;
+        }
+
+        /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * ------------------------------
+         */
+
+        /**
+         * @brief Enable or Disable async broadcast 
+         * 
+         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
+         */
+        void SetReceiveBroadcast (bool bBroadcastStatus);
+
+        /**
+         * @brief The default broadcast handler used to received the message
+         * 
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         */
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
+
+        /**
+         * @brief Set the Stack Increase Pace object
+         *
+         * @param nIncreasePace The new stack increase pace value
+         */
+        void SetStackIncreasePace(size_t nIncreasePace);
+        
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */
@@ -1493,42 +1553,6 @@ namespace thread
 
             return bRet;
         }
-
-
-    /**
-     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
-     */
-    protected:
-
-        /**
-         * ------------------------------
-         * MESSAGE BROADCAST IMPLEMENTATION
-         * ------------------------------
-         */
-
-        /**
-         * @brief Enable or Disable async broadcast 
-         * 
-         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
-         */
-        void SetReceiveBroadcast (bool bBroadcastStatus);
-
-        /**
-         * @brief The default broadcast handler used to received the message
-         * 
-         * @param messageReference Works as the signaling
-         * @param message   Message structure with the message
-         *                  message is the payload
-         *                  tag is the meaning
-         */
-        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
-
-        /**
-         * @brief Set the Stack Increase Pace object
-         *
-         * @param nIncreasePace The new stack increase pace value
-         */
-        void SetStackIncreasePace(size_t nIncreasePace);
 
     private:
 

@@ -175,7 +175,26 @@ protected:
                 {
                     if (wtdItem.recoverCounter == 3)
                     {
-                        abort ("Maximum recovery time reached, restarting");
+                        if (wtdItem.isRequired)
+                        {
+                            abort ("Maximum recovery time reached, restarting");
+                        }
+                        else
+                        {
+                            atomicx* pthread = thread::atomicx::GetThread (wtdItem.nThreadId);
+
+                            if (pthread && pthread->IsStopped () == false)
+                            {
+                                pthread->Stop ();
+                            }
+                            else
+                            {
+                                // pthread->Resume ();
+                                // wtdItem.recoverCounter = 0;
+                                // wtdItem.nextAllarm.Set (wtdItem.allowedTime);
+                            }
+
+                        }
                     }
                     else
                     {
@@ -279,7 +298,7 @@ public:
     {
         SetNice(nNice);
 
-        Watchdog::instance.AttachThread (*this, 2000, true);
+        Watchdog::instance.AttachThread (*this, 2000, false);
     }
 
     const char* GetName () override
@@ -300,6 +319,7 @@ public:
     {
         do
         {
+            Serial.print ("Executiong: "); Serial.println (GetName ()); Serial.flush ();
             ListAllThreads ();
 
             if (Watchdog::instance.GetAllarmCounter (GetID()) == 3)
