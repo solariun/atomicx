@@ -155,7 +155,7 @@ protected:
         Serial.print ("Watchdog: ");
         Serial.print (GetCurrent()->GetID ());
         Serial.print (":");
-        Serial.print (abortMessage);
+        Serial.println (abortMessage);
         Serial.flush ();
 
         Serial.println (">>> RESETING\n\n");
@@ -301,7 +301,12 @@ public:
         do
         {
             ListAllThreads ();
-        } while (Yield());
+
+            if (Watchdog::instance.GetAllarmCounter (GetID()) == 3)
+            {
+                Watchdog::instance.Feed ();
+            }
+        } while (Yield(random (1000, 2000)));
     }
 
     void StackOverflowHandler(void) noexcept final
@@ -328,8 +333,6 @@ void ListAllThreads()
 
   Serial.println ("[THREAD]-----------------------------------------------");
 
-  Serial.println ("---------------------------------------------------------");
-
   for (auto& th : *(atomicx::GetCurrent()))
   {
       Serial.print (atomicx::GetCurrent() == &th ? "*  " : "   ");
@@ -352,7 +355,8 @@ void ListAllThreads()
       Serial.flush();
   }
 
-  Serial.println ("---------------------------------------------------------");
+  Serial.println ("");
+  
   Serial.flush();
 }
 
