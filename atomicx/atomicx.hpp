@@ -88,7 +88,15 @@ namespace thread
         class Timeout
         {
             public:
-                Timeout () = delete;
+
+                /**
+                 * @brief Default construct a new Timeout object
+                 *
+                 * @note    To decrease the amount of memory, Timeout does not save
+                 *          the start time.
+                 *          Special use case: if nTimeoutValue == 0, IsTimedout is always false.
+                 */
+                Timeout ();
 
                 /**
                  * @brief Construct a new Timeout object
@@ -819,9 +827,9 @@ namespace thread
 
         /**
          * @brief Get the Thread pointer from a object
-         * 
+         *
          * @param threadId  The thread ID reference
-         * 
+         *
          * @return atomicx* nullprt if not found otherwise the pointer to the thread
          */
         static atomicx* GetThread(size_t threadId);
@@ -1013,11 +1021,11 @@ namespace thread
 
         /**
          * @brief Return how many threads assigned
-         * 
+         *
          * @return size_t number of assigned threads
          */
         size_t GetThreadCount();
-        
+
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */
@@ -1043,7 +1051,7 @@ namespace thread
         template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
         {
             if (thr.m_aSubStatus == subType &&
-                thr.m_aStatus == aTypes::wait && 
+                thr.m_aStatus == aTypes::wait &&
                 thr.m_pLockId == (void*) &refVar &&
                 nTag == thr.m_lockMessage.tag)
             {
@@ -1052,7 +1060,7 @@ namespace thread
 
             return false;
         }
-        
+
         /**
          * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
          *
@@ -1127,27 +1135,27 @@ namespace thread
          */
 
         /**
-         * @brief Enable or Disable async broadcast 
-         * 
+         * @brief Enable or Disable async broadcast
+         *
          * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
          */
         void SetReceiveBroadcast (bool bBroadcastStatus);
 
         /**
          * @brief Broadcast a message to all threads
-         * 
+         *
          * @param messageReference Works as the signaling
          * @param message   Message structure with the message
          *                  message is the payload
          *                  tag is the meaning
-         * 
-         * @return size_t 
+         *
+         * @return size_t
          */
         size_t BroadcastMessage (const size_t messageReference, const Message message);
 
         /**
          * @brief The default boradcast handler used to received the message
-         * 
+         *
          * @param messageReference Works as the signaling
          * @param message   Message structure with the message
          *                  message is the payload
@@ -1173,19 +1181,19 @@ namespace thread
 
         /**
          * @brief Set the Async Wait Handler Enable or disable
-         * 
+         *
          * @param awaitStatus  async wait handler status to be set
          */
         void SetAsyncWaitHandler(bool awaitStatus);
 
         /**
          * @brief Is thread is marked as asynWait, all notify will call this functions
-         * 
+         *
          * @param refVar    The pointer for the reference used as notifier
          * @param nTag      The notification meaning
-         * 
+         *
          * @return false if it is not subscribed, otherwise 0
-         * 
+         *
          * @note if not implemented a default implementation will be used returning always zero
          */
         virtual bool AsyncWaitHander (size_t refVar, size_t nTag) noexcept;
@@ -1278,7 +1286,7 @@ namespace thread
             {
                 return true;
             }
-            
+
             return false;
         }
 

@@ -133,6 +133,11 @@ namespace thread
         return bAcquired;
     }
 
+    atomicx::Timeout::Timeout () : m_timeoutValue (0)
+    {
+        Set (0);
+    }
+
     atomicx::Timeout::Timeout (atomicx_time nTimeoutValue) : m_timeoutValue (0)
     {
         Set (nTimeoutValue);
@@ -389,10 +394,10 @@ namespace thread
             }
 
             ms_pCurrent->m_aStatus = aTypes::running;
-        
+
             ms_pCurrent->m_lastResumeUserTime = Atomicx_GetTick ();
         }
-        
+
         return true;
     }
 
@@ -767,5 +772,5 @@ namespace thread
     void atomicx::BroadcastHandler (const size_t& messageReference, const Message& message)
     {
         (void) message; // to avoid unused variable
-    }    
+    }
 }
