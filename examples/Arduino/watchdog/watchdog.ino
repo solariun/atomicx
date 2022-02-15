@@ -185,15 +185,8 @@ protected:
 
                             if (pthread && pthread->IsStopped () == false)
                             {
-                                pthread->Stop ();
+                                pthread->Restart ();
                             }
-                            else
-                            {
-                                // pthread->Resume ();
-                                // wtdItem.recoverCounter = 0;
-                                // wtdItem.nextAllarm.Set (wtdItem.allowedTime);
-                            }
-
                         }
                     }
                     else
@@ -315,8 +308,13 @@ public:
         Watchdog::instance.DetachThread ();
     }
 
+protected:
+
     void run() noexcept override
     {
+        Serial.println ("Starting staving prone thread....");
+        Serial.flush ();
+
         do
         {
             Serial.print ("Executiong: "); Serial.println (GetName ()); Serial.flush ();
@@ -327,6 +325,14 @@ public:
                 Watchdog::instance.Feed ();
             }
         } while (Yield(random (1000, 2000)));
+    }
+
+    void finish () noexcept override
+    {
+        Serial.println (">>>>>>>Detroying thread...");
+        Serial.flush ();
+
+        delay (5000);
     }
 
     void StackOverflowHandler(void) noexcept final

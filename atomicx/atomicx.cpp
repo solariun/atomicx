@@ -456,29 +456,62 @@ namespace thread
         }
     }
 
-    void atomicx::SetDefaultParameters ()
+    void atomicx::SetDefaultInitializations ()
     {
         m_flags.autoStack = false;
         m_flags.dynamicNice = false;
+        m_flags.attached = true;
+        
+        AddThisThread();
     }
 
     atomicx::atomicx(size_t nStackSize, int nStackIncreasePace) : m_context{}, m_stackSize(nStackSize), m_stackIncreasePace(nStackIncreasePace), m_stack(nullptr)
     {
-        SetDefaultParameters ();
+        SetDefaultInitializations ();
 
         m_flags.autoStack = true;
 
-        AddThisThread();
+    }
+
+    void atomicx::DestroyThread()
+    {
+        if (m_flags.attached)
+        {
+            RemoveThisThread();
+
+            if (m_flags.autoStack == true && m_stack != nullptr)
+            {
+                free((void*)m_stack);
+            }
+
+            m_flags.attached = false;
+        }
+    }
+
+    void atomicx::finish()
+    {
+        return;
+    }
+
+    void atomicx::Detach()
+    {
+        this->finish ();
+        DestroyThread ();
+
+        Yield ();
+    }
+
+    void atomicx::Restart()
+    {
+       this->finish ();
+        m_aStatus = aTypes::start;
+
+        Yield ();
     }
 
     atomicx::~atomicx()
     {
-        RemoveThisThread();
-
-        if (m_flags.autoStack == true && m_stack != nullptr)
-        {
-            free((void*)m_stack);
-        }
+        DestroyThread ();
     }
 
     const char* atomicx::GetName(void)

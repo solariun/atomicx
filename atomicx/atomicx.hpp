@@ -831,6 +831,13 @@ namespace thread
          */
         static atomicx* GetCurrent();
 
+        /**
+         * @brief Construct a new atomicx object and set initial auto stack and increase pace
+         *
+         * @param nStackSize            Initial Size of the stack
+         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
+         */
+        atomicx(size_t nStackSize=0, int nStackIncreasePace=1);
 
         /**
          * @brief Get the Thread pointer from a object
@@ -944,18 +951,10 @@ namespace thread
          */
         template<typename T, size_t N> atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
         {
-           SetDefaultParameters();
+           SetDefaultInitializations();
 
             AddThisThread();
         }
-
-        /**
-         * @brief Construct a new atomicx object and set initial auto stack and increase pace
-         *
-         * @param nStackSize            Initial Size of the stack
-         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
-         */
-        atomicx(size_t nStackSize=0, int nStackIncreasePace=1);
 
         /**
          * @brief Return if the current thread's stack memory is automatic
@@ -1020,7 +1019,7 @@ namespace thread
          * @return true if stopped otherwise false
          */
         bool IsStopped ();
-        
+
         /**
          * @brief If stooped resume current thread 
          */
@@ -1032,6 +1031,20 @@ namespace thread
          * @return true successfully detached
          */
         bool Finish();
+
+        /**
+         * @brief Detach current thread from the thread controller
+         * 
+         * @return true if successful detached, otherwise zero
+         */
+        void Detach();
+
+        /**
+         * @brief Mark thread to be restarted, all ongoing procedures will be dropped, finish is also called
+         * 
+         * @return true if successful mask to restart, otherwise zero
+         */
+        void Restart();
 
     /**
      *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
@@ -1057,10 +1070,7 @@ namespace thread
          *
          * @note if not implemented a default "empty" call is used instead
          */
-        virtual void finish() noexcept
-        {
-            return;
-        }
+        virtual void finish() noexcept;
 
         /**
          * ------------------------------
@@ -1101,7 +1111,7 @@ namespace thread
          * @brief Set the Default Parameters for constructors
          *
          */
-        void SetDefaultParameters ();
+        void SetDefaultInitializations ();
 
         template<typename T> void SetWaitParammeters (T& refVar, size_t nTag, aSubTypes asubType = aSubTypes::wait)
         {
@@ -1567,6 +1577,11 @@ namespace thread
         void RemoveThisThread();
 
         /**
+         * @brief Internally used to unload thread parameters and detach from the static list
+         */
+        void DestroyThread();
+
+        /**
          * @brief CRC16 used to compose a multi uint32_t for Topic ID
          *
          * @param pData     Data bytes to be used on calculation
@@ -1619,6 +1634,7 @@ namespace thread
             bool autoStack : 1;
             bool dynamicNice : 1;
             bool broadcast : 1;
+            bool attached :1;
         } m_flags = {0,0,0};
     };
 }
