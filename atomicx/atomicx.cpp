@@ -187,7 +187,7 @@ namespace thread
     iterator<atomicx> atomicx::begin() { return iterator<atomicx>(ms_paFirst); }
     iterator<atomicx> atomicx::end()   { return iterator<atomicx>(nullptr); }
 
-    atomicx* atomicx::nextThreadPtr (void)
+    atomicx* atomicx::operator++ (void)
     {
         return m_paNext;
     }

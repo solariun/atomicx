@@ -64,9 +64,9 @@ public:
             Serial.print ("Executing: "); Serial.println (GetName ()); Serial.flush ();
             ListAllThreads ();
 
-            if (Watchdog::instance.GetAllarmCounter (GetID()) == 3)
+            if (Watchdog::GetInstance().GetAllarmCounter (GetID()) == 3)
             {
-                Watchdog::instance.Feed ();
+                Watchdog::GetInstance().Feed ();
             }
         } while (Yield(random (1000, 2000)));
     }
@@ -126,9 +126,9 @@ protected:
             Serial.print ("Executing: "); Serial.println (GetName ()); Serial.flush ();
             ListAllThreads ();
 
-            if (Watchdog::instance.GetAllarmCounter (GetID()) == 3)
+            if (Watchdog::GetInstance().GetAllarmCounter (GetID()) == 3)
             {
-                Watchdog::instance.Feed ();
+                Watchdog::GetInstance().Feed ();
             }
         } while (Yield(random (1000, 2000)));
     }
@@ -182,7 +182,7 @@ void ListAllThreads()
       Serial.print (", Status: ");
       Serial.print (th.GetStatus());
       Serial.print (", WTD Allarm: ");
-      Serial.println (Watchdog::instance.GetAllarmCounter (th.GetID()));
+      Serial.println (Watchdog::GetInstance().GetAllarmCounter (th.GetID()));
       Serial.flush();
   }
 
@@ -201,11 +201,15 @@ void setup()
     delay (2000);
 
     Serial.println ("Starting UP-----------------------------------------------\n");
+    Serial.flush ();
 
     ThreadAllarm allarm1 (1000);
     ThreadAllarm2 allarm2 (1000);
 
-    ListAllThreads ();
+    //ListAllThreads ();
+
+    Serial.println ("running kernel\n");
+    Serial.flush ();
 
     atomicx::Start();
 

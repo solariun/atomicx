@@ -31,7 +31,7 @@
     SOFTWARE.
 */
 
-#include "TerminalCommand.hpp"
+#include "TerminalCommands.hpp"
 #include "TerminalInterface.hpp"
 
 // Static initializations

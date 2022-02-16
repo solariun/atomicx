@@ -95,7 +95,7 @@ namespace thread
         {
             if (m_ptr != nullptr)
             {
-                m_ptr = m_ptr->nextThreadPtr ();
+                m_ptr = m_ptr->operator++ ();
             }
             
             return *this;
@@ -108,7 +108,7 @@ namespace thread
         friend bool operator!= (const iterator& a, const iterator& b){ return a.m_ptr != b.m_ptr;};
 
     private:
-        T* m_ptr;
+        T* m_ptr = nullptr;
     };
 
     /**
@@ -130,7 +130,7 @@ namespace thread
             return (T&)*this;
         }
 
-        T* nextThreadPtr (void)
+        T* operator++ (void)
         {
             return next;
         }
@@ -1220,7 +1220,170 @@ namespace thread
          * 
          * @return atomicx*  if next thread return pointer otherwise nullptr
          */
-        atomicx* nextThreadPtr (void);
+        atomicx* operator++ (void);
+
+   /**
+         * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  The size_t message to be sent
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SafeNotify(size_t& nMessage, T& refVar, size_t nTag,  NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        {
+            return SafeNotifier(nMessage, refVar, nTag, asubType, notifyAll);
+        }
+
+        /**
+         * @brief Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  The size_t message to be sent
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t Notify(size_t& nMessage, T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        {
+            size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        template<typename T> size_t Notify(size_t&& nMessage, T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        {
+            size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        /**
+         * @brief SYNC Waits for at least one Wait call for a given reference pointer along with a message and trigger context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  The size_t message to be sent
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param waitForWaitings default=0 (waiting for Waiting calls) othersize wait for Wait commands compatible with the paramenters (Sync call).
+         * @param notifyAll  default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SyncNotify(size_t& nMessage, T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        {
+            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            {
+                return 0;
+            }
+
+            size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        template<typename T> size_t SyncNotify(size_t&& nMessage, T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        {
+            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            {
+                return 0;
+            }
+
+            size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        /**
+         * @brief Safely notify all Waits from a specific reference pointer without triggering context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SafeNotify(T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        {
+             size_t message=0;
+             return SafeNotifier (message, refVar, nTag, asubType, notifyAll);
+        }
+
+        /**
+         * @brief SYNC Waits for at least one Wait call for a given reference pointer and trigger context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param waitForWaitings default=0 (waiting for Waiting calls) othersize wait for Wait commands compatible with the paramenters (Sync call).
+         * @param notifyAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SyncNotify(T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        {
+            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            {
+                return 0;
+            }
+
+            size_t bRet = SafeNotify(refVar, nTag, notifyAll, asubType);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
+
+        /**
+         * @brief Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t Notify(T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        {
+            size_t bRet = SafeNotify(refVar, nTag, notifyAll, asubType);
+
+            if (bRet) Yield(0);
+
+            return bRet;
+        }
 
     /**
      *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
@@ -1277,29 +1440,8 @@ namespace thread
          * @param nIncreasePace The new stack increase pace value
          */
         void SetStackIncreasePace(size_t nIncreasePace);
-        
-        /**
-         *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
-         */
-    private:
 
-        /**
-         * @brief Set the Default Parameters for constructors
-         *
-         */
-        void SetDefaultInitializations ();
-
-        template<typename T> void SetWaitParammeters (T& refVar, size_t nTag, aSubTypes asubType = aSubTypes::wait)
-        {
-            m_pLockId = (uint8_t*)&refVar;
-            m_aStatus = aTypes::wait;
-            m_aSubStatus = asubType;
-
-            m_lockMessage.tag = nTag;
-            m_lockMessage.message = 0;
-        }
-
-        template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
+       template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
         {
             if (thr.m_aSubStatus == subType &&
                 thr.m_aStatus == aTypes::wait &&
@@ -1310,45 +1452,6 @@ namespace thread
             }
 
             return false;
-        }
-
-        /**
-         * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
-         *
-         * @tparam T        Type of the reference pointer
-         * @param nMessage  The size_t message to be sent
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification
-         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
-         *                  refVar waiting thread will be notified.
-         *
-         * @return true     if at least one got notified, otherwise false.
-         */
-        template<typename T> size_t SafeNotifier(size_t& nMessage, T& refVar, size_t nTag, aSubTypes subType, NotifyType notifyAll=NotifyType::one)
-        {
-            size_t nRet = 0;
-
-            for (auto& thr : *this)
-            {
-                if (IsNotificationEligible (thr, refVar, nTag, subType))
-                {
-                    thr.m_aStatus = aTypes::now;
-                    thr.m_nTargetTime = 0;
-                    thr.m_pLockId = nullptr;
-
-                    thr.m_lockMessage.message = nMessage;
-                    thr.m_lockMessage.tag = nTag;
-
-                    nRet++;
-
-                    if (notifyAll == NotifyType::one)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return nRet;
         }
 
         /**
@@ -1576,6 +1679,11 @@ namespace thread
 
             return bRet;
         }
+        
+        /**
+         *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
+         */
+    private:
 
         /**
          * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
@@ -1583,164 +1691,54 @@ namespace thread
          * @tparam T        Type of the reference pointer
          * @param nMessage  The size_t message to be sent
          * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
+         * @param nTag      The size_t tag that will give meaning to the notification
          * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t SafeNotify(size_t& nMessage, T& refVar, size_t nTag,  NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t SafeNotifier(size_t& nMessage, T& refVar, size_t nTag, aSubTypes subType, NotifyType notifyAll=NotifyType::one)
         {
-            return SafeNotifier(nMessage, refVar, nTag, asubType, notifyAll);
-        }
+            size_t nRet = 0;
 
-        /**
-         * @brief Notify all Waits from a specific reference pointer along with a message and trigger context change if at least one wait thread got notified
-         *
-         * @tparam T        Type of the reference pointer
-         * @param nMessage  The size_t message to be sent
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
-         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
-         *                  refVar waiting thread will be notified.
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         *
-         * @return true     if at least one got notified, otherwise false.
-         */
-        template<typename T> size_t Notify(size_t& nMessage, T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
-        {
-            size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
-
-            if (bRet) Yield(0);
-
-            return bRet;
-        }
-
-        template<typename T> size_t Notify(size_t&& nMessage, T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
-        {
-            size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
-
-            if (bRet) Yield(0);
-
-            return bRet;
-        }
-
-        /**
-         * @brief SYNC Waits for at least one Wait call for a given reference pointer along with a message and trigger context change
-         *
-         * @tparam T        Type of the reference pointer
-         * @param nMessage  The size_t message to be sent
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
-         * @param waitForWaitings default=0 (waiting for Waiting calls) othersize wait for Wait commands compatible with the paramenters (Sync call).
-         * @param notifyAll  default = false, and only the fist available refVar Waiting thread will be notified, if true all available
-         *                  refVar waiting thread will be notified.
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         *
-         * @return true     if at least one got notified, otherwise false.
-         */
-        template<typename T> size_t SyncNotify(size_t& nMessage, T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
-        {
-            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
+            for (auto& thr : *this)
             {
-                return 0;
+                if (IsNotificationEligible (thr, refVar, nTag, subType))
+                {
+                    thr.m_aStatus = aTypes::now;
+                    thr.m_nTargetTime = 0;
+                    thr.m_pLockId = nullptr;
+
+                    thr.m_lockMessage.message = nMessage;
+                    thr.m_lockMessage.tag = nTag;
+
+                    nRet++;
+
+                    if (notifyAll == NotifyType::one)
+                    {
+                        break;
+                    }
+                }
             }
 
-            size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
-
-            if (bRet) Yield(0);
-
-            return bRet;
-        }
-
-        template<typename T> size_t SyncNotify(size_t&& nMessage, T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
-        {
-            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
-            {
-                return 0;
-            }
-
-            size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
-
-            if (bRet) Yield(0);
-
-            return bRet;
+            return nRet;
         }
 
         /**
-         * @brief Safely notify all Waits from a specific reference pointer without triggering context change
+         * @brief Set the Default Parameters for constructors
          *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
-         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
-         *                  refVar waiting thread will be notified.
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         *
-         * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t SafeNotify(T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        void SetDefaultInitializations ();
+
+        template<typename T> void SetWaitParammeters (T& refVar, size_t nTag, aSubTypes asubType = aSubTypes::wait)
         {
-             size_t message=0;
-             return SafeNotifier (message, refVar, nTag, asubType, notifyAll);
+            m_pLockId = (uint8_t*)&refVar;
+            m_aStatus = aTypes::wait;
+            m_aSubStatus = asubType;
+
+            m_lockMessage.tag = nTag;
+            m_lockMessage.message = 0;
         }
-
-        /**
-         * @brief SYNC Waits for at least one Wait call for a given reference pointer and trigger context change
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
-         * @param waitForWaitings default=0 (waiting for Waiting calls) othersize wait for Wait commands compatible with the paramenters (Sync call).
-         * @param notifyAll      default = false, and only the fist available refVar Waiting thread will be notified, if true all available
-         *                  refVar waiting thread will be notified.
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         *
-         * @return true     if at least one got notified, otherwise false.
-         */
-        template<typename T> size_t SyncNotify(T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
-        {
-            if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
-            {
-                return 0;
-            }
-
-            size_t bRet = SafeNotify(refVar, nTag, notifyAll, asubType);
-
-            if (bRet) Yield(0);
-
-            return bRet;
-        }
-
-        /**
-         * @brief Notify all Waits from a specific reference pointer and trigger context change if at least one wait thread got notified
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification, if nTag == 0 means notify all refVar regardless
-         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
-         *                  refVar waiting thread will be notified.
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         *
-         * @return true     if at least one got notified, otherwise false.
-         */
-        template<typename T> size_t Notify(T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
-        {
-            size_t bRet = SafeNotify(refVar, nTag, notifyAll, asubType);
-
-            if (bRet) Yield(0);
-
-            return bRet;
-        }
-
-    private:
 
         /**
          * @brief Add the current thread to the global thread list

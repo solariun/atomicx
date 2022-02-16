@@ -44,7 +44,7 @@ public:
         uint8_t recoverCounter : 2;
     };
 
-    static Watchdog instance;
+    static Watchdog& GetInstance();
 
     const char* GetName () override;
 

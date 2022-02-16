@@ -11,9 +11,6 @@
 
 #include "watchdog.hpp"
 
-// Initialize the static instance from Watchdog
-Watchdog Watchdog::instance;
-
 Watchdog::Item::Item (atomicx& thread, atomicx_time allowedTime, bool isCritical):
     nThreadId (&thread), 
     nextAllarm (),
@@ -22,12 +19,18 @@ Watchdog::Item::Item (atomicx& thread, atomicx_time allowedTime, bool isCritical
     recoverCounter(0)            
 {
     this->nextAllarm.Set (allowedTime);
-    Watchdog::instance.AttachThread (*this);
+    Watchdog::GetInstance().AttachThread (*this);
 }
 
 Watchdog::Item::~Item ()
 {
-    Watchdog::instance.DetachThread (*this);
+    Watchdog::GetInstance().DetachThread (*this);
+}
+
+Watchdog& Watchdog::GetInstance()
+{
+    static Watchdog instance;
+    return instance;
 }
 
 const char* Watchdog::GetName ()
@@ -40,6 +43,9 @@ Watchdog::~Watchdog()
     Serial.print("Deleting Consumer: ");
     Serial.print (", ID: ");
     Serial.println ((size_t) this);
+    Serial.flush ();
+
+    delay (200);
 }
 
 uint8_t Watchdog::GetAllarmCounter (size_t threadId)
