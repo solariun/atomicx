@@ -8,6 +8,8 @@
 #ifndef atomic_hpp
 #define atomic_hpp
 
+#include <stdio.h>
+#include <unistd.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <setjmp.h>
@@ -23,6 +25,18 @@ using atomicx_time = uint32_t;
 extern "C"
 {
     extern void yield(void);
+}
+
+/**
+ * @brief Calculate the stack size based on MCU channel size 8, 16, 32, 64 bits multiples
+ * 
+ * @param units  Number of units
+ * 
+ * @return  size_t  return units * (MCU channel size)
+ */
+constexpr size_t CALCSTACKSIZE(size_t units)
+{
+    return units * sizeof (size_t);
 }
 
 /**
@@ -44,6 +58,192 @@ extern void Atomicx_SleepTick(atomicx_time nSleep);
 
 namespace thread
 {
+    /**
+     * @brief General purpose iterator facility
+     * 
+     * @tparam T 
+     */
+    template <typename T> class iterator
+    {
+    public:
+        iterator() = delete;
+
+        /**
+         * @brief Type based constructor
+         *
+         * @param ptr Type pointer to iterate
+         */
+        iterator(T*  ptr) : m_ptr(ptr)
+        {}
+
+        /*
+        * Access operator
+        */
+        T& operator*()
+        {
+            return *m_ptr;
+        }
+        T* operator->()
+        {
+            return &m_ptr;
+        }
+
+        /*
+        * Movement operator
+        */
+        iterator& operator++()
+        {
+            if (m_ptr != nullptr)
+            {
+                m_ptr = m_ptr->nextThreadPtr ();
+            }
+            
+            return *this;
+        }
+
+        /*
+        * Binary operators
+        */
+        friend bool operator== (const iterator& a, const iterator& b){ return a.m_ptr == b.m_ptr;};
+        friend bool operator!= (const iterator& a, const iterator& b){ return a.m_ptr != b.m_ptr;};
+
+    private:
+        T* m_ptr;
+    };
+
+    /**
+     * @brief Link Item to turn any object attachable to LinkList
+     * 
+     * @tparam T    Type to be managed
+     */
+    template<class T>class LinkItem
+    {
+    public:
+
+        /**
+         * @brief Easy way to have access to the item object
+         * 
+         * @return T&   Referece to the item object
+         */
+        T& operator()()
+        {
+            return (T&)*this;
+        }
+
+        T* nextThreadPtr (void)
+        {
+            return next;
+        }
+    private:
+        template<class U> friend class LinkList;
+        template <typename U> friend class iterator;
+
+        LinkItem<T>* next = nullptr;
+        LinkItem<T>* prev = nullptr;
+    };
+
+    /**
+     * @brief List of attachable object by extending LinkItem
+     * 
+     * @tparam T    Type of the object
+     * 
+     * @note    Note that this does not create memory, it uses next/prev added to the object 
+     *          by extending the object to LinkItem and manages it life cycle, is automatically
+     *          inserted and deleted on instantiation and object destruction.
+     */
+    template<class T>class LinkList
+    {
+    public:
+
+        /**
+         * @brief Attach a LinkItem enabled object to the list
+         * 
+         * @param listItem  The object
+         * 
+         * @return true if it was successfull attached
+         */
+        bool AttachBack(LinkItem<T>& listItem)
+        {
+            if (first == nullptr)
+            {
+                first = &listItem;
+                last = first;
+            }
+            else
+            {
+                listItem.prev = last;
+                last->next = &listItem;
+                last = &listItem;
+            }
+
+            return true;
+        }
+
+        /**
+         * @brief Detach a specifc LinkItem from the managed list
+         * 
+         * @param listItem  LinkIntem enabled object to be deleted
+         * 
+         * @return true     if successfull detached
+         */
+        bool Detach(LinkItem<T>& listItem)
+        {
+            if (listItem.next == nullptr && listItem.prev == nullptr)
+            {
+                first = nullptr;
+                listItem.prev = nullptr;
+                current = nullptr;
+            }
+            else if (listItem.prev == nullptr)
+            {
+                listItem.next->prev = nullptr;
+                first = listItem.next;
+                current = first;
+            }
+            else if (listItem.next == nullptr)
+            {
+                listItem.prev->next = nullptr;
+                last = listItem.prev;
+                current = last;
+            }
+            else
+            {
+                listItem.prev->next = listItem.next;
+                listItem.next->prev = listItem.prev;
+                current = listItem.next->prev;
+            }
+
+            return true;
+        }
+        
+        /**
+         * @brief thread::iterator helper for signaling beginning
+         * 
+         * @return iterator<LinkItem<T>>  the first item
+         */
+        iterator<LinkItem<T>> begin()
+        {
+            return iterator<LinkItem<T>>(first);
+        }
+
+        /**
+         * @brief thread::iterator helper for signaling ending
+         * 
+         * @return iterator<LinkItem<T>>  the final of the list
+         */
+        iterator<LinkItem<T>> end()
+        {
+            return iterator<LinkItem<T>>(nullptr);
+        }
+
+    private:
+        template <typename U> friend class iterator;
+
+        LinkItem<T>* current=nullptr;
+        LinkItem<T>* first=nullptr;
+        LinkItem<T>* last=nullptr;
+    };
+
     class atomicx
     {
     public:
@@ -152,57 +352,20 @@ namespace thread
             private:
                 atomicx_time m_timeoutValue = 0;
         };
-        /**
-         * ------------------------------
-         * ITERATOR FOR THREAD LISTING
-         * ------------------------------
-         */
-        class aiterator
-        {
-        public:
-            aiterator() = delete;
-
-            /**
-             * @brief atomicx based constructor
-             *
-             * @param ptr atomicx pointer to iterate
-             */
-            aiterator(atomicx* ptr);
-
-            /*
-             * Access operator
-             */
-            atomicx& operator*() const;
-            atomicx* operator->();
-
-            /*
-             * Movement operator
-             */
-            aiterator& operator++();
-
-            /*
-             * Binary operators
-             */
-            friend bool operator== (const aiterator& a, const aiterator& b){ return a.m_ptr == b.m_ptr;};
-            friend bool operator!= (const aiterator& a, const aiterator& b){ return a.m_ptr != b.m_ptr;};
-
-        private:
-            atomicx* m_ptr;
-        };
 
         /**
          * @brief Get the beggining of the list
          *
-         * @return aiterator
+         * @return iterator<atomicx>
          */
-        aiterator begin(void);
+        iterator<atomicx> begin(void);
 
         /**
          * @brief Get the end of the list
          *
-         * @return aiterator
+         * @return iterator<atomicx>
          */
-        aiterator end(void);
+        iterator<atomicx> end(void);
 
         /**
          * ------------------------------
@@ -849,6 +1012,13 @@ namespace thread
         static atomicx* GetThread(size_t threadId);
 
         /**
+         * @brief Get the current Thread reference object
+         * 
+         * @return atomicx&     Current thread reference object
+         */
+        atomicx& GetThread (void);
+        
+        /**
          * @brief Once it is call the process blocks execution and start all threads
          *
          * @return false if it was destried by dead lock (all threads locked)
@@ -861,6 +1031,7 @@ namespace thread
          * @return size_t  Thread ID number
          */
         size_t GetID(void);
+
 
         /**
          * @brief Get the Max Stack Size for the thread
@@ -952,8 +1123,6 @@ namespace thread
         template<typename T, size_t N> atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
         {
            SetDefaultInitializations();
-
-            AddThisThread();
         }
 
         /**
@@ -1045,6 +1214,13 @@ namespace thread
          * @return true if successful mask to restart, otherwise zero
          */
         void Restart();
+
+        /**
+         * @brief Return the pointer for the next thread
+         * 
+         * @return atomicx*  if next thread return pointer otherwise nullptr
+         */
+        atomicx* nextThreadPtr (void);
 
     /**
      *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
@@ -1635,7 +1811,7 @@ namespace thread
             bool dynamicNice : 1;
             bool broadcast : 1;
             bool attached :1;
-        } m_flags = {0,0,0};
+        } m_flags = {0,0,0,0};
     };
 }
 

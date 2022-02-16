@@ -165,27 +165,32 @@ namespace thread
         return startTime - GetRemaining ();
     }
 
-    atomicx::aiterator::aiterator(atomicx* ptr) : m_ptr(ptr)
-    {}
+    // atomicx::aiterator::aiterator(atomicx* ptr) : m_ptr(ptr)
+    // {}
 
-    atomicx& atomicx::aiterator::operator*() const
+    // atomicx& atomicx::aiterator::operator*() const
+    // {
+    //     return *m_ptr;
+    // }
+
+    // atomicx* atomicx::aiterator::operator->()
+    // {
+    //     return m_ptr;
+    // }
+
+    // atomicx::aiterator& atomicx::aiterator::operator++()
+    // {
+    //     if (m_ptr != nullptr) m_ptr = m_ptr->m_paNext;
+    //     return *this;
+    // }
+
+    iterator<atomicx> atomicx::begin() { return iterator<atomicx>(ms_paFirst); }
+    iterator<atomicx> atomicx::end()   { return iterator<atomicx>(nullptr); }
+
+    atomicx* atomicx::nextThreadPtr (void)
     {
-        return *m_ptr;
+        return m_paNext;
     }
-
-    atomicx* atomicx::aiterator::operator->()
-    {
-        return m_ptr;
-    }
-
-    atomicx::aiterator& atomicx::aiterator::operator++()
-    {
-        if (m_ptr != nullptr) m_ptr = m_ptr->m_paNext;
-        return *this;
-    }
-
-    atomicx::aiterator atomicx::begin() { return aiterator(ms_paFirst); }
-    atomicx::aiterator atomicx::end()   { return aiterator(nullptr); }
 
     atomicx* atomicx::GetCurrent()
     {
@@ -205,6 +210,38 @@ namespace thread
             ms_paLast->m_paNext = this;
             ms_paLast = this;
         }
+
+        printf ("ADDING: %zX: prev: %zX, Next: %zX\n\n", (size_t) this, (size_t) m_paPrev, (size_t) m_paNext);
+    }
+
+    void atomicx::RemoveThisThread()
+    {
+        if (m_paNext == nullptr && m_paPrev == nullptr)
+        {
+            ms_paFirst = nullptr;
+            m_paPrev = nullptr;
+            ms_pCurrent = nullptr;
+        }
+        else if (m_paPrev == nullptr)
+        {
+            m_paNext->m_paPrev = nullptr;
+            ms_paFirst = m_paNext;
+            ms_pCurrent = ms_paFirst;
+        }
+        else if (m_paNext == nullptr)
+        {
+            m_paPrev->m_paNext = nullptr;
+            ms_paLast = m_paPrev;
+            ms_pCurrent = ms_paFirst;
+        }
+        else
+        {
+            m_paPrev->m_paNext = m_paNext;
+            m_paNext->m_paPrev = m_paPrev;
+            ms_pCurrent = m_paNext->m_paPrev;
+        }
+
+        printf ("REMOVING: %zX: prev: %zX, Next: %zX\n\n", (size_t) this, (size_t) m_paPrev, (size_t) m_paNext);
     }
 
     bool atomicx::SelectNextThread()
@@ -428,38 +465,11 @@ namespace thread
         return m_stacUsedkSize;
     }
 
-    void atomicx::RemoveThisThread()
-    {
-        if (m_paNext == nullptr && m_paPrev == nullptr)
-        {
-            ms_paFirst = nullptr;
-            m_paPrev = nullptr;
-            ms_pCurrent = nullptr;
-        }
-        else if (m_paPrev == nullptr)
-        {
-            m_paNext->m_paPrev = nullptr;
-            ms_paFirst = m_paNext;
-            ms_pCurrent = ms_paFirst;
-        }
-        else if (m_paNext == nullptr)
-        {
-            m_paPrev->m_paNext = nullptr;
-            ms_paLast = m_paPrev;
-            ms_pCurrent = ms_paFirst;
-        }
-        else
-        {
-            m_paPrev->m_paNext = m_paNext;
-            m_paNext->m_paPrev = m_paPrev;
-            ms_pCurrent = m_paNext->m_paPrev;
-        }
-    }
-
     void atomicx::SetDefaultInitializations ()
     {
         m_flags.autoStack = false;
         m_flags.dynamicNice = false;
+        m_flags.broadcast = false;
         m_flags.attached = true;
         
         AddThisThread();
@@ -488,7 +498,7 @@ namespace thread
         }
     }
 
-    void atomicx::finish()
+    void atomicx::finish() noexcept
     {
         return;
     }
@@ -765,6 +775,11 @@ namespace thread
         return nullptr;
     }
 
+    atomicx& atomicx::GetThread (void)
+    {
+        return *this;
+    }
+
     size_t  atomicx::GetThreadCount()
     {
         size_t nCounter=0;
@@ -801,6 +816,7 @@ namespace thread
 
     void atomicx::BroadcastHandler (const size_t& messageReference, const Message& message)
     {
+        (void) messageReference; // to avoid unused variable
         (void) message; // to avoid unused variable
     }
 
@@ -826,4 +842,5 @@ namespace thread
     {
         return  m_aStatus == aTypes::stop;
     }
+
 }
