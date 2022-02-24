@@ -35,15 +35,8 @@
 #define __DOTMATRIX_H__
 
 #include <ESP8266WiFi.h>
+#include <GDBStub.h>
 
-// Designed for NodeMCU ESP8266
-//################# DISPLAY CONNECTIONS ################
-// LED Matrix Pin -> ESP8266 Pin
-// Vcc            -> 3v  (3V on NodeMCU 3V3 on WEMOS)
-// Gnd            -> Gnd (G on NodeMCU)
-// DIN            -> D7  (Same Pin for WEMOS)
-// CS             -> D4  (Same Pin for WEMOS)
-// CLK            -> D5  (Same Pin for WEMOS)
 
 #include "Arduino.h"
 #include "user_interface.h"
@@ -54,10 +47,12 @@
 
 #include <Wire.h>
 #include <string>
+#include <sstream>
 
 #include "utils.hpp"
 #include "TextScroller.hpp"
 #include "TerminalInterface.hpp"
+#include "Listner.hpp"
 
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x < y ? x : y)
@@ -83,10 +78,13 @@ void Atomicx_SleepTick(atomicx_time nSleep)
   External Threads ---------------------------------------------------
 */
 
-TextScroller Matrix (10);
+//Dot Matrix text scroller service
+TextScroller Matrix (8);
+
+//Listnet Service
+ListenerServer NetworkServices (10);
 
 std::string strSystemNextMessage="AtomicX";
-std::string strSystemActive=strSystemNextMessage;
 
 /*
   SYSTEM CLASS ---------------------------------------------------
@@ -127,18 +125,27 @@ protected:
 
                     switch (nScrollStage)
                     {
-                        case 0:
-                            Matrix = Matrix() + "AtomicX, Free memory: " + std::to_string(system_get_free_heap_size()) + "bytes, threads: " + std::to_string(GetThreadCount ());
-                            Matrix.SetSpeed (4);
-                            break;
+                        // case 0:
+                        //     {
+                        //         Matrix = "";
+                        //         Matrix () << "AtomicX, free: " <<  std::to_string(system_get_free_heap_size()) << "b, thr: " << std::to_string(GetThreadCount ());
+
+                        //         if (WiFi.status () == WL_CONNECTED)
+                        //         {
+                        //             Matrix () << ", ip: " << WiFi.localIP ().toString ().c_str ();
+                        //         }
+
+                        //         Matrix.SetSpeed (4);
+                        //     }
+                        //     break;
 
                         default:
-                            if (strSystemActive != strSystemNextMessage)
-                            {
-                                strSystemActive = strSystemNextMessage;
-                            }
 
-                            Matrix = Matrix() + strSystemActive;
+                            if (Wait (Matrix, TEXTSCROLLER_NOTIFY_NEW_TEXT, 5) || Matrix().str() != strSystemNextMessage)
+                            {
+                                Matrix = strSystemNextMessage;
+                            }
+                            
                             Matrix.SetSpeed (3);
 
                             nScrollStage = -1;
@@ -147,7 +154,6 @@ protected:
                     nScrollStage++;
                 }
             }
-
             //Serial.println ("System routine.");
         }
     }
@@ -161,6 +167,8 @@ protected:
 void setup()
 {
     util::InitSerial();
+
+    gdbstub_init();
 
     vt100::ResetColor ();
     //vt100::ClearConsole ();

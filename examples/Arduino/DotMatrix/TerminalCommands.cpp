@@ -52,12 +52,10 @@ const char* commands::System::GetCommandDescription ()
     return "Print system information";
 }
 
-extern std::string strSystemActive;
-
 bool commands::System::Execute (Stream& client, const std::string& commandLine)
 {
     client.println ("Message displaying ------------------");
-    client.println (strSystemActive.c_str ());
+    client.println (util::GetDisplayMessage().c_str ());
     client.println ("ESP8266 System ------------------");
     client.printf ("%-20s: [%u]\r\n", "Processor ID", system_get_chip_id ());
     client.printf ("%-20s: [%s]\r\n", "SDK Version", system_get_sdk_version ());
@@ -92,11 +90,9 @@ bool commands::System::Execute (Stream& client, const std::string& commandLine)
     return true;
 }
 
-extern std::string strSystemNextMessage;
-
 commands::Display::Display () : CommandTerminalInterface ("display")
 {
-    strSystemNextMessage = "AtomicX terminal command is ready.";
+    util::SetDisplayMessage ("AtomicX terminal command is ready.");
 }
 
 const char* commands::Display::GetCommandDescription ()
@@ -123,9 +119,18 @@ bool commands::Display::Execute (Stream& client, const std::string& commandLine)
     client.printf ("Setting up message: [%s]\r\n", strAttribute.c_str ());
     client.flush ();
 
-    strSystemNextMessage = strAttribute;
+    client.print ("\e[K Wait, notifying thread..\r"); Serial.flush ();
 
-    thread::atomicx::GetCurrent()->SyncNotify (strSystemActive, 10, 1000);
+    if (util::SetDisplayMessage (strAttribute))
+    {
+        Serial.println ("\e[K done.");
+    }
+    else
+    {
+        Serial.println ("\e[K ERROR, thread is not responding., message was not set");
+    }
+
+    Serial.flush ();
 
     return true;
 }

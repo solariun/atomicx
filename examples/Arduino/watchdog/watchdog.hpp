@@ -62,7 +62,7 @@ public:
 
 protected:
 
-    void abort (const char* abortMessage);
+    void abort (Item& item, const char* abortMessage);
 
     void run() noexcept override;
 

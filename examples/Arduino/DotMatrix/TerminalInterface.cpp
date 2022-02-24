@@ -31,6 +31,7 @@
     SOFTWARE.
 */
 
+#include "TextScroller.hpp"
 #include "TerminalCommands.hpp"
 #include "TerminalInterface.hpp"
 
@@ -42,7 +43,7 @@ commands::Help l_helpCommandInstance;
 commands::System l_systemCommand;
 commands::Display l_displayCommand;
 
-extern std::string strSystemActive;
+extern TextScroller Matrix;
 
 // Helpper functions
 uint8_t ParseOption (const std::string& commandLine, uint8_t nCommandIndex, std::string& returnText, bool countOnly)
@@ -179,7 +180,7 @@ bool TerminalInterface::ReadCommandLine (std::string& readCommand)
 
     while (nChars || (nChars = WaitForSerialData ()) > 0)
     {
-        if (Wait (strSystemActive, 10, 2))
+        if (Wait (Matrix, TEXTSCROLLER_NOTIFY_NEW_TEXT, 2))
         {
             return false;
         }
@@ -230,7 +231,7 @@ void TerminalInterface::run()
     for (;;)
     {
         strTerminal = "";
-        strTerminal += "\eK" + std::to_string(strSystemActive.length ()) + "len: Terminal>";
+        strTerminal += "\eK Terminal>";
 
         m_client.print (strTerminal.c_str ());
         m_client.flush ();

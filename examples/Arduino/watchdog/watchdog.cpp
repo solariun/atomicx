@@ -39,14 +39,7 @@ const char* Watchdog::GetName ()
 }
 
 Watchdog::~Watchdog()
-{
-    Serial.print("Deleting Consumer: ");
-    Serial.print (", ID: ");
-    Serial.println ((size_t) this);
-    Serial.flush ();
-
-    delay (200);
-}
+{}
 
 uint8_t Watchdog::GetAllarmCounter (size_t threadId)
 {
@@ -98,11 +91,13 @@ bool Watchdog::DetachThread (Item& thread)
     list.Detach (thread);
 }
 
-void Watchdog::abort (const char* abortMessage)
+void Watchdog::abort (Item& item, const char* abortMessage)
 {
     Serial.print (F("Watchdog: "));
-    Serial.print (GetCurrent()->GetID ());
-    Serial.print (':');
+    Serial.print (item.nThreadId);
+    Serial.print (": counter ");
+    Serial.print (item.recoverCounter);
+    Serial.print (": ");
     Serial.println (abortMessage);
     Serial.flush ();
 
@@ -125,7 +120,7 @@ void Watchdog::run()
                 {
                     if (wtdItem().isCritical)
                     {
-                        abort ("Maximum recovery time reached, restarting");
+                        abort (wtdItem(), "Maximum recovery time reached, restarting");
                     }
                     else
                     {
@@ -133,9 +128,9 @@ void Watchdog::run()
 
                         if (pthread && pthread->IsStopped () == false)
                         {
+                            pthread->Restart ();
                             wtdItem().nextAllarm.Set (wtdItem().allowedTime);
                             wtdItem().recoverCounter = 0;
-                            pthread->Restart ();        
                         }
                     }
                 }

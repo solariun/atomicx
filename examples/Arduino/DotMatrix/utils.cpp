@@ -2,6 +2,7 @@
 #include <string>
 
 #include "arduino.h"
+#include "TextScroller.hpp"
 #include "utils.hpp"
 
 // Global values
@@ -43,6 +44,9 @@ void ListAllThreads(Stream& client)
 
 }
 
+extern std::string strSystemNextMessage;
+extern TextScroller Matrix;
+
 // Namespaced functions and attributes
 namespace util
 {
@@ -79,6 +83,28 @@ namespace util
     {
         ltrim(s);
         rtrim(s);
+    }
+
+    bool SetDisplayMessage (const std::string& strMessage, bool wait)
+    {
+        int nRet = 0;
+        
+        strSystemNextMessage = strMessage;
+        
+        /**
+         * @brief It will wait up to 5 minutes in line to be notified
+         */
+        if ((! wait || ! thread::atomicx::IsKernelRunning ()) || thread::atomicx::GetCurrent()->SyncNotify (Matrix, TEXTSCROLLER_NOTIFY_NEW_TEXT, 300000)) 
+        {
+            nRet = true;
+        }
+
+        return nRet;
+    }
+
+    const std::string GetDisplayMessage (void)
+    {
+        return Matrix().str();
     }
 }
 

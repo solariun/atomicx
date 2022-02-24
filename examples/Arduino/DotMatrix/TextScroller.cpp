@@ -95,14 +95,14 @@ void TextScroller::run(void)
     {
         Yield ();
 
-        if (show (strMatrixText.c_str(), strMatrixText.length()) == false)
+        if (show (sstrMatrixText.str().c_str(), sstrMatrixText.str().length()) == false)
         {
             sysCmds = SysCommands::Matrix_Ready;
             
             if (! SyncNotify (sysCmds, 1, 1000))
             {
                 Serial.printf (">>> ERROR, failed to notify System... (%zp)\r\n", &sysCmds);
-                delay (2000);
+                Serial.flush ();
             }
         }
     }
@@ -145,7 +145,7 @@ TextScroller::TextScroller (atomicx_time nNice) : atomicx(250, 50), nOffset (0),
 
     SetNice (nNice);
 
-    strMatrixText = "Welcome to AtomicX DotMatrix WiFi server.";
+    sstrMatrixText.str("Welcome to AtomicX DotMatrix WiFi server.");
 }
 
 void TextScroller::SetSpeed(int nSpeed)
@@ -177,7 +177,7 @@ bool TextScroller::show (const char* pszMessage, const uint16_t nMessageLen)
 
     for (nCount = 0; nCount < nNumberDigits; nCount++)
     {
-        Yield ();
+        Yield (1);
 
         printScrollBytes (
                 nCount,
@@ -193,14 +193,14 @@ bool TextScroller::show (const char* pszMessage, const uint16_t nMessageLen)
     return true;
 }
 
-std::string& TextScroller::operator= (const std::string& strValue)
+std::stringstream& TextScroller::operator= (const std::string& strValue)
 {
-    strMatrixText = strValue;
+    sstrMatrixText.str(strValue);
 
-    return strMatrixText;
+    return sstrMatrixText;
 }
 
-std::string& TextScroller::operator() ()
+std::stringstream& TextScroller::operator() ()
 {
-    return strMatrixText;
+    return sstrMatrixText;
 }

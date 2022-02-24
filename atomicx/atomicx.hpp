@@ -1026,6 +1026,13 @@ namespace thread
         static bool Start(void);
 
         /**
+         * @brief Report if the kernel is already running
+         * 
+         * @return true is thread::atomicx::start is running, otherwise false
+         */
+        static bool IsKernelRunning();
+
+        /**
          * @brief Get the current thread ID
          *
          * @return size_t  Thread ID number
@@ -1805,11 +1812,12 @@ namespace thread
 
         struct
         {
+            bool KernelIsRunning : 1;
             bool autoStack : 1;
             bool dynamicNice : 1;
             bool broadcast : 1;
             bool attached :1;
-        } m_flags = {0,0,0,0};
+        } m_flags = {0, 0,0,0,0};
     };
 }
 

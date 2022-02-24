@@ -63,6 +63,10 @@ namespace util
     void rtrim(std::string &s);
 
     void trim(std::string &s);
+
+    bool SetDisplayMessage (const std::string& strMessage, bool wait = true);
+
+    const std::string GetDisplayMessage (void);
 }
 
 namespace vt100

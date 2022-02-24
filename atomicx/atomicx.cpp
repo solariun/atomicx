@@ -30,6 +30,7 @@ namespace thread
     static atomicx* ms_paLast=nullptr;
     static jmp_buf ms_joinContext{};
     static atomicx* ms_pCurrent=nullptr;
+    static bool ms_running=false;
 
     atomicx::semaphore::semaphore(size_t nMaxShared) : m_maxShared(nMaxShared)
     {
@@ -322,11 +323,10 @@ namespace thread
     {
         if (ms_paFirst != nullptr)
         {
-            static bool nRunning = true;
-
+            ms_running = true;
             ms_pCurrent = ms_paFirst;
 
-            while (nRunning && SelectNextThread ())
+            while (ms_running && SelectNextThread ())
             {
                 if (setjmp(ms_joinContext) == 0)
                 {
@@ -353,6 +353,8 @@ namespace thread
                 }
             }
         }
+
+        ms_running = false;
 
         return false;
     }
@@ -441,6 +443,11 @@ namespace thread
         }
 
         return true;
+    }
+
+    bool atomicx::IsKernelRunning()
+    {
+        return ms_running;
     }
 
     void atomicx::YieldNow ()

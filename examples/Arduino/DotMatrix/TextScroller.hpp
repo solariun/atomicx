@@ -51,8 +51,14 @@
 #include <LedControl.h>
 #include <assert.h>
 #include <string>
+#include <sstream>
 
 #include "utils.hpp"
+
+enum TextScroller_Constants
+{
+    TEXTSCROLLER_NOTIFY_NEW_TEXT = 10
+};
 
 // const data
 
@@ -84,7 +90,7 @@ const int byteImagesLen = sizeof (byteImages) / 8;
   MATRIX TEXT SCROLL ---------------------------------------------------
 */
 
-static const uint8_t MAX_LED_MATRIX=4;
+static const uint8_t MAX_LED_MATRIX=8;
 
 static const int DIN = D4;  // MISO - NodeMCU - D4 (TXD1)
 static const int CS = D7;   // MOSI  - NodeMCU - D7 (HMOSI)
@@ -93,9 +99,15 @@ static const int CLK = D5;  // SS    - NodeMCU - D5 (HSCLK)
 class TextScroller : public thread::atomicx
 {
 public:
+    template <typename T> std::stringstream& operator<< (T&& value)
+    {
+        sstrMatrixText << value;
 
-    std::string& operator = (const std::string& strValue);
-    std::string& operator() ();
+        return sstrMatrixText;
+    }
+
+    std::stringstream& operator = (const std::string& strValue);
+    std::stringstream& operator() ();
 
     TextScroller (atomicx_time nNice);
 
@@ -131,7 +143,7 @@ private:
     uint8_t nOffset   = 0;
     int nIndex = nNumberDigits * (-1);
 
-    std::string strMatrixText="";
+    std::stringstream sstrMatrixText;
     uint8_t nSpeed;
     
     LedControl lc;

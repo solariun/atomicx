@@ -73,7 +73,9 @@ public:
 
     void finish () noexcept override
     {
-        Serial.print (F(">>>>>>>Detroying Thread "));
+        Serial.print (F(">>>>>>>Detroying Thread, counter "));
+        Serial.println (Watchdog::GetInstance().GetAllarmCounter (GetID()));
+        Serial.print (F(": "));
         Serial.println (GetName ());
         Serial.flush ();
     }
@@ -135,7 +137,9 @@ protected:
 
     void finish () noexcept override
     {
-        Serial.print (F(">>>>>>>Detroying Thread "));
+        Serial.print (F(">>>>>>>Detroying Thread, counter "));
+        Serial.println (Watchdog::GetInstance().GetAllarmCounter (GetID()));
+        Serial.print (F(": "));
         Serial.println (GetName ());
         Serial.flush ();
     }
@@ -158,37 +162,39 @@ private:
 
 void ListAllThreads()
 {
-  size_t nCount=0;
+    size_t nCount=0;
 
-   Serial.flush();
+    Serial.println ("[THREAD]-----------------------------------------------");
+    Serial.print (F("Context size: ")); Serial.println (sizeof (thread::atomicx));
+    Serial.println ("[List active threads]----------------------------------");
 
-  Serial.println ("[THREAD]-----------------------------------------------");
+    Serial.flush();
+    
+    for (auto& th : *(atomicx::GetCurrent()))
+    {
+        Serial.print (atomicx::GetCurrent() == &th ? "*  " : "   ");
+        Serial.print (++nCount);
+        Serial.print (":'");
+        Serial.print (th.GetName());
+        Serial.print ("' ");
+        Serial.print ((size_t) &th);
+        Serial.print (", Nice: ");
+        Serial.print (th.GetNice());
+        Serial.print (", Stack: ");
+        Serial.print (th.IsStackSelfManaged() ? 'A' : ' ');
+        Serial.print (th.GetStackSize());
+        Serial.print (", UsedStack: ");
+        Serial.print(th.GetUsedStackSize());
+        Serial.print (", Status: ");
+        Serial.print (th.GetStatus());
+        Serial.print (", WTD Allarm: ");
+        Serial.println (Watchdog::GetInstance().GetAllarmCounter (th.GetID()));
+        Serial.flush();
+    }
 
-  for (auto& th : *(atomicx::GetCurrent()))
-  {
-      Serial.print (atomicx::GetCurrent() == &th ? "*  " : "   ");
-      Serial.print (++nCount);
-      Serial.print (":'");
-      Serial.print (th.GetName());
-      Serial.print ("' ");
-      Serial.print ((size_t) &th);
-      Serial.print (", Nice: ");
-      Serial.print (th.GetNice());
-      Serial.print (", Stack: ");
-      Serial.print (th.IsStackSelfManaged() ? 'A' : ' ');
-      Serial.print (th.GetStackSize());
-      Serial.print (", UsedStack: ");
-      Serial.print(th.GetUsedStackSize());
-      Serial.print (", Status: ");
-      Serial.print (th.GetStatus());
-      Serial.print (", WTD Allarm: ");
-      Serial.println (Watchdog::GetInstance().GetAllarmCounter (th.GetID()));
-      Serial.flush();
-  }
-
-  Serial.println ("");
-  
-  Serial.flush();
+    Serial.println ("");
+    
+    Serial.flush();
 }
 
 
