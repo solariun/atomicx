@@ -51,6 +51,9 @@ public:
 protected:
     void PrintMOTD() final;
 
+    virtual const char* GetName () override;
+
+    virtual bool IsConnected () override;
 private:
 
 };

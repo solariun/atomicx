@@ -1,7 +1,7 @@
 
 #include <string>
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "TextScroller.hpp"
 #include "utils.hpp"
 
@@ -26,6 +26,8 @@ void ListAllThreads(Stream& client)
 
     for (auto& th : *(thread::atomicx::GetCurrent()))
     {
+        thread::atomicx::GetCurrent()->Yield (0); 
+
         client.printf ("\eK%c%-3u %-8zu '%-20s' nc:%-6u stk:(%6zub/%6zub) sts:(%-3u,%-3u) last: %ums\r\n",
             thread::atomicx::GetCurrent() == &th ? '* ' : ' ', ++nCount, 
             (size_t) th.GetID(), th.GetName(),
@@ -33,15 +35,11 @@ void ListAllThreads(Stream& client)
             th.GetStatus(), th.GetSubStatus(),
             th.GetLastUserExecTime()
         );
-        
-        client.flush();
-
-        if (thread::atomicx::GetCurrent ()) thread::atomicx::GetCurrent ()->Yield ();
     }
 
     client.println ("\e[K---------------------------------------------------------");
-    client.flush(); Serial.flush();
 
+    client.flush();
 }
 
 extern std::string strSystemNextMessage;

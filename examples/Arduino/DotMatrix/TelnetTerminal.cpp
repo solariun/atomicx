@@ -39,28 +39,46 @@
 #include "utils.hpp"
 #include "TerminalInterface.hpp"
 
-#include "SerialTerminal.hpp"
+#include "TelnetTerminal.hpp"
 
-SerialTerminal::SerialTerminal(atomicx_time nNice) : TerminalInterface(nNice, Serial)
-{ 
-    void InitSerial(void);
+TelnetTerminal::TelnetTerminal(atomicx_time nNice, WiFiServer& server) : TerminalInterface(nNice, (Stream&) m_telnetClient), m_telnetClient (server.available ()), pszName{}
+{
+    std::stringstream sstrName;
+    sstrName << m_telnetClient.remoteIP().toString ().c_str () << ":" << m_telnetClient.remotePort();
+
+    strncpy (pszName, sstrName.str ().c_str (), sizeof (pszName)-1);
+
 }
 
-void SerialTerminal::PrintMOTD ()
+void TelnetTerminal::PrintMOTD ()
 {
     client().println ("-------------------------------------");
-    client().println ("Dotmatrix OS");
+    client().println ("Dotmatrix OS - Telnet Service over TCP");
     client().println ("Welcome to Serial based terminal session.");
+    client().printf  ("Client: %s:%u\r\n", m_telnetClient.remoteIP(), m_telnetClient.remotePort ());
     client().println ("-------------------------------------");
     client().flush();
 }
 
-bool SerialTerminal::IsConnected ()
+void TelnetTerminal::finish() noexcept
 {
-    return ((! Serial) == false);
+    if (m_telnetClient.status () == ESTABLISHED)
+    {
+        m_telnetClient.printf ("Closing connection. \r\n");
+
+        m_telnetClient.stop ();
+    }
+
+    delete this;
 }
 
-const char* SerialTerminal::GetName ()
+bool TelnetTerminal::IsConnected ()
 {
-    return "SerialTerm";
+    return (m_telnetClient.status () == ESTABLISHED);
+}
+
+const char* TelnetTerminal::GetName ()
+{
+
+    return pszName;
 }

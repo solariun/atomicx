@@ -62,11 +62,15 @@ bool commands::System::Execute (Stream& client, const std::string& commandLine)
     client.printf ("%-20s: [%uMhz]\r\n", "CPU Freequency", system_get_cpu_freq ());
     client.printf ("%-20s: [%u Bytes]\r\n", "Memory", system_get_free_heap_size ());
 
+    thread::atomicx::GetCurrent()->Yield (0); 
+
     if (WiFi.status () != WL_NO_SHIELD)
     {
         client.println ("-[Connection]----------------------");
         client.printf ("%-20s: (%u)\r\n", "Status", WiFi.status ());
         client.printf ("%-20s: [%s]\r\n", "Mac Address", WiFi.macAddress ().c_str ());
+
+        thread::atomicx::GetCurrent()->Yield (0); 
 
         if (WiFi.status () == WL_CONNECTED)
         {
@@ -77,6 +81,9 @@ bool commands::System::Execute (Stream& client, const std::string& commandLine)
             client.printf ("%-20s: [%s]\r\n", "Net Mask", WiFi.subnetMask ().toString ().c_str ());
             client.printf ("%-20s: [%s]\r\n", "Gateway", WiFi.gatewayIP ().toString ().c_str ());
             client.printf ("%-20s: [%s]\r\n", "DNS", WiFi.dnsIP ().toString ().c_str ());
+
+            thread::atomicx::GetCurrent()->Yield (0); 
+
         }
         else
         {
@@ -84,7 +91,10 @@ bool commands::System::Execute (Stream& client, const std::string& commandLine)
         }
     }
 
+    thread::atomicx::GetCurrent()->Yield (0); 
+
     client.println ("-[Process]----------------------");
+
     ListAllThreads (client);
 
     return true;

@@ -68,6 +68,8 @@ uint8_t ParseOption (const std::string& commandLine, uint8_t nCommandIndex, std:
 
     for (char chChar : commandLine)
     {
+        thread::atomicx::GetCurrent()->Yield (0);
+
         if (currentState == state::NoText)
         {
             if (chChar == '"' || chChar == '\'')
@@ -164,11 +166,9 @@ CommandTerminalMap& TerminalInterface::GetMapCommands ()
     return TerminalInterface::m_mapCommands;
 }
 
-int TerminalInterface::WaitForSerialData ()
+inline int TerminalInterface::WaitForClientData (int &nChars)
 {
-    int nChars = 0;
-
-    for (;(nChars = Serial.available ()) == 0; Yield (0));
+    for (nChars = 0;(nChars = m_client.available ()) == 0; Yield ());
 
     return nChars;
 }
@@ -178,41 +178,36 @@ bool TerminalInterface::ReadCommandLine (std::string& readCommand)
     uint8_t chChar = 0;
     int nChars = 0;
 
-    while (nChars || (nChars = WaitForSerialData ()) > 0)
+    while (nChars || (WaitForClientData (nChars)) > 0)
     {
-        if (Wait (Matrix, TEXTSCROLLER_NOTIFY_NEW_TEXT, 2))
-        {
-            return false;
-        }
-
-        chChar = Serial.read ();
+        chChar = m_client.read ();
 
         if (chChar == TERMINAL_BS && readCommand.length () > 0)
         {
-            Serial.print ((char)TERMINAL_BS);
-            Serial.print (' ');
-            Serial.print ((char)TERMINAL_BS);
+            m_client.print ((char)TERMINAL_BS);
+            m_client.print (' ');
+            m_client.print ((char)TERMINAL_BS);
 
             //readCommand.remove (readCommand.length ()-1);
             readCommand.pop_back ();
         }
         else if (chChar == '\r')
         {
-            Serial.println (F(""));
+            m_client.println (F(""));
             break;
         }
         else if (chChar >= 32 && chChar < 127)
         {
-            Serial.print ((char)chChar);
-            Serial.flush ();
-            Serial.flush ();
+            m_client.print ((char)chChar);
+            m_client.flush ();
+            m_client.flush ();
             readCommand += ((char) chChar);
         }
 
         nChars--;
     }
 
-    if (! Serial)
+    if (IsConnected () == false)
     {
         return false;
     }
@@ -240,7 +235,11 @@ void TerminalInterface::run()
         {
             if (ParseOption (strCommandLine, 0, strCommand))
             {
-                if (m_mapCommands.find (strCommand) != m_mapCommands.end())
+                if (strCommand == "exit" )
+                {
+                    break;
+                }
+                else if (m_mapCommands.find (strCommand) != m_mapCommands.end())
                 {
                     m_mapCommands [strCommand]->Execute(m_client, strCommandLine);
                 }

@@ -177,8 +177,6 @@ bool TextScroller::show (const char* pszMessage, const uint16_t nMessageLen)
 
     for (nCount = 0; nCount < nNumberDigits; nCount++)
     {
-        Yield (1);
-
         printScrollBytes (
                 nCount,
                 getLetter (nIndex + 1, pszMessage, nMessageLen),
@@ -186,6 +184,8 @@ bool TextScroller::show (const char* pszMessage, const uint16_t nMessageLen)
                 (uint8_t)nOffset);
 
         nIndex = (int)nIndex + 1;
+
+        Yield ();
     }
 
     nIndex = (int)nIndex - (nCount - (nSpeed / 8));

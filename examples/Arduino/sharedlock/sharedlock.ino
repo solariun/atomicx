@@ -20,7 +20,6 @@ void ListAllThreads();
 
 atomicx_time Atomicx_GetTick(void)
 {
-    ::yield();
     return millis();
 }
 

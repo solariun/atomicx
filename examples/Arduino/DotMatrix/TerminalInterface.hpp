@@ -113,7 +113,7 @@ protected:
 
     static CommandTerminalMap& GetMapCommands ();
 
-    int WaitForSerialData ();
+    int WaitForClientData (int& nChars);
 
     bool ReadCommandLine (std::string& readCommand);
 
@@ -122,6 +122,8 @@ protected:
     void StackOverflowHandler(void) noexcept override;
 
     const char* GetName ();
+
+    virtual bool IsConnected () = 0;
 
 private:
     static CommandTerminalMap m_mapCommands;

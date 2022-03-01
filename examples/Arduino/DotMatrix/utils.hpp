@@ -4,7 +4,7 @@
 
 #include <ESP8266WiFi.h>
 #include "atomicx.hpp"
-#include "arduino.h"
+#include "Arduino.h"
 
 constexpr std::size_t operator "" _z ( unsigned long long n )
     { return n; }

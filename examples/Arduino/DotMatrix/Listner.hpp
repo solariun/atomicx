@@ -9,7 +9,7 @@
  * 
  */
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "atomicx.hpp"
 
 #include <ESP8266WiFi.h>
@@ -17,10 +17,14 @@
 
 #include <sstream>
 
+#include "TelnetTerminal.hpp"
+
+#define MAX_SRV_CLIENTS 5
+
 class ListenerServer : public thread::atomicx
 {
 public:
-    ListenerServer(atomicx_time nNice) : thread::atomicx (250, 50)
+    ListenerServer(atomicx_time nNice) : thread::atomicx (250, 50), m_tcpServer(m_tcpPort)
     {
         SetNice (nNice);
     }
@@ -62,6 +66,18 @@ protected:
         return m_updServerStatus;
     }
 
+    bool StartingTcpServices (Timeout timeout)
+    {
+        do
+        {
+            m_tcpServer.begin ();    /* code */
+        } while (m_tcpServer.status () != LISTEN && timeout.IsTimedout ());
+        
+        if (m_tcpServer.status () == LISTEN) m_tcpServer.setNoDelay (true);
+
+        return timeout.IsTimedout () ? false : true;
+    }
+
     void run() noexcept final
     {
         char readBuffer [50] = "";
@@ -76,10 +92,17 @@ protected:
             {
                 if (m_updServerStatus == false)
                 {
-                    StartUdpServices (1000);
-
-                    util::SetDisplayMessage ("UDP ready");
+                    StartingTcpServices (1000);
+                    Serial.printf ("TCP status: %u\n", m_tcpServer.status ());
+                    Serial.flush ();
                 }
+
+                if (m_updServerStatus == false)
+                {
+                    StartUdpServices (1000);
+                }
+
+                util::SetDisplayMessage (WiFi.localIP ().toString().c_str ());
             }
             else
             {
@@ -106,8 +129,15 @@ protected:
                     Serial.print ("\nReceived: ");
                     Serial.println (strBuffer.c_str ());
                     Serial.flush ();
+                }
+                
+                if (m_tcpServer.hasClient ())
+                {
+                    Serial.println ("\n\nStarting up a remote client...");
+                    Serial.flush ();
 
-
+                    // Starting a new thread
+                    new TelnetTerminal (10, m_tcpServer);
                 }
             }            
         } while (Yield ());
@@ -122,6 +152,7 @@ protected:
     {
         return "NetServices";
     }
+
 private:
     bool m_wifiStatus = false;
 
@@ -137,7 +168,13 @@ private:
 
     // UDP Server
     bool m_updServerStatus = false;
+    bool m_telnetServerStatus = false;
 
-    const unsigned int m_udpPort = 2221;
+    const uint m_udpPort = 2221;
     WiFiUDP m_udp;
+
+    // Telnet IP server
+    const uint m_tcpPort = 23;
+
+    WiFiServer m_tcpServer;
 };

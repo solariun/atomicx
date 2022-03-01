@@ -22,11 +22,6 @@ using atomicx_time = uint32_t;
 
 #define ATOMICX_TIME_MAX ((atomicx_time) ~0)
 
-extern "C"
-{
-    extern void yield(void);
-}
-
 /**
  * @brief Calculate the stack size based on MCU channel size 8, 16, 32, 64 bits multiples
  * 

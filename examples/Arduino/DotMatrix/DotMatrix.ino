@@ -52,6 +52,7 @@
 #include "utils.hpp"
 #include "TextScroller.hpp"
 #include "TerminalInterface.hpp"
+#include "SerialTerminal.hpp"
 #include "Listner.hpp"
 
 #define MAX(x, y) (x > y ? x : y)
@@ -79,7 +80,7 @@ void Atomicx_SleepTick(atomicx_time nSleep)
 */
 
 //Dot Matrix text scroller service
-TextScroller Matrix (8);
+TextScroller Matrix (6);
 
 //Listnet Service
 ListenerServer NetworkServices (10);
@@ -113,7 +114,7 @@ protected:
         atomicx_time last = GetCurrentTick () + 2000;
         uint8_t nScrollStage = 0;
 
-        //Matrix.SetSpeed (2);
+        Matrix.SetSpeed (4);
 
         for(;;)
         {
@@ -145,8 +146,6 @@ protected:
                             {
                                 Matrix = strSystemNextMessage;
                             }
-                            
-                            Matrix.SetSpeed (3);
 
                             nScrollStage = -1;
                     }
@@ -179,7 +178,7 @@ void setup()
     
     Matrix.SetSpeed (3);
     
-    TerminalInterface TerminalInterface(10, Serial);
+    SerialTerminal serialTerminal(1);
 
     System system (100);
 

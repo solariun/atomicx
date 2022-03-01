@@ -16,13 +16,6 @@
 
 #include <stdlib.h>
 
-extern "C"
-{
-    #pragma weak yield
-    void yield(void)
-    {}
-}
-
 namespace thread
 {
     // Static initializations
@@ -211,8 +204,6 @@ namespace thread
             ms_paLast->m_paNext = this;
             ms_paLast = this;
         }
-
-        printf ("ADDING: %zX: prev: %zX, Next: %zX\n\n", (size_t) this, (size_t) m_paPrev, (size_t) m_paNext);
     }
 
     void atomicx::RemoveThisThread()
@@ -241,8 +232,6 @@ namespace thread
             m_paNext->m_paPrev = m_paPrev;
             ms_pCurrent = m_paNext->m_paPrev;
         }
-
-        printf ("REMOVING: %zX: prev: %zX, Next: %zX\n\n", (size_t) this, (size_t) m_paPrev, (size_t) m_paNext);
     }
 
     bool atomicx::SelectNextThread()

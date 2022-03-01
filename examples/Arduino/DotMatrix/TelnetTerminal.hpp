@@ -31,36 +31,39 @@
     SOFTWARE.
 */
 
+#ifndef __TELNETTERMINAL_HPP__
+#define __TELNETTERMINAL_HPP__
+
 #include "atomicx.hpp"
 #include "Arduino.h"
+
+#include <ESP8266WiFi.h>
+
 #include <assert.h>
 #include <string>
+#include <sstream>
 
 #include "utils.hpp"
 #include "TerminalInterface.hpp"
 
-#include "SerialTerminal.hpp"
-
-SerialTerminal::SerialTerminal(atomicx_time nNice) : TerminalInterface(nNice, Serial)
-{ 
-    void InitSerial(void);
-}
-
-void SerialTerminal::PrintMOTD ()
+class TelnetTerminal : public TerminalInterface
 {
-    client().println ("-------------------------------------");
-    client().println ("Dotmatrix OS");
-    client().println ("Welcome to Serial based terminal session.");
-    client().println ("-------------------------------------");
-    client().flush();
-}
+public:
+    TelnetTerminal() = delete;
+    TelnetTerminal (atomicx_time nNice, WiFiServer& server);
 
-bool SerialTerminal::IsConnected ()
-{
-    return ((! Serial) == false);
-}
+protected:
+    void PrintMOTD() final;
 
-const char* SerialTerminal::GetName ()
-{
-    return "SerialTerm";
-}
+    virtual void finish() noexcept override;
+
+    virtual bool IsConnected () override;
+
+    virtual const char* GetName () override;
+
+private:
+    WiFiClient m_telnetClient;
+    char pszName [20];
+};
+
+#endif
