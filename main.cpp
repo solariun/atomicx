@@ -47,10 +47,7 @@ void Atomicx_SleepTick(atomicx_time nSleep)
     usleep ((useconds_t)nSleep * 1000);
 }
 
-atomicx::queue<size_t>q(5);
 size_t nGlobalCount = 0;
-
-atomicx::semaphore sem(2);
 
 class ThreadConsummer : public atomicx
 {
@@ -71,21 +68,19 @@ public:
 
     void run(void) noexcept override
     {
-        while (Yield ())
-        {
-            smartSemaphore ssem (sem);
+        size_t nTag = 0;
 
-            if (ssem.acquire (0))
+        for (;;)
+        {
+            if (WaitAny (nGlobalCount, nTag, 2000))
             {
-                std::cout << GetName () << ":" << (size_t) this << " ACQUIRED, Max: " << sem.GetMaxAcquired () << ", Acquired: " << sem.GetCount () << ", Waiting: " << sem.GetWaitCount () << std::endl << std::flush;
-                std::cout << GetName () << ":" << (size_t) this << " GlobalCounter: " << nGlobalCount << std::endl << std::flush;
+                printf ("Receiver: nTag: %zu, GlobalCounter: %zu\n", nTag, nGlobalCount);
             }
             else
             {
-                std::cout << GetName () << ":" << (size_t) this << " TIMED OUT, Max: " << sem.GetMaxAcquired () << ", Acquired: " << sem.GetCount () << ", Waiting: " << sem.GetWaitCount () << std::endl << std::flush;
+                printf ("Receiver: failed to received...\n");
+                ListAllThreads();
             }
-
-            Yield ();
         }
     }
 
@@ -120,9 +115,20 @@ public:
 
     void run() noexcept override
     {
-        while (Yield ())
+        for (;;)
         {
             nGlobalCount++;
+
+            if (SyncNotify (nGlobalCount, GetID(), 1000) == false)
+            {
+                printf ("Publish %zu: (%s) Failed to notify received.\n", GetID(), GetName ());
+            }
+            else
+            {
+                printf ("%zu: (%s) Published..\n", GetID(), GetName ());
+            }
+            
+            Yield (1);
         }
 
     }
@@ -152,36 +158,17 @@ void ListAllThreads()
     std::cout << "-------------------------------------------------------" << std::endl;
 }
 
-Thread t1(500, "Producer 1");
-ThreadConsummer e1(500, "Consumer 1");
 
 int main()
 {
-    q.PushBack(1);
-    q.PushBack(2);
-    q.PushBack(3);
-    q.PushBack(4);
-    q.PushBack(5);
-    q.PushBack(6);
-    q.PushBack(7);
-    q.PushBack(8);
 
-    q.PushFront(-1);
-    q.PushFront(-2);
-    q.PushFront(-3);
-    q.PushFront(-5);
-
-   // while (q.GetSize()) std::cout << "push: " << q.pop() << std::endl;
-
-
-    ThreadConsummer e2(500, "Consumer 2");
-    ThreadConsummer e3(500, "Consumer 3");
-    ThreadConsummer e4(500, "Consumer 4");
-    ThreadConsummer e5(500, "Consumer 5");
-    ThreadConsummer e6(500, "Consumer 6");
-
-    std::cout << "end context" << std::endl;
-
+    Thread t1(1000, "Producer 1");
+    Thread t2(1000, "Producer 2");
+    Thread t3(1000, "Producer 3");
+    Thread t4(1000, "Producer 4");
+    
+    ThreadConsummer e1(500, "Consumer 1");
+    
     std::cout << "LISTING....." << std::endl;
 
     ListAllThreads ();    

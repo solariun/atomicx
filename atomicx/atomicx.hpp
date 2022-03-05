@@ -1448,7 +1448,7 @@ namespace thread
             if (thr.m_aSubStatus == subType &&
                 thr.m_aStatus == aTypes::wait &&
                 thr.m_pLockId == (void*) &refVar &&
-                nTag == thr.m_lockMessage.tag)
+                (thr.m_lockMessage.tag == 0 || nTag == thr.m_lockMessage.tag))
             {
                 return true;
             }
@@ -1617,13 +1617,15 @@ namespace thread
          * @param nMessage  the size_t message to be received
          * @param refVar    the reference pointer used as a notifier
          * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
-         * @param waitFor   default==0 (undefinitly), How log to wait for a notification based on atomicx_time
+         * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
          * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
          *                  type of wait/notify, deafault == aSubType::wait
          * @return true if it was successfully received.
          */
         template<typename T> bool Wait(size_t& nMessage, T& refVar, size_t nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
         {
+            if (nTag == 0 ) return false; 
+
             SafeNotifyLookWaitings(refVar, nTag);
 
             SetWaitParammeters (refVar, nTag, asubType);
@@ -1653,7 +1655,7 @@ namespace thread
          * @tparam T        Type of the reference pointer
          * @param refVar    the reference pointer used as a notifier
          * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
-         * @param waitFor   default==0 (undefinitly), How log to wait for a notification based on atomicx_time
+         * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
          * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
          *                  type of wait/notify, deafault == aSubType::wait
          *
@@ -1661,11 +1663,30 @@ namespace thread
          */
         template<typename T> bool Wait(T& refVar, size_t nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
         {
+            size_t nMessage = 0;
+
+            return Wait (nMessage, refVar, nTag, waitFor, asubType);
+        }
+        
+            /**
+         * @brief Blocks/Waits a notification along with a message and tag from a specific reference pointer
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  the size_t message to be received
+         * @param refVar    the reference pointer used as a notifier
+         * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
+         * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         * @return true if it was successfully received.
+         */
+        template<typename T> bool WaitAny(size_t& nMessage, T& refVar, size_t& nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
+        {
+            nTag = 0;
+
             SafeNotifyLookWaitings(refVar, nTag);
 
             SetWaitParammeters (refVar, nTag, asubType);
-
-            m_lockMessage.tag = nTag;
 
             Yield(waitFor);
 
@@ -1673,15 +1694,38 @@ namespace thread
 
             if (m_aSubStatus != aSubTypes::timeout)
             {
+                nMessage = m_lockMessage.message;
+                nTag = m_lockMessage.tag;
+                
                 bRet = true;
             }
 
             m_lockMessage = {0,0};
+
             m_aSubStatus = aSubTypes::ok;
 
             return bRet;
         }
-        
+
+        /**
+         * @brief Blocks/Waits a notification along with a tag from a specific reference pointer
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    the reference pointer used as a notifier
+         * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
+         * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true if it was successfully received.
+         */
+        template<typename T> bool WaitAny(T& refVar, size_t& nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
+        {
+            size_t nMessage = 0;
+            
+            return WaitAny (nMessage, refVar, nTag, waitFor, asubType);
+        }
+
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */

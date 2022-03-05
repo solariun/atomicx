@@ -111,6 +111,8 @@ protected:
 
     void run() noexcept override
     {
+        size_t nTag = 0;
+        size_t nMessage = 0;
         atomicx_time last = GetCurrentTick () + 2000;
         uint8_t nScrollStage = 0;
 
@@ -118,8 +120,11 @@ protected:
 
         for(;;)
         {
-            if (Wait (sysCmds, 1, GetNice ()))
+            if (WaitAny (nMessage, sysCmds, nTag, GetNice ()))
             {
+                Serial.printf ("Received tag: %zu, nMessage; [%zu]\n", nTag, nMessage);
+                Serial.flush ();
+                
                 if (sysCmds == SysCommands::Matrix_Ready)
                 {
                     Matrix = "";
