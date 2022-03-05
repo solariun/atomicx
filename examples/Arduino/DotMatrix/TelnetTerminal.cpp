@@ -70,6 +70,7 @@ void TelnetTerminal::finish() noexcept
         m_telnetClient.stop ();
     }
 
+    logger << LOG::INFO << "Telnet terminal " << m_telnetClient.remoteIP().toString ().c_str () << ", disconnecting." << std::endl;
     delete this;
 }
 
