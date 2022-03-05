@@ -48,6 +48,7 @@ TelnetTerminal::TelnetTerminal(atomicx_time nNice, WiFiServer& server) : Termina
 
     strncpy (pszName, sstrName.str ().c_str (), sizeof (pszName)-1);
 
+    logger << LOG::INFO << "Telnet terminal on " << m_telnetClient.remoteIP ().toString ().c_str () << " started." << std::endl;
 }
 
 void TelnetTerminal::PrintMOTD ()

@@ -223,6 +223,10 @@ void TerminalInterface::run()
     std::string strCommand = "";
     std::string strTerminal = "Terminal";
 
+    Yield (1000);
+
+    PrintMOTD ();
+        
     for (;;)
     {
         strTerminal = "";

@@ -6,6 +6,12 @@
 #include "atomicx.hpp"
 #include "Arduino.h"
 
+#include <cstdint>
+
+#include "Logger.hpp"
+
+extern LoggerStream logger;
+
 constexpr std::size_t operator "" _z ( unsigned long long n )
     { return n; }
 

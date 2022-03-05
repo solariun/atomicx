@@ -122,41 +122,45 @@ protected:
         {
             if (WaitAny (nMessage, sysCmds, nTag, GetNice ()))
             {
-                Serial.printf ("Received tag: %zu, nMessage; [%zu]\n", nTag, nMessage);
-                Serial.flush ();
-                
-                if (sysCmds == SysCommands::Matrix_Ready)
+                if (nTag == 1)
                 {
-                    Matrix = "";
-
-                    switch (nScrollStage)
+                    if (sysCmds == SysCommands::Matrix_Ready)
                     {
-                        // case 0:
-                        //     {
-                        //         Matrix = "";
-                        //         Matrix () << "AtomicX, free: " <<  std::to_string(system_get_free_heap_size()) << "b, thr: " << std::to_string(GetThreadCount ());
+                        Matrix = "";
 
-                        //         if (WiFi.status () == WL_CONNECTED)
-                        //         {
-                        //             Matrix () << ", ip: " << WiFi.localIP ().toString ().c_str ();
-                        //         }
+                        switch (nScrollStage)
+                        {
+                            // case 0:
+                            //     {
+                            //         Matrix = "";
+                            //         Matrix () << "AtomicX, free: " <<  std::to_string(system_get_free_heap_size()) << "b, thr: " << std::to_string(GetThreadCount ());
 
-                        //         Matrix.SetSpeed (4);
-                        //     }
-                        //     break;
+                            //         if (WiFi.status () == WL_CONNECTED)
+                            //         {
+                            //             Matrix () << ", ip: " << WiFi.localIP ().toString ().c_str ();
+                            //         }
 
-                        default:
+                            //         Matrix.SetSpeed (4);
+                            //     }
+                            //     break;
 
-                            if (Wait (Matrix, TEXTSCROLLER_NOTIFY_NEW_TEXT, 5) || Matrix().str() != strSystemNextMessage)
-                            {
-                                Matrix = strSystemNextMessage;
-                            }
+                            default:
 
-                            nScrollStage = -1;
-                    }
+                                if (Wait (Matrix, TEXTSCROLLER_NOTIFY_NEW_TEXT, 5) || Matrix().str() != strSystemNextMessage)
+                                {
+                                    Matrix = strSystemNextMessage;
+                                }
 
-                    nScrollStage++;
-                }
+                                nScrollStage = -1;
+                        }
+
+                        nScrollStage++;
+                    }                    
+                }    
+                else if (nTag == 2 && nMessage > 0)
+                {
+                    
+                }            
             }
             //Serial.println ("System routine.");
         }

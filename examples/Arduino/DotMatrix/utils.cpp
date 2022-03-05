@@ -104,6 +104,7 @@ namespace util
     {
         return Matrix().str();
     }
+
 }
 
 namespace vt100

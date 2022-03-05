@@ -18,6 +18,9 @@
 #include <sstream>
 
 #include "TelnetTerminal.hpp"
+#include "utils.hpp"
+
+extern LoggerStream logger;
 
 #define MAX_SRV_CLIENTS 5
 
@@ -33,6 +36,8 @@ protected:
 
     bool InitiateNetwork (Timeout timeout)
     {
+        logger << "Trying to connect to WIFI." << std::endl;
+        
         util::SetDisplayMessage ("Connecting to WiFi");
 
         WiFi.begin (m_ssid, m_pass);
@@ -47,10 +52,13 @@ protected:
             m_wifiStatus = true;
 
             util::SetDisplayMessage ("Connected to WIFI.");
+
+            logger << LOG::INFO << "WIFI connected, IP " << WiFi.localIP().toString().c_str () << std::endl;
         }
         else
         {
             util::SetDisplayMessage ("Failed to connect.");
+            logger << LOG::ERROR << "Failed to start WiFi." << std::endl;
         }
 
         return m_wifiStatus;
@@ -58,9 +66,20 @@ protected:
 
     bool StartUdpServices (Timeout timeout)
     {
+        logger << "Configuring UDP Service. " << std::endl;
+
         while ((m_updServerStatus = m_udp.begin (m_udpPort)) == false && ! timeout.IsTimedout ())
         {
             Yield (200);
+        }
+        
+        if (m_updServerStatus)
+        {
+            logger << LOG::INFO << "UDP Service ready on port " << m_udpPort << std::endl;
+        }
+        else 
+        {
+            logger << LOG::ERROR << "Failed to start UDP Service on port " << m_udpPort << std::endl;
         }
 
         return m_updServerStatus;
@@ -68,12 +87,21 @@ protected:
 
     bool StartingTcpServices (Timeout timeout)
     {
+        logger << "Configuring TCP Telnet Service. " << std::endl;
         do
         {
             m_tcpServer.begin ();    /* code */
         } while (m_tcpServer.status () != LISTEN && timeout.IsTimedout ());
         
-        if (m_tcpServer.status () == LISTEN) m_tcpServer.setNoDelay (true);
+        if (m_tcpServer.status () == LISTEN)
+        {
+            m_tcpServer.setNoDelay (true);
+            logger << LOG::INFO << "TCP Telnet Service ready" << std::endl;
+        }
+        else
+        {
+            logger << LOG::ERROR << "Failed to start TCP Telnet Service on port " << m_udpPort << std::endl;
+        }
 
         return timeout.IsTimedout () ? false : true;
     }
@@ -93,8 +121,6 @@ protected:
                 if (m_updServerStatus == false)
                 {
                     StartingTcpServices (1000);
-                    Serial.printf ("TCP status: %u\n", m_tcpServer.status ());
-                    Serial.flush ();
                 }
 
                 if (m_updServerStatus == false)
@@ -126,15 +152,12 @@ protected:
 
                     util::SetDisplayMessage (strBuffer, false);
 
-                    Serial.print ("\nReceived: ");
-                    Serial.println (strBuffer.c_str ());
-                    Serial.flush ();
+                    logger << LOG::ALERT << "Received: " << strBuffer << std::endl;
                 }
                 
                 if (m_tcpServer.hasClient ())
                 {
-                    Serial.println ("\n\nStarting up a remote client...");
-                    Serial.flush ();
+                    logger << "Starting up a new remote terminal." << std::endl;
 
                     // Starting a new thread
                     new TelnetTerminal (10, m_tcpServer);
