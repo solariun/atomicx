@@ -12,12 +12,12 @@
 #ifndef __LOGGER_HPP__
 #define __LOGGER_HPP__
 
-#include "Arduino.h"
-
 #include <cstdint>
 #include <iostream>
 #include <string>
 #include <streambuf>
+#include <set>
+#include <memory>
 
 enum class LogType : uint8_t
 {
@@ -30,11 +30,39 @@ enum class LogType : uint8_t
     Debug,
 };
 
+namespace  LOG
+{
+    static const char* GetLogTypeName (LogType logType)
+    {
+        switch (logType)
+        {
+            case LogType::Emergency: return "Emergency";
+            case LogType::Alert: return "Alert";
+            case LogType::Critical: return "Critical";
+            case LogType::Error: return "Error";
+            case LogType::Warning: return "Warning";
+            case LogType::Info: return "Info";
+            case LogType::Debug: return "Debug";
+        };
+
+        return "Undefined";
+    }
+} // namespace  LOG
+
+class LoggerInterface
+{
+    public:
+        virtual ~LoggerInterface ();
+
+        virtual void flush (LogType LogType, const std::string& strMessage);
+        virtual void init ();
+};
+
 class LoggerStreamBuffer : public std::streambuf
 {
 public:
     LoggerStreamBuffer () = delete;
-    LoggerStreamBuffer(Stream& stream, LogType minimalLogType = LogType::Debug);
+    LoggerStreamBuffer(LogType minimalLogType);
      
     ~LoggerStreamBuffer();
     
@@ -72,11 +100,14 @@ protected:
 
     const char* GetLogTypeName ();
 
+    bool AddLogger (LoggerInterface* externalLogger);
+
 private:
     LogType m_msgLogType;
     LogType m_logType;
-    Stream& m_stream;
     std::string m_strMessage;
+
+    std::set<std::unique_ptr<LoggerInterface>> loggerList;
 };
 
 class LoggerStream : public std::ostream
@@ -84,20 +115,23 @@ class LoggerStream : public std::ostream
 public:
     LoggerStream () = delete;
 
-    LoggerStream (Stream& stream, LogType logType = LogType::Debug);
+    LoggerStream (LogType logType = LogType::Debug);
 
     void SetMessageType (LogType logType);
     void SetMinimalLogType (LogType logType);
-    
+
     void flush ();
 
     const char* GetLogTypeName ();
     
+    bool AddLogger (LoggerInterface* externalLogger);
+
 protected:
 private:
     LoggerStreamBuffer sbuffer;
-
 };
+
+extern LoggerStream logger;
 
 namespace  LOG
 {
@@ -165,8 +199,4 @@ namespace  LOG
     }
     
 } // namespace  LOG
-
-
-extern LoggerStream logger;
-
 #endif

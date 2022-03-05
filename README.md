@@ -10,6 +10,29 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+* Ported and enhanced the DotMatrix project, it implements a full Dot Led Matrix scrolling text system with
+    - Serial terminal
+    - Telnet Terminal
+    - UDP Trap (You can send a UDP message to IP/2221 and it will display, I deal for trapping messages)
+    - An amazing general log API based on `iostream`, capable of adding "Specialized Loggers", and add using `logger.AddLogger`:
+        ```cpp
+            logger << LOG::ERROR << "Failed to start WiFi." << std::endl;
+        ```
+    - based on ESP8266 and 8 or 4 Dot Matrix leds array
+    - Just connect the Led Matrix  (Dot Matrix Modul 8x8 Display Matrix Max7219 Led Lcd with 8 or 4 8x8 display)
+    ```
+        Designed for NodeMCU ESP8266
+        ################# DISPLAY CONNECTIONS ################
+        LED Matrix Pin -> ESP8266 Pin
+        Vcc            -> 3v  (3V on NodeMCU 3V3 on WEMOS)
+        Gnd            -> Gnd (G on NodeMCU)
+        DIN            -> D7  (Same Pin for WEMOS)
+        CS             -> D4  (Same Pin for WEMOS)
+        CLK            -> D5  (Same Pin for WEMOS)
+    ```
+
+* Added WaiyAny, that extends the Wait/Notify functionality, since it will also receive ANY TAG. giving the developer to create a full Client / Service infra structure since now it will also report what TAG was received.
+
 * Dropping BROKER functionality, and welcoming **Broadcasting** functionality, it will enable a thread to receive all broadcasts asynchronously sent by other threads, only by enabling it and implementing the handler :
     ```cpp 
         virtual void BroadcastHandler (const size_t& messageReference, const Message& message) 

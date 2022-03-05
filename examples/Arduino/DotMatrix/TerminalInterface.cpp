@@ -168,7 +168,9 @@ CommandTerminalMap& TerminalInterface::GetMapCommands ()
 
 inline int TerminalInterface::WaitForClientData (int &nChars)
 {
-    for (nChars = 0;(nChars = m_client.available ()) == 0; Yield ());
+    nChars = 0;
+
+    for (nChars = 0;IsConnected () && (nChars = m_client.available ()) == 0; Yield ());
 
     return nChars;
 }
@@ -178,7 +180,7 @@ bool TerminalInterface::ReadCommandLine (std::string& readCommand)
     uint8_t chChar = 0;
     int nChars = 0;
 
-    while (nChars || (WaitForClientData (nChars)) > 0)
+    while ((nChars || (WaitForClientData (nChars)) > 0) && IsConnected ())
     {
         chChar = m_client.read ();
 
@@ -209,6 +211,7 @@ bool TerminalInterface::ReadCommandLine (std::string& readCommand)
 
     if (IsConnected () == false)
     {
+        readCommand="";
         return false;
     }
 
@@ -226,11 +229,11 @@ void TerminalInterface::run()
     Yield (1000);
 
     PrintMOTD ();
-        
-    for (;;)
+
+    for (;IsConnected ();)
     {
         strTerminal = "";
-        strTerminal += "\eK Terminal>";
+        strTerminal += "\r\eK Terminal>";
 
         m_client.print (strTerminal.c_str ());
         m_client.flush ();

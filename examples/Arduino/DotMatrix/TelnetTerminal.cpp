@@ -63,7 +63,7 @@ void TelnetTerminal::PrintMOTD ()
 
 void TelnetTerminal::finish() noexcept
 {
-    if (m_telnetClient.status () == ESTABLISHED)
+    if (IsConnected ())
     {
         m_telnetClient.printf ("Closing connection. \r\n");
 
@@ -71,12 +71,13 @@ void TelnetTerminal::finish() noexcept
     }
 
     logger << LOG::INFO << "Telnet terminal " << m_telnetClient.remoteIP().toString ().c_str () << ", disconnecting." << std::endl;
+    
     delete this;
 }
 
 bool TelnetTerminal::IsConnected ()
 {
-    return (m_telnetClient.status () == ESTABLISHED);
+    return (m_telnetClient.connected ());
 }
 
 const char* TelnetTerminal::GetName ()

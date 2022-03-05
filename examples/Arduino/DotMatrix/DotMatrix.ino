@@ -194,6 +194,8 @@ void setup()
     Serial.println (F("Thermal Camera Demo ------------------------------------"));
     Serial.flush ();
 
+    logger.AddLogger (new SerialLogger ());
+    
     thread::atomicx::Start();
 
     Serial.println (F("FULL DEADLOCK ------------------------------------"));

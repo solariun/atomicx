@@ -18,10 +18,23 @@
 
 #include "Logger.hpp"
 
-LoggerStream logger (Serial);
+LoggerStream logger (LogType::Debug);
 
-LoggerStreamBuffer::LoggerStreamBuffer(Stream& stream, LogType minimalLogType) : 
-    m_msgLogType (minimalLogType), m_logType(minimalLogType), m_stream(stream), m_strMessage{}
+LoggerInterface::~LoggerInterface ()
+{}
+
+void LoggerInterface::flush (LogType logType, const std::string& strMessage)
+{
+    (void) logType; (void) strMessage;
+}
+
+void LoggerInterface::init ()
+{
+
+}
+
+LoggerStreamBuffer::LoggerStreamBuffer(LogType minimalLogType) : 
+    m_msgLogType (minimalLogType), m_logType(minimalLogType),m_strMessage{}
 {}
 
 LoggerStreamBuffer::~LoggerStreamBuffer()
@@ -33,8 +46,10 @@ std::streamsize LoggerStreamBuffer::FlushBuffer()
 
     if (m_msgLogType <= m_logType)
     {
-        m_stream.printf ("\r\e[K%-8u:[%s]:%s\n", millis (), GetLogTypeName (), m_strMessage.c_str ());
-        m_stream.flush ();
+        for (auto& loggerItem : loggerList)
+        {
+            loggerItem->flush (m_msgLogType, m_strMessage);
+        }
     }
 
     m_strMessage = "";
@@ -45,18 +60,7 @@ std::streamsize LoggerStreamBuffer::FlushBuffer()
 
  const char* LoggerStreamBuffer::GetLogTypeName ()
  {
-     switch (m_msgLogType)
-     {
-         case LogType::Emergency: return "Emergency";
-         case LogType::Alert: return "Alert";
-         case LogType::Critical: return "Critical";
-         case LogType::Error: return "Error";
-         case LogType::Warning: return "Warning";
-         case LogType::Info: return "Info";
-         case LogType::Debug: return "Debug";
-     };
-
-     return "Undefined";
+     return LOG::GetLogTypeName (m_msgLogType);
  }
  
  /**
@@ -107,7 +111,29 @@ void LoggerStreamBuffer::SetMinimalLogType (LogType logType)
     m_logType = logType;
 }
 
-LoggerStream::LoggerStream (Stream& stream, LogType logType) : sbuffer (stream, logType)
+bool LoggerStreamBuffer::AddLogger (LoggerInterface* externalLogger)
+{
+    auto ret = loggerList.insert (std::unique_ptr<LoggerInterface> (externalLogger));
+
+    if (ret.second)
+    {
+        externalLogger->init ();
+    }
+
+    return true; //ret.second;
+}
+
+bool LoggerStream::AddLogger (LoggerInterface* externalLogger)
+{
+    if (externalLogger == nullptr)
+    {
+        return false;
+    }
+
+    return sbuffer.AddLogger (externalLogger);
+}
+
+LoggerStream::LoggerStream (LogType logType) : sbuffer (logType)
 {
     this->rdbuf (&sbuffer);
 }

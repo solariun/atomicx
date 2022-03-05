@@ -58,4 +58,11 @@ private:
 
 };
 
+class SerialLogger : public LoggerInterface
+{
+protected:
+    virtual void init () override;
+    virtual void flush (LogType logType, const std::string& strMessage) override;
+};
+
 #endif

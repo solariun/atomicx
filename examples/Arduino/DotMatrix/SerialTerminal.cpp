@@ -64,3 +64,20 @@ const char* SerialTerminal::GetName ()
 {
     return "SerialTerm";
 }
+
+void SerialLogger::init ()
+{ 
+}
+
+void SerialLogger::flush (LogType logType, const std::string& strMessage)
+{
+    if (Serial)
+    {
+        Serial.printf ("\r\e[K%-12u", millis ());
+        Serial.print (" [");
+        Serial.print (LOG::GetLogTypeName (logType));
+        Serial.print ("] ");
+        Serial.println (strMessage.c_str ());
+        Serial.flush ();
+    }
+}
