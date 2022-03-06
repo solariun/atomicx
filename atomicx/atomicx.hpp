@@ -1387,6 +1387,22 @@ namespace thread
             return bRet;
         }
 
+        /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * Public part for the implementation
+         * ------------------------------
+         */
+         /**
+         * @brief The default broadcast handler used to received the message
+         * 
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         */
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
+
     /**
      *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
      */
@@ -1425,16 +1441,6 @@ namespace thread
          * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
          */
         void SetReceiveBroadcast (bool bBroadcastStatus);
-
-        /**
-         * @brief The default broadcast handler used to received the message
-         * 
-         * @param messageReference Works as the signaling
-         * @param message   Message structure with the message
-         *                  message is the payload
-         *                  tag is the meaning
-         */
-        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
 
         /**
          * @brief Set the Stack Increase Pace object
@@ -1616,11 +1622,13 @@ namespace thread
          * @tparam T        Type of the reference pointer
          * @param nMessage  the size_t message to be received
          * @param refVar    the reference pointer used as a notifier
-         * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
+         * @param nTag      the size_t tag that will give meaning to the the message
          * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
          * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
          *                  type of wait/notify, deafault == aSubType::wait
          * @return true if it was successfully received.
+         * 
+         * @note if tag is set to zero Waits will return false on call.
          */
         template<typename T> bool Wait(size_t& nMessage, T& refVar, size_t nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
         {
@@ -1669,12 +1677,12 @@ namespace thread
         }
         
             /**
-         * @brief Blocks/Waits a notification along with a message and tag from a specific reference pointer
+         * @brief Blocks/Waits for any notification from a specific reference pointer and reports message and tag
          *
          * @tparam T        Type of the reference pointer
-         * @param nMessage  the size_t message to be received
+         * @param nMessage  return ref size_t message received
          * @param refVar    the reference pointer used as a notifier
-         * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
+         * @param nTag      return ref size_t tag that will give meaning to the the message
          * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
          * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
          *                  type of wait/notify, deafault == aSubType::wait
@@ -1708,11 +1716,11 @@ namespace thread
         }
 
         /**
-         * @brief Blocks/Waits a notification along with a tag from a specific reference pointer
+         * @brief Blocks/Waits for any notification from a specific reference pointer and also return the tag
          *
          * @tparam T        Type of the reference pointer
          * @param refVar    the reference pointer used as a notifier
-         * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
+         * @param nTag      return ref size_t tag that will give meaning to the the message
          * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
          * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
          *                  type of wait/notify, deafault == aSubType::wait

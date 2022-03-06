@@ -68,7 +68,7 @@ uint8_t ParseOption (const std::string& commandLine, uint8_t nCommandIndex, std:
 
     for (char chChar : commandLine)
     {
-        thread::atomicx::GetCurrent()->Yield (0);
+        thread::atomicx::GetCurrent()->Yield (1);
 
         if (currentState == state::NoText)
         {
@@ -170,7 +170,7 @@ inline int TerminalInterface::WaitForClientData (int &nChars)
 {
     nChars = 0;
 
-    for (nChars = 0;IsConnected () && (nChars = m_client.available ()) == 0; Yield ());
+    for (nChars = 0;IsConnected () && (nChars = m_client.available ()) == 0; Yield (2));
 
     return nChars;
 }

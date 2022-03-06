@@ -31,7 +31,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
         CLK            -> D5  (Same Pin for WEMOS)
     ```
 
-* Added WaiyAny, that extends the Wait/Notify functionality, since it will also receive ANY TAG. giving the developer to create a full Client / Service infra structure since now it will also report what TAG was received.
+* Added WaiTAny, that extends the Wait/Notify functionality, since it will also receive, and return by reference, ANY TAG. giving the developer ability to easily create a full Client / Service infra structure.
 
 * Dropping BROKER functionality, and welcoming **Broadcasting** functionality, it will enable a thread to receive all broadcasts asynchronously sent by other threads, only by enabling it and implementing the handler :
     ```cpp 

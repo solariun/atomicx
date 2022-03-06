@@ -54,6 +54,8 @@ const char* commands::System::GetCommandDescription ()
 
 bool commands::System::Execute (Stream& client, const std::string& commandLine)
 {
+    thread::atomicx::GetCurrent()->Yield (10); 
+    
     client.println ("Message displaying ------------------");
     client.println (util::GetDisplayMessage().c_str ());
     client.println ("ESP8266 System ------------------");
@@ -62,7 +64,7 @@ bool commands::System::Execute (Stream& client, const std::string& commandLine)
     client.printf ("%-20s: [%uMhz]\r\n", "CPU Freequency", system_get_cpu_freq ());
     client.printf ("%-20s: [%u Bytes]\r\n", "Memory", system_get_free_heap_size ());
 
-    thread::atomicx::GetCurrent()->Yield (0); 
+    thread::atomicx::GetCurrent()->Yield (10); 
 
     if (WiFi.status () != WL_NO_SHIELD)
     {
@@ -70,7 +72,7 @@ bool commands::System::Execute (Stream& client, const std::string& commandLine)
         client.printf ("%-20s: (%u)\r\n", "Status", WiFi.status ());
         client.printf ("%-20s: [%s]\r\n", "Mac Address", WiFi.macAddress ().c_str ());
 
-        thread::atomicx::GetCurrent()->Yield (0); 
+        thread::atomicx::GetCurrent()->Yield (10); 
 
         if (WiFi.status () == WL_CONNECTED)
         {
@@ -82,7 +84,7 @@ bool commands::System::Execute (Stream& client, const std::string& commandLine)
             client.printf ("%-20s: [%s]\r\n", "Gateway", WiFi.gatewayIP ().toString ().c_str ());
             client.printf ("%-20s: [%s]\r\n", "DNS", WiFi.dnsIP ().toString ().c_str ());
 
-            thread::atomicx::GetCurrent()->Yield (0); 
+            thread::atomicx::GetCurrent()->Yield (10); 
 
         }
         else
@@ -91,7 +93,7 @@ bool commands::System::Execute (Stream& client, const std::string& commandLine)
         }
     }
 
-    thread::atomicx::GetCurrent()->Yield (0); 
+    thread::atomicx::GetCurrent()->Yield (10); 
 
     client.println ("-[Process]----------------------");
 

@@ -130,7 +130,7 @@ bool TextScroller::begin()
     if (nCounter) do
     {            
         lc.shutdown (nCounter, false);  // The MAX72XX is in power-saving mode on startup
-        lc.setIntensity (nCounter, 1);  // Set the brightness to maximum value
+        lc.setIntensity (nCounter, 0);  // Set the brightness to maximum value
         lc.clearDisplay (nCounter);     // and clear the display
 
     } while (nCounter--);

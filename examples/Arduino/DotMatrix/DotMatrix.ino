@@ -80,7 +80,7 @@ void Atomicx_SleepTick(atomicx_time nSleep)
 */
 
 //Dot Matrix text scroller service
-TextScroller Matrix (6);
+TextScroller Matrix (1);
 
 //Listnet Service
 ListenerServer NetworkServices (10);
@@ -116,7 +116,7 @@ protected:
         atomicx_time last = GetCurrentTick () + 2000;
         uint8_t nScrollStage = 0;
 
-        Matrix.SetSpeed (4);
+        Matrix.SetSpeed (2);
 
         for(;;)
         {
@@ -195,7 +195,7 @@ void setup()
     Serial.flush ();
 
     logger.AddLogger (new SerialLogger ());
-    
+
     thread::atomicx::Start();
 
     Serial.println (F("FULL DEADLOCK ------------------------------------"));

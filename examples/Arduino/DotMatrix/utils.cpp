@@ -26,7 +26,7 @@ void ListAllThreads(Stream& client)
 
     for (auto& th : *(thread::atomicx::GetCurrent()))
     {
-        thread::atomicx::GetCurrent()->Yield (0); 
+        thread::atomicx::GetCurrent()->Yield (10); 
 
         client.printf ("\eK%c%-3u %-8zu '%-20s' nc:%-6u stk:(%6zub/%6zub) sts:(%-3u,%-3u) last: %ums\r\n",
             thread::atomicx::GetCurrent() == &th ? '* ' : ' ', ++nCount, 
