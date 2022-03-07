@@ -107,7 +107,7 @@ private:
     LogType m_logType;
     std::string m_strMessage;
 
-    std::set<std::unique_ptr<LoggerInterface>> loggerList;
+    static std::set<std::unique_ptr<LoggerInterface>> loggerList;
 };
 
 class LoggerStream : public std::ostream

@@ -1389,109 +1389,6 @@ namespace thread
 
         /**
          * ------------------------------
-         * MESSAGE BROADCAST IMPLEMENTATION
-         * Public part for the implementation
-         * ------------------------------
-         */
-         /**
-         * @brief The default broadcast handler used to received the message
-         * 
-         * @param messageReference Works as the signaling
-         * @param message   Message structure with the message
-         *                  message is the payload
-         *                  tag is the meaning
-         */
-        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
-
-    /**
-     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
-     */
-    protected:
-
-        /**
-         * @brief The pure virtual function that runs the thread loop
-         *
-         * @note REQUIRED implementation and once it returns it will execute finish method
-         */
-        virtual void run(void) noexcept = 0;
-
-        /**
-         * @brief Handles the StackOverflow of the current thread
-         *
-         * @note REQUIRED
-         */
-        virtual void StackOverflowHandler(void) noexcept = 0;
-
-        /**
-         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
-         *
-         * @note if not implemented a default "empty" call is used instead
-         */
-        virtual void finish() noexcept;
-
-        /**
-         * ------------------------------
-         * MESSAGE BROADCAST IMPLEMENTATION
-         * ------------------------------
-         */
-
-        /**
-         * @brief Enable or Disable async broadcast 
-         * 
-         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
-         */
-        void SetReceiveBroadcast (bool bBroadcastStatus);
-
-        /**
-         * @brief Set the Stack Increase Pace object
-         *
-         * @param nIncreasePace The new stack increase pace value
-         */
-        void SetStackIncreasePace(size_t nIncreasePace);
-
-       template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
-        {
-            if (thr.m_aSubStatus == subType &&
-                thr.m_aStatus == aTypes::wait &&
-                thr.m_pLockId == (void*) &refVar &&
-                (thr.m_lockMessage.tag == 0 || nTag == thr.m_lockMessage.tag))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-         * @brief Safely notify all LookForWaitings from a specific reference pointer along with a message without triggering context change
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification
-         *
-         * @return true     if at least one got notified, otherwise false.
-         */
-        template<typename T> size_t SafeNotifyLookWaitings(T& refVar, size_t nTag)
-        {
-            size_t message=0;
-
-            return SafeNotifier(message, refVar, nTag, aSubTypes::look, NotifyType::all);
-        }
-
-        /**
-         * @brief Broadcast a message to all threads
-         *
-         * @param messageReference Works as the signaling
-         * @param message   Message structure with the message
-         *                  message is the payload
-         *                  tag is the meaning
-         *
-         * @return size_t
-         */
-        size_t BroadcastMessage (const size_t messageReference, const Message message);
-
-        /**
-         * ------------------------------
          * SMART WAIT/NOTIFY  IMPLEMENTATION
          * ------------------------------
          */
@@ -1676,7 +1573,7 @@ namespace thread
             return Wait (nMessage, refVar, nTag, waitFor, asubType);
         }
         
-            /**
+        /**
          * @brief Blocks/Waits for any notification from a specific reference pointer and reports message and tag
          *
          * @tparam T        Type of the reference pointer
@@ -1735,16 +1632,131 @@ namespace thread
         }
 
         /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * Public part for the implementation
+         * ------------------------------
+         */
+
+        /**
+         * @brief Broadcast a message to all threads
+         *
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         *
+         * @return size_t
+         */
+        size_t BroadcastMessage (const size_t messageReference, const Message message);
+
+    /**
+     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
+     */
+    protected:
+
+        /**
+         * @brief The pure virtual function that runs the thread loop
+         *
+         * @note REQUIRED implementation and once it returns it will execute finish method
+         */
+        virtual void run(void) noexcept = 0;
+
+        /**
+         * @brief Handles the StackOverflow of the current thread
+         *
+         * @note REQUIRED
+         */
+        virtual void StackOverflowHandler(void) noexcept = 0;
+
+        /**
+         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
+         *
+         * @note if not implemented a default "empty" call is used instead
+         */
+        virtual void finish() noexcept;
+
+        /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * ------------------------------
+         */
+
+         /**
+         * @brief The default broadcast handler used to received the message
+         * 
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         */
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
+        
+        /**
+         * @brief Enable or Disable async broadcast 
+         * 
+         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
+         */
+        void SetReceiveBroadcast (bool bBroadcastStatus);
+
+        /**
+         * @brief Set the Stack Increase Pace object
+         *
+         * @param nIncreasePace The new stack increase pace value
+         */
+        void SetStackIncreasePace(size_t nIncreasePace);
+
+        /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */
     private:
 
         /**
+         * @brief Report is the current thread, refVar, ntag and subType is eligible to receive a notification 
+         * 
+         * @tparam T        the object used as the reference pointer
+         * @param thr       The thread to be notified
+         * @param refVar    The reference pointer used as a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param subType   The subtype of the type::wait
+         * 
+         * @return false    if the current thread can not be notified with the given configuration, otherwise true
+         */
+        template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
+        {
+            if (thr.m_aSubStatus == subType &&
+                thr.m_aStatus == aTypes::wait &&
+                thr.m_pLockId == (void*) &refVar &&
+                (thr.m_lockMessage.tag == 0 || nTag == thr.m_lockMessage.tag))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @brief Safely notify all LookForWaitings from a specific reference pointer along with a message without triggering context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used as a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SafeNotifyLookWaitings(T& refVar, size_t nTag)
+        {
+            size_t message=0;
+
+            return SafeNotifier(message, refVar, nTag, aSubTypes::look, NotifyType::all);
+        }
+        
+        /**
          * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
          *
          * @tparam T        Type of the reference pointer
          * @param nMessage  The size_t message to be sent
-         * @param refVar    The reference pointer used a a notifier
+         * @param refVar    The reference pointer used as a notifier
          * @param nTag      The size_t tag that will give meaning to the notification
          * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
          *                  refVar waiting thread will be notified.
@@ -1784,6 +1796,14 @@ namespace thread
          */
         void SetDefaultInitializations ();
 
+        /**
+         * @brief Configure the Wait parameters for the current thread.
+         * 
+         * @tparam T 
+         * @param refVar 
+         * @param nTag 
+         * @param asubType 
+         */
         template<typename T> void SetWaitParammeters (T& refVar, size_t nTag, aSubTypes asubType = aSubTypes::wait)
         {
             m_pLockId = (uint8_t*)&refVar;

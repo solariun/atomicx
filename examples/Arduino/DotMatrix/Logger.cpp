@@ -18,6 +18,9 @@
 
 #include "Logger.hpp"
 
+// initializing static list
+std::set<std::unique_ptr<LoggerInterface>> LoggerStreamBuffer::loggerList = {};
+
 LoggerStream logger (LogType::Debug);
 
 LoggerInterface::~LoggerInterface ()
