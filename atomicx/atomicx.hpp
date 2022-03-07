@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <setjmp.h>
+#include <string.h>
 
 /* Official version */
 #define ATOMICX_VERSION "1.2.1"
@@ -1288,7 +1289,7 @@ namespace thread
          * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
          *                  type of wait/notify, deafault == aSubType::wait
          *
-         * @return true     if at least one got notified, otherwise false.
+         * @return 0        if no thread gets notified or timeout otherwise how much threads notified
          */
         template<typename T> size_t SyncNotify(size_t& nMessage, T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
         {
@@ -1404,15 +1405,13 @@ namespace thread
          *
          * @return true There is thread waiting for the given refVar/nTag
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, atomicx_time waitFor)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, Timeout waitFor)
         {
-            Timeout timeout (waitFor);
-
-            while ((waitFor == 0 || timeout.IsTimedout () == false) && IsWaiting(refVar, nTag, hasAtleast) == false)
+            while (waitFor.IsTimedout () == false && IsWaiting(refVar, nTag, hasAtleast) == false)
             {
                 SetWaitParammeters (refVar, nTag, aSubTypes::look);
 
-                Yield(waitFor);
+                Yield(waitFor.GetRemaining ());
 
                 m_lockMessage = {0,0};
 
@@ -1420,15 +1419,9 @@ namespace thread
                 {
                     return false;
                 }
-
-                // Decrease the timeout time to slice the remaining time otherwise break it
-                if (waitFor  == 0 || (waitFor = timeout.GetRemaining ()) == 0)
-                {
-                    break;
-                }
             }
 
-            return (timeout.IsTimedout ()) ? false : true;
+            return (waitFor.IsTimedout ()) ? false : true;
         }
 
         /**
@@ -1707,6 +1700,111 @@ namespace thread
         void SetStackIncreasePace(size_t nIncreasePace);
 
         /**
+         *   SEND AND RECEIVE DATA USING DATA PIPES 
+         *   to 1 to many
+         */
+        
+        enum class TransferState : uint8_t
+        {
+            ready,
+            start,
+            transfering,
+            end
+        };
+
+        template<typename T> uint16_t Send (T& refVar, uint8_t* pData, uint16_t nDataSize, Timeout timeout)
+        {
+            size_t nReceivers = 0;
+
+            if (pData == nullptr || nDataSize == 0) return 0;
+
+            // Starting
+            if ((nReceivers = SyncNotify (nDataSize, refVar, (size_t) TransferState::start, timeout.GetRemaining ())) == 0)
+            {
+                // There is no reader listening the same refVar
+                return 0;
+            }
+
+            uint8_t nMessage [sizeof (size_t)];
+            const uint8_t nPayloadSize = sizeof (size_t)-1;
+            uint16_t nDataSent = 0;
+
+            // Transfering
+            while (nDataSize && ! timeout.IsTimedout ())
+            {
+                 nMessage [0] = nDataSize > (nPayloadSize) ? nDataSize : nPayloadSize;
+                 
+                if (! (memcpy ((void*) &nMessage[1], pData, nMessage [0]) != nullptr 
+                   && LookForWaitings(refVar, (size_t) TransferState::transfering, timeout.GetRemaining (), nReceivers) 
+                   && ! timeout.IsTimedout ()
+                   && SyncNotify ((size_t) *nMessage, refVar, TransferState::transfering, timeout.GetRemaining ())))
+                {
+                    return 0;
+                }
+
+                nDataSize -= (size_t) nMessage [0];
+                pData += (size_t) nMessage [0];
+                nDataSent += (size_t) nMessage [0];
+            }
+
+            // Finishing
+            if (! (LookForWaitings(refVar, (size_t) TransferState::end, timeout.GetRemaining (), nReceivers) 
+                   && ! timeout.IsTimedout () 
+                   && SyncNotify (nDataSent, refVar, (size_t) TransferState::end, timeout.GetRemaining ())))
+            {
+                return 0;
+            }
+
+            return nDataSize;
+        }
+
+        template<typename T> uint16_t Receive (T& refVar, uint8_t* pData, uint16_t nDataSize, Timeout timeout)
+        {
+            size_t nMessage = 0;
+            size_t nTag = 0;
+            TransferState state = TransferState::ready;
+        
+            uint8_t  nWriteLen = 0;
+            uint16_t nReceivedLen = 0;
+
+            if (pData == nullptr || nDataSize == 0) return 0;
+
+            while (! timeout.IsTimedout () && WaitAny (nMessage, refVar, nTag, timeout.GetRemaining ()) && nReceivedLen < nDataSize)
+            {
+                if (state  == TransferState::ready) //Wait to start
+                {
+                    if ((TransferState) nTag == TransferState::start)
+                    {
+                        state = TransferState::transfering;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if (state == TransferState::transfering && state == (TransferState) nTag) // transfering
+                {
+                    uint8_t* nPayload = (uint8_t*) &nMessage;
+                    nWriteLen = (nReceivedLen + nPayload [0]) > nDataSize ? (nDataSize - nReceivedLen) : nPayload [0];
+
+                    if (memcpy (pData, &nPayload[1], nWriteLen) == nullptr)
+                    {
+                        return 0;
+                    }
+
+                    pData += nPayload [0];
+                    nReceivedLen += nPayload [0];
+                }
+                else if (state == TransferState::transfering && state == (TransferState) TransferState::end)
+                {
+                    break;
+                }
+            }
+
+            return timeout.IsTimedout () ? 0 : nReceivedLen;
+        }
+
+        /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
          */
     private:
@@ -1750,7 +1848,7 @@ namespace thread
 
             return SafeNotifier(message, refVar, nTag, aSubTypes::look, NotifyType::all);
         }
-        
+
         /**
          * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
          *
