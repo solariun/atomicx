@@ -1706,12 +1706,14 @@ namespace thread
         
         enum class TransferState : uint8_t
         {
-            ready,
-            start,
-            transfering,
-            end
+            ready=10,
+            start=11,
+            transfering=12,
+            end=13
         };
 
+        typedef uint16_t tranfer_t;
+        
         template<typename T> uint16_t Send (T& refVar, uint8_t* pData, uint16_t nDataSize, Timeout timeout)
         {
             size_t nReceivers = 0;
@@ -1725,19 +1727,19 @@ namespace thread
                 return 0;
             }
 
-            uint8_t nMessage [sizeof (size_t)];
-            const uint8_t nPayloadSize = sizeof (size_t)-1;
+            uint8_t nMessage [sizeof (tranfer_t)];
+            const uint8_t nPayloadSize = sizeof (tranfer_t)-1;
             uint16_t nDataSent = 0;
-
+            
             // Transfering
             while (nDataSize && ! timeout.IsTimedout ())
             {
-                 nMessage [0] = nDataSize > (nPayloadSize) ? nDataSize : nPayloadSize;
-                 
+                 nMessage [0] = nDataSize < (nPayloadSize) ? nDataSize : nPayloadSize;
+                                             
                 if (! (memcpy ((void*) &nMessage[1], pData, nMessage [0]) != nullptr 
-                   && LookForWaitings(refVar, (size_t) TransferState::transfering, timeout.GetRemaining (), nReceivers) 
+                   && LookForWaitings(refVar, (size_t) TransferState::transfering, (size_t) nReceivers, timeout.GetRemaining ())
                    && ! timeout.IsTimedout ()
-                   && SyncNotify ((size_t) *nMessage, refVar, TransferState::transfering, timeout.GetRemaining ())))
+                   && SyncNotify (*((size_t*) nMessage), refVar, (size_t) TransferState::transfering, timeout.GetRemaining ())))
                 {
                     return 0;
                 }
@@ -1748,14 +1750,13 @@ namespace thread
             }
 
             // Finishing
-            if (! (LookForWaitings(refVar, (size_t) TransferState::end, timeout.GetRemaining (), nReceivers) 
-                   && ! timeout.IsTimedout () 
-                   && SyncNotify (nDataSent, refVar, (size_t) TransferState::end, timeout.GetRemaining ())))
+            if (! (! timeout.IsTimedout () && LookForWaitings(refVar, (size_t) TransferState::transfering, (size_t) nReceivers, timeout.GetRemaining ()) && ! timeout.IsTimedout ()
+                && SyncNotify (nDataSent, refVar, (size_t) TransferState::end, timeout.GetRemaining ())))
             {
                 return 0;
             }
 
-            return nDataSize;
+            return nDataSent;
         }
 
         template<typename T> uint16_t Receive (T& refVar, uint8_t* pData, uint16_t nDataSize, Timeout timeout)
@@ -1769,9 +1770,10 @@ namespace thread
 
             if (pData == nullptr || nDataSize == 0) return 0;
 
-            while (! timeout.IsTimedout () && WaitAny (nMessage, refVar, nTag, timeout.GetRemaining ()) && nReceivedLen < nDataSize)
+            while (! timeout.IsTimedout () && WaitAny (nMessage, refVar, nTag, timeout.GetRemaining ()))
             {
-                if (state  == TransferState::ready) //Wait to start
+                //Wait to start
+                if (state  == TransferState::ready)
                 {
                     if ((TransferState) nTag == TransferState::start)
                     {
@@ -1782,8 +1784,9 @@ namespace thread
                         continue;
                     }
                 }
-                else if (state == TransferState::transfering && state == (TransferState) nTag) // transfering
+                else if (state == TransferState::transfering && state == (TransferState) nTag && nReceivedLen < nDataSize) // transfering
                 {
+                    // Transfering
                     uint8_t* nPayload = (uint8_t*) &nMessage;
                     nWriteLen = (nReceivedLen + nPayload [0]) > nDataSize ? (nDataSize - nReceivedLen) : nPayload [0];
 
@@ -1795,12 +1798,13 @@ namespace thread
                     pData += nPayload [0];
                     nReceivedLen += nPayload [0];
                 }
-                else if (state == TransferState::transfering && state == (TransferState) TransferState::end)
+                else if (state == TransferState::transfering && (TransferState) nTag == TransferState::end)
                 {
+                    // Ending
                     break;
                 }
             }
-
+            
             return timeout.IsTimedout () ? 0 : nReceivedLen;
         }
 
@@ -1825,7 +1829,7 @@ namespace thread
             if (thr.m_aSubStatus == subType &&
                 thr.m_aStatus == aTypes::wait &&
                 thr.m_pLockId == (void*) &refVar &&
-                (thr.m_lockMessage.tag == 0 || nTag == thr.m_lockMessage.tag))
+                (nTag == 0 || thr.m_lockMessage.tag == 0 || nTag == thr.m_lockMessage.tag))
             {
                 return true;
             }

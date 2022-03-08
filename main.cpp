@@ -49,6 +49,12 @@ void Atomicx_SleepTick(atomicx_time nSleep)
 
 size_t nGlobalCount = 0;
 
+struct transf
+{
+    size_t Counter;
+    char   pszData[80];
+};
+
 class ThreadConsummer : public atomicx
 {
 public:
@@ -68,17 +74,19 @@ public:
 
     void run(void) noexcept override
     {
-        size_t nTag = 0;
+        size_t nReceived;
 
         for (;;)
         {
-            if (WaitAny (nGlobalCount, nTag, 2000))
+            transf tr = {.Counter=19, .pszData=""};
+            
+            if ((nReceived = Receive(nGlobalCount, (uint8_t*) &tr, (uint16_t) sizeof (tr), 1000)))
             {
-                printf ("Receiver: nTag: %zu, GlobalCounter: %zu\n", nTag, nGlobalCount);
+                printf ("Receiver: nReceived: %zu, Counter: %zu (%s)\n", nReceived, tr.Counter, tr.pszData);
             }
             else
             {
-                printf ("Receiver: failed to received...\n");
+                printf ("Receiver: failed receive...\n");
                 ListAllThreads();
             }
         }
@@ -115,20 +123,21 @@ public:
 
     void run() noexcept override
     {
+        transf tr { .Counter=0, .pszData=""};
+        
         for (;;)
         {
-            nGlobalCount++;
-
-            if (SyncNotify (nGlobalCount, GetID(), 1000) == false)
+            tr.Counter ++;
+            snprintf(tr.pszData, sizeof tr.pszData, "Counter: %zu", tr.Counter);
+            
+            if (Send (nGlobalCount, (uint8_t*) &tr, (uint16_t) sizeof (tr), 1000) == false)
             {
-                printf ("Publish %zu: (%s) Failed to notify received.\n", GetID(), GetName ());
+                printf ("Publish %zu: (%s) Failed to send data.\n", GetID(), GetName ());
             }
             else
             {
-                printf ("%zu: (%s) Published..\n", GetID(), GetName ());
+                printf ("%zu: (%s) Data Sent..\n", GetID(), GetName ());
             }
-            
-            Yield (1);
         }
 
     }
@@ -163,9 +172,9 @@ int main()
 {
 
     Thread t1(1000, "Producer 1");
-    Thread t2(1000, "Producer 2");
-    Thread t3(1000, "Producer 3");
-    Thread t4(1000, "Producer 4");
+    //Thread t2(1000, "Producer 2");
+    //Thread t3(1000, "Producer 3");
+    //Thread t4(1000, "Producer 4");
     
     ThreadConsummer e1(500, "Consumer 1");
     

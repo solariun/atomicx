@@ -156,11 +156,7 @@ protected:
 
                         nScrollStage++;
                     }                    
-                }    
-                else if (nTag == 2 && nMessage > 0)
-                {
-                    
-                }            
+                }
             }
             //Serial.println ("System routine.");
         }
