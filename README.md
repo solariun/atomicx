@@ -137,7 +137,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 * **DOES NOT DISPLACE STACK, IT WILL STILL AVAILABLE FOR PROCESSING**, the *Stack Page* will only hold a backup of the most necessary information needed, allowing stacks in few bites most if the time. This implementation if highly suitable for Microcontrollers like ATINY85, for example, that only has 512 bites, and you can have 5 or more threads doing things for you, only backup the most important context information.
 
-*  **STACK MEMORY ARE PROTECTED** by nature and confined to the context execution only, if you want to exchange non-data global use `atomicx::send` and `atomicx::receive`.
+*  **STACK MEMORY ARE PROTECTED** by nature and confined to the context execution only, if you want to exchange non-data global use `atomicx::Send` and `atomicx::Receive`.
      * *IMPORTANT*: DO NOT USE CONTEXT(stack) MEMORY POINTER to exchange information to other threads, extractables like wait/notify, lock uses global memory instead. All threads will use the *default stack memory* which is protected during execution, instead use Global variables, allocated memory or atomicx_smart_ptr objects. Alternatively use `atomicx::send` and `atomicx::receive` to transport stack, global or heap memory data.
 
 * Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads. 
