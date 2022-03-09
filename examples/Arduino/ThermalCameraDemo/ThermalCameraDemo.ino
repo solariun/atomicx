@@ -51,7 +51,6 @@ const int byteImagesLen = sizeof (byteImages) / 8;
 
 atomicx_time Atomicx_GetTick(void)
 {
-    ::yield();
     return millis();
 }
 

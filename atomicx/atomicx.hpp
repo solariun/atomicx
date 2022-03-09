@@ -8,21 +8,31 @@
 #ifndef atomic_hpp
 #define atomic_hpp
 
+#include <stdio.h>
+#include <unistd.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <setjmp.h>
+#include <string.h>
 
 /* Official version */
-#define ATOMICX_VERSION "1.2.1"
+#define ATOMICX_VERSION "1.3.0"
 #define ATOMIC_VERSION_LABEL "AtomicX v" ATOMICX_VERSION " built at " __TIMESTAMP__
 
 using atomicx_time = uint32_t;
 
 #define ATOMICX_TIME_MAX ((atomicx_time) ~0)
 
-extern "C"
+/**
+ * @brief Calculate the stack size based on MCU channel size 8, 16, 32, 64 bits multiples
+ * 
+ * @param units  Number of units
+ * 
+ * @return  size_t  return units * (MCU channel size)
+ */
+constexpr size_t CALCSTACKSIZE(size_t units)
 {
-    extern void yield(void);
+    return units * sizeof (size_t);
 }
 
 /**
@@ -44,6 +54,192 @@ extern void Atomicx_SleepTick(atomicx_time nSleep);
 
 namespace thread
 {
+    /**
+     * @brief General purpose iterator facility
+     * 
+     * @tparam T 
+     */
+    template <typename T> class iterator
+    {
+    public:
+        iterator() = delete;
+
+        /**
+         * @brief Type based constructor
+         *
+         * @param ptr Type pointer to iterate
+         */
+        iterator(T*  ptr) : m_ptr(ptr)
+        {}
+
+        /*
+        * Access operator
+        */
+        T& operator*()
+        {
+            return *m_ptr;
+        }
+        T* operator->()
+        {
+            return &m_ptr;
+        }
+
+        /*
+        * Movement operator
+        */
+        iterator& operator++()
+        {
+            if (m_ptr != nullptr)
+            {
+                m_ptr = m_ptr->operator++ ();
+            }
+            
+            return *this;
+        }
+
+        /*
+        * Binary operators
+        */
+        friend bool operator== (const iterator& a, const iterator& b){ return a.m_ptr == b.m_ptr;};
+        friend bool operator!= (const iterator& a, const iterator& b){ return a.m_ptr != b.m_ptr;};
+
+    private:
+        T* m_ptr = nullptr;
+    };
+
+    /**
+     * @brief Link Item to turn any object attachable to LinkList
+     * 
+     * @tparam T    Type to be managed
+     */
+    template<class T>class LinkItem
+    {
+    public:
+
+        /**
+         * @brief Easy way to have access to the item object
+         * 
+         * @return T&   Referece to the item object
+         */
+        T& operator()()
+        {
+            return (T&)*this;
+        }
+
+        T* operator++ (void)
+        {
+            return next;
+        }
+    private:
+        template<class U> friend class LinkList;
+        template <typename U> friend class iterator;
+
+        LinkItem<T>* next = nullptr;
+        LinkItem<T>* prev = nullptr;
+    };
+
+    /**
+     * @brief List of attachable object by extending LinkItem
+     * 
+     * @tparam T    Type of the object
+     * 
+     * @note    Note that this does not create memory, it uses next/prev added to the object 
+     *          by extending the object to LinkItem and manages it life cycle, is automatically
+     *          inserted and deleted on instantiation and object destruction.
+     */
+    template<class T>class LinkList
+    {
+    public:
+
+        /**
+         * @brief Attach a LinkItem enabled object to the list
+         * 
+         * @param listItem  The object
+         * 
+         * @return true if it was successfull attached
+         */
+        bool AttachBack(LinkItem<T>& listItem)
+        {
+            if (first == nullptr)
+            {
+                first = &listItem;
+                last = first;
+            }
+            else
+            {
+                listItem.prev = last;
+                last->next = &listItem;
+                last = &listItem;
+            }
+
+            return true;
+        }
+
+        /**
+         * @brief Detach a specifc LinkItem from the managed list
+         * 
+         * @param listItem  LinkIntem enabled object to be deleted
+         * 
+         * @return true     if successfull detached
+         */
+        bool Detach(LinkItem<T>& listItem)
+        {
+            if (listItem.next == nullptr && listItem.prev == nullptr)
+            {
+                first = nullptr;
+                listItem.prev = nullptr;
+                current = nullptr;
+            }
+            else if (listItem.prev == nullptr)
+            {
+                listItem.next->prev = nullptr;
+                first = listItem.next;
+                current = first;
+            }
+            else if (listItem.next == nullptr)
+            {
+                listItem.prev->next = nullptr;
+                last = listItem.prev;
+                current = last;
+            }
+            else
+            {
+                listItem.prev->next = listItem.next;
+                listItem.next->prev = listItem.prev;
+                current = listItem.next->prev;
+            }
+
+            return true;
+        }
+        
+        /**
+         * @brief thread::iterator helper for signaling beginning
+         * 
+         * @return iterator<LinkItem<T>>  the first item
+         */
+        iterator<LinkItem<T>> begin()
+        {
+            return iterator<LinkItem<T>>(first);
+        }
+
+        /**
+         * @brief thread::iterator helper for signaling ending
+         * 
+         * @return iterator<LinkItem<T>>  the final of the list
+         */
+        iterator<LinkItem<T>> end()
+        {
+            return iterator<LinkItem<T>>(nullptr);
+        }
+
+    private:
+        template <typename U> friend class iterator;
+
+        LinkItem<T>* current=nullptr;
+        LinkItem<T>* first=nullptr;
+        LinkItem<T>* last=nullptr;
+    };
+
     class atomicx
     {
     public:
@@ -68,6 +264,7 @@ namespace thread
 
         enum class aSubTypes : uint8_t
         {
+            none=0,
             error=10,
             ok,
             look,
@@ -81,6 +278,12 @@ namespace thread
             all = 1
         };
 
+        struct Message
+        {
+            size_t message;
+            size_t tag;
+        };
+
         /**
          * @brief Timeout Check object
          */
@@ -88,7 +291,15 @@ namespace thread
         class Timeout
         {
             public:
-                Timeout () = delete;
+
+                /**
+                 * @brief Default construct a new Timeout object
+                 *
+                 * @note    To decrease the amount of memory, Timeout does not save
+                 *          the start time.
+                 *          Special use case: if nTimeoutValue == 0, IsTimedout is always false.
+                 */
+                Timeout ();
 
                 /**
                  * @brief Construct a new Timeout object
@@ -137,57 +348,20 @@ namespace thread
             private:
                 atomicx_time m_timeoutValue = 0;
         };
-        /**
-         * ------------------------------
-         * ITERATOR FOR THREAD LISTING
-         * ------------------------------
-         */
-        class aiterator
-        {
-        public:
-            aiterator() = delete;
-
-            /**
-             * @brief atomicx based constructor
-             *
-             * @param ptr atomicx pointer to iterate
-             */
-            aiterator(atomicx* ptr);
-
-            /*
-             * Access operator
-             */
-            atomicx& operator*() const;
-            atomicx* operator->();
-
-            /*
-             * Movement operator
-             */
-            aiterator& operator++();
-
-            /*
-             * Binary operators
-             */
-            friend bool operator== (const aiterator& a, const aiterator& b){ return a.m_ptr == b.m_ptr;};
-            friend bool operator!= (const aiterator& a, const aiterator& b){ return a.m_ptr != b.m_ptr;};
-
-        private:
-            atomicx* m_ptr;
-        };
 
         /**
          * @brief Get the beggining of the list
          *
-         * @return aiterator
+         * @return iterator<atomicx>
          */
-        aiterator begin(void);
+        iterator<atomicx> begin(void);
 
         /**
          * @brief Get the end of the list
          *
-         * @return aiterator
+         * @return iterator<atomicx>
          */
-        aiterator end(void);
+        iterator<atomicx> end(void);
 
         /**
          * ------------------------------
@@ -817,6 +991,30 @@ namespace thread
         static atomicx* GetCurrent();
 
         /**
+         * @brief Construct a new atomicx object and set initial auto stack and increase pace
+         *
+         * @param nStackSize            Initial Size of the stack
+         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
+         */
+        atomicx(size_t nStackSize=0, int nStackIncreasePace=1);
+
+        /**
+         * @brief Get the Thread pointer from a object
+         *
+         * @param threadId  The thread ID reference
+         *
+         * @return atomicx* nullprt if not found otherwise the pointer to the thread
+         */
+        static atomicx* GetThread(size_t threadId);
+
+        /**
+         * @brief Get the current Thread reference object
+         * 
+         * @return atomicx&     Current thread reference object
+         */
+        atomicx& GetThread (void);
+        
+        /**
          * @brief Once it is call the process blocks execution and start all threads
          *
          * @return false if it was destried by dead lock (all threads locked)
@@ -824,11 +1022,19 @@ namespace thread
         static bool Start(void);
 
         /**
+         * @brief Report if the kernel is already running
+         * 
+         * @return true is thread::atomicx::start is running, otherwise false
+         */
+        static bool IsKernelRunning();
+
+        /**
          * @brief Get the current thread ID
          *
          * @return size_t  Thread ID number
          */
         size_t GetID(void);
+
 
         /**
          * @brief Get the Max Stack Size for the thread
@@ -919,41 +1125,7 @@ namespace thread
          */
         template<typename T, size_t N> atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
         {
-           SetDefaultParameters();
-
-            AddThisThread();
-        }
-
-        /**
-         * @brief Construct a new atomicx object and set initial auto stack and increase pace
-         *
-         * @param nStackSize            Initial Size of the stack
-         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
-         */
-        atomicx(size_t nStackSize=0, int nStackIncreasePace=1);
-
-        /**
-         * @brief The pure virtual function that runs the thread loop
-         *
-         * @note REQUIRED implementation and once it returns it will execute finish method
-         */
-        virtual void run(void) noexcept = 0;
-
-        /**
-         * @brief Handles the StackOverflow of the current thread
-         *
-         * @note REQUIRED
-         */
-        virtual void StackOverflowHandler(void) noexcept = 0;
-
-        /**
-         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
-         *
-         * @note if not implemented a default "empty" call is used instead
-         */
-        virtual void finish() noexcept
-        {
-            return;
+           SetDefaultInitializations();
         }
 
         /**
@@ -1002,309 +1174,58 @@ namespace thread
         bool IsDynamicNiceOn();
 
         /**
-         *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
+         * @brief Return how many threads assigned
+         *
+         * @return size_t number of assigned threads
          */
-    private:
+        size_t GetThreadCount();
 
         /**
-         * @brief Set the Default Parameters for constructors
-         *
+         * @brief Atop current thread context
          */
-        void SetDefaultParameters ();
-
-        template<typename T> void SetWaitParammeters (T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
-        {
-            m_TopicId = 0;
-            m_pLockId = (uint8_t*)&refVar;
-            m_aStatus = aTypes::wait;
-            m_aSubStatus = asubType;
-
-            m_lockMessage.tag = nTag;
-            m_lockMessage.message = 0;
-        }
+        void Stop ();
 
         /**
-         * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
-         *
-         * @tparam T        Type of the reference pointer
-         * @param nMessage  The size_t message to be sent
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification
-         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
-         *                  refVar waiting thread will be notified.
-         *
-         * @return true     if at least one got notified, otherwise false.
+         * @brief Report if the current thread is stopped 
+         * 
+         * @return true if stopped otherwise false
          */
-        template<typename T> size_t SafeNotifier(size_t& nMessage, T& refVar, size_t nTag, aSubTypes subType, NotifyType notifyAll=NotifyType::one)
-        {
-            size_t nRet = 0;
-
-            for (auto& thr : *this)
-            {
-                if (thr.m_aSubStatus == subType && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && nTag == thr.m_lockMessage.tag)
-                {
-                    thr.m_TopicId = 0;
-                    thr.m_aStatus = aTypes::now;
-                    thr.m_nTargetTime = 0;
-                    thr.m_pLockId = nullptr;
-
-                    thr.m_lockMessage.message = nMessage;
-                    thr.m_lockMessage.tag = nTag;
-
-                    nRet++;
-
-                    if (notifyAll == NotifyType::one)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return nRet;
-        }
+        bool IsStopped ();
 
         /**
-         * @brief Safely notify all LookForWaitings from a specific reference pointer along with a message without triggering context change
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification
-         *
-         * @return true     if at least one got notified, otherwise false.
+         * @brief If stooped resume current thread 
          */
-        template<typename T> size_t SafeNotifyLookWaitings(T& refVar, size_t nTag)
-        {
-            size_t message=0;
-
-            return SafeNotifier(message, refVar, nTag, aSubTypes::look, NotifyType::all);
-        }
-
-    /**
-     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
-     */
-    protected:
-
-        struct Message
-        {
-            size_t tag;
-            size_t message;
-        };
+        void Resume();
 
         /**
-         * @brief calculate the Topic ID for a given topic text
-         *
-         * @param pszTopic    Topic Text in C string
-         * @param nKeyLenght  Size, in bytes + zero terminated char
-         *
-         * @return uint32_t  The calculated topic ID
+         * @brief Finish and detach the thread from the pool
+
+         * @return true successfully detached
          */
-        uint32_t GetTopicID (const char* pszTopic, size_t nKeyLenght);
+        bool Finish();
 
         /**
-         * ------------------------------
-         * SMART WAIT/NOTIFY  IMPLEMENTATION
-         * ------------------------------
+         * @brief Detach current thread from the thread controller
+         * 
+         * @return true if successful detached, otherwise zero
          */
+        void Detach();
 
         /**
-         * @brief Sync with thread call for a wait (refVar,nTag)
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer
-         * @param nTag      The notification meaning, if nTag == 0 means wait all refVar regardless
-         * @param waitFor   default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times
-         * @param hasAtleast define how minimal Wait calls to report true
-         *
-         * @return true There is thread waiting for the given refVar/nTag
+         * @brief Mark thread to be restarted, all ongoing procedures will be dropped, finish is also called
+         * 
+         * @return true if successful mask to restart, otherwise zero
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, atomicx_time waitFor)
-        {
-            Timeout timeout (waitFor);
-
-            while ((waitFor == 0 || timeout.IsTimedout () == false) && IsWaiting(refVar, nTag, hasAtleast) == false)
-            {
-                SetWaitParammeters (refVar, nTag, aSubTypes::look);
-
-                Yield(waitFor);
-
-                m_lockMessage = {0,0};
-
-                if (m_aSubStatus == aSubTypes::timeout)
-                {
-                    return false;
-                }
-
-                // Decrease the timeout time to slice the remaining time otherwise break it
-                if (waitFor  == 0 || (waitFor = timeout.GetRemaining ()) == 0)
-                {
-                    break;
-                }
-            }
-
-            return (timeout.IsTimedout ()) ? false : true;
-        }
+        void Restart();
 
         /**
-         * @brief Sync with thread call for a wait (refVar,nTag)
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer
-         * @param nTag      The notification meaning, if nTag == 0 means wait all refVar regardless
-         * @param waitFor   default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times
-         *
-         * @return true There is thread waiting for the given refVar/nTag
+         * @brief Return the pointer for the next thread
+         * 
+         * @return atomicx*  if next thread return pointer otherwise nullptr
          */
-        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, atomicx_time waitFor)
-        {
-            if (IsWaiting(refVar, nTag) == false)
-            {
-                SetWaitParammeters (refVar, nTag, aSubTypes::look);
+        atomicx* operator++ (void);
 
-                Yield(waitFor);
-
-                m_lockMessage = {0,0};
-
-                if (m_aSubStatus == aSubTypes::timeout)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /**
-         * @brief Check if there are waiting threads for a given reference pointer and tag value
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification,  if nTag == 0  mean all bTag for the refVar
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         *
-         * @return true
-         *
-         * @note This is a powerful tool since it create layers of waiting within the same reference pointer
-         */
-        template<typename T> bool IsWaiting(T& refVar, size_t nTag=0, size_t hasAtleast = 1, aSubTypes asubType = aSubTypes::wait)
-        {
-            hasAtleast = hasAtleast == 0 ? 1 : hasAtleast;
-
-            for (auto& thr : *this)
-            {
-                if (thr.m_aSubStatus == asubType && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && (thr.m_lockMessage.tag == nTag))
-                {
-                    if ((--hasAtleast) == 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        /**
-         * @brief Report how much waiting threads for a given reference pointer and tag value are there
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    The reference pointer used a a notifier
-         * @param nTag      The size_t tag that will give meaning to the notification,  if nTag == 0  mean all bTag for the refVar
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         *
-         * @return true
-         *
-         * @note This is a powerful tool since it create layers of waiting within the same reference pointer
-         */
-        template<typename T> size_t HasWaitings(T& refVar, size_t nTag=0, aSubTypes asubType = aSubTypes::wait)
-        {
-            size_t nCounter = 0;
-
-            for (auto& thr : *this)
-            {
-                if (thr.m_aSubStatus == asubType && thr.m_aStatus == aTypes::wait && thr.m_aStatus == aTypes::wait && thr.m_pLockId == (void*) &refVar && (thr.m_lockMessage.tag == nTag))
-                {
-                    nCounter++;
-                }
-            }
-
-            return nCounter;
-        }
-
-        /**
-         * @brief Blocks/Waits a notification along with a message and tag from a specific reference pointer
-         *
-         * @tparam T        Type of the reference pointer
-         * @param nMessage  the size_t message to be received
-         * @param refVar    the reference pointer used as a notifier
-         * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
-         * @param waitFor   default==0 (undefinitly), How log to wait for a notification based on atomicx_time
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         * @return true if it was successfully received.
-         */
-        template<typename T> bool Wait(size_t& nMessage, T& refVar, size_t nTag=0, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
-        {
-            SafeNotifyLookWaitings(refVar, nTag);
-
-            SetWaitParammeters (refVar, nTag, asubType);
-
-            m_lockMessage.tag = nTag;
-
-            Yield(waitFor);
-
-            bool bRet = false;
-
-            if (m_aSubStatus != aSubTypes::timeout)
-            {
-                nMessage = m_lockMessage.message;
-                bRet = true;
-            }
-
-            m_lockMessage = {0,0};
-
-            m_aSubStatus = aSubTypes::ok;
-
-            return bRet;
-        }
-
-        /**
-         * @brief Blocks/Waits a notification along with a tag from a specific reference pointer
-         *
-         * @tparam T        Type of the reference pointer
-         * @param refVar    the reference pointer used as a notifier
-         * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
-         * @param waitFor   default==0 (undefinitly), How log to wait for a notification based on atomicx_time
-         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
-         *                  type of wait/notify, deafault == aSubType::wait
-         *
-         * @return true if it was successfully received.
-         */
-        template<typename T> bool Wait(T& refVar, size_t nTag=0, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
-        {
-            SafeNotifyLookWaitings(refVar, nTag);
-
-            SetWaitParammeters (refVar, nTag, asubType);
-
-            m_lockMessage.tag = nTag;
-
-            Yield(waitFor);
-
-            bool bRet = false;
-
-            if (m_aSubStatus != aSubTypes::timeout)
-            {
-                bRet = true;
-            }
-
-            m_lockMessage = {0,0};
-            m_aSubStatus = aSubTypes::ok;
-
-            return bRet;
-        }
-
-        /**
+   /**
          * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
          *
          * @tparam T        Type of the reference pointer
@@ -1318,7 +1239,7 @@ namespace thread
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t SafeNotify(size_t& nMessage, T& refVar, size_t nTag=0,  NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t SafeNotify(size_t& nMessage, T& refVar, size_t nTag,  NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
         {
             return SafeNotifier(nMessage, refVar, nTag, asubType, notifyAll);
         }
@@ -1337,7 +1258,7 @@ namespace thread
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t Notify(size_t& nMessage, T& refVar, size_t nTag=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t Notify(size_t& nMessage, T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
         {
             size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
 
@@ -1346,7 +1267,7 @@ namespace thread
             return bRet;
         }
 
-        template<typename T> size_t Notify(size_t&& nMessage, T& refVar, size_t nTag=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t Notify(size_t&& nMessage, T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
         {
             size_t bRet = SafeNotify (nMessage, refVar, nTag, notifyAll, asubType);
 
@@ -1368,9 +1289,9 @@ namespace thread
          * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
          *                  type of wait/notify, deafault == aSubType::wait
          *
-         * @return true     if at least one got notified, otherwise false.
+         * @return 0        if no thread gets notified or timeout otherwise how much threads notified
          */
-        template<typename T> size_t SyncNotify(size_t& nMessage, T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t SyncNotify(size_t& nMessage, T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
         {
             if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
             {
@@ -1384,7 +1305,7 @@ namespace thread
             return bRet;
         }
 
-        template<typename T> size_t SyncNotify(size_t&& nMessage, T& refVar, size_t nTag=0, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t SyncNotify(size_t&& nMessage, T& refVar, size_t nTag, atomicx_time waitForWaitings=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
         {
             if (LookForWaitings (refVar, nTag, waitForWaitings) == false)
             {
@@ -1411,7 +1332,7 @@ namespace thread
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t SafeNotify(T& refVar, size_t nTag=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t SafeNotify(T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
         {
              size_t message=0;
              return SafeNotifier (message, refVar, nTag, asubType, notifyAll);
@@ -1458,7 +1379,7 @@ namespace thread
          *
          * @return true     if at least one got notified, otherwise false.
          */
-        template<typename T> size_t Notify(T& refVar, size_t nTag=0, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
+        template<typename T> size_t Notify(T& refVar, size_t nTag, NotifyType notifyAll=NotifyType::one, aSubTypes asubType = aSubTypes::wait)
         {
             size_t bRet = SafeNotify(refVar, nTag, notifyAll, asubType);
 
@@ -1469,128 +1390,416 @@ namespace thread
 
         /**
          * ------------------------------
-         * SMART BROKER IMPLEMENTATION
+         * SMART WAIT/NOTIFY  IMPLEMENTATION
          * ------------------------------
          */
 
         /**
-         * @brief Block and wait for message from a specific topic string
+         * @brief Sync with thread call for a wait (refVar,nTag)
          *
-         * @param pszKey        The Topic string
-         * @param nKeyLenght    The size of the topic string in bytes
-         * @param message       the atomicx::message structure with message and tag
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer
+         * @param nTag      The notification meaning
+         * @param waitFor   default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times
+         * @param hasAtleast define how minimal Wait calls to report true
          *
-         * @return true if it was successfully received, otherwise false
+         * @return true There is thread waiting for the given refVar/nTag
          */
-        bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght, Message& message);
-
-        /**
-         * @brief Block and wait for a notification from a specific topic string
-         *
-         * @param pszKey        The Topic string
-         * @param nKeyLenght    The size of the topic string in bytes
-         *
-         * @return true if it was successfully received, otherwise false
-         */
-        bool WaitBrokerMessage (const char* pszKey, size_t nKeyLenght);
-
-        /**
-         * @brief Publish a message for a specific topic string and trigger a context change if any delivered
-         *
-         * @param pszKey        The Topic string
-         * @param nKeyLenght    The size of the topic string in bytes
-         * @param message       the atomicx::message structure with message and tag
-         *
-         * @return true if at least one thread has received a message
-         */
-        bool Publish (const char* pszKey, size_t nKeyLenght, const Message message);
-
-        /**
-         * @brief Safely Publish a message for a specific topic string DO NOT trigger a context change if any delivered
-         *
-         * @param pszKey        The Topic string
-         * @param nKeyLenght    The size of the topic string in bytes
-         * @param message       the atomicx::message structure with message and tag
-         *
-         * @return true if at least one thread has received a message
-         *
-         * @note Ideal for been used with interrupt request
-         */
-        bool SafePublish (const char* pszKey, size_t nKeyLenght, const Message message);
-
-        /**
-         * @brief Publish a notification for a specific topic string and trigger a context change if any delivered
-         *
-         * @param pszKey        The Topic string
-         * @param nKeyLenght    The size of the topic string in bytes
-         *
-         * @return true if at least one thread has received a message
-         */
-        bool Publish (const char* pszKey, size_t nKeyLenght);
-
-        /**
-         * @brief Safely Publish a notification for a specific topic string DO NOT trigger a context change if any delivered
-         *
-         * @param pszKey        The Topic string
-         * @param nKeyLenght    The size of the topic string in bytes
-         *
-         * @return true if at least one thread has received a message
-         *
-         * @note Ideal for been used with interrupt request
-         */
-        bool SafePublish (const char* pszKey, size_t nKeyLenght);
-
-        /**
-         * @brief Check if there is subscryption for a specific Topic String
-         *
-         * @param pszTopic      The Topic string in C string
-         * @param nKeyLenght    The Topic C string length in bytes
-         *
-         * @return true if any substriction is found, otherwise false
-         */
-        bool HasSubscriptions (const char* pszTopic, size_t nKeyLenght);
-
-        /**
-         * @brief Check if there is subscryption for a specific Topic ID
-         *
-         * @param nKeyID       The Topic ID uint32_t
-         *
-         * @return true if any substriction is found, otherwise false
-         */
-        bool HasSubscriptions (uint32_t nKeyID);
-
-        /**
-         * @brief Default broker handler for a subscribed message
-         *
-         * @param pszKey        The Topic C string
-         * @param nKeyLenght    The Topic C string size in bytes
-         * @param message       The atomicx::message payload received
-         *
-         * @return true signify it was correctly processed
-         *
-         * @note Can be overloaded by the derived by the derived thread implementation and specialized,
-         *       otherwise a empty function will be called instead
-         */
-        virtual bool BrokerHandler(const char* pszKey, size_t nKeyLenght, Message& message)
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, size_t hasAtleast, Timeout waitFor)
         {
-            (void) pszKey; (void) nKeyLenght; (void) message;
+            while (waitFor.IsTimedout () == false && IsWaiting(refVar, nTag, hasAtleast) == false)
+            {
+                SetWaitParammeters (refVar, nTag, aSubTypes::look);
+
+                Yield(waitFor.GetRemaining ());
+
+                m_lockMessage = {0,0};
+
+                if (m_aSubStatus == aSubTypes::timeout)
+                {
+                    return false;
+                }
+            }
+
+            return (waitFor.IsTimedout ()) ? false : true;
+        }
+
+        /**
+         * @brief Sync with thread call for a wait (refVar,nTag)
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer
+         * @param nTag      The notification meaning
+         * @param waitFor   default=0, if 0 wait indefinitely, otherwise wait for custom tick granularity times
+         *
+         * @return true There is thread waiting for the given refVar/nTag
+         */
+        template<typename T> bool LookForWaitings(T& refVar, size_t nTag, atomicx_time waitFor)
+        {
+            if (IsWaiting(refVar, nTag) == false)
+            {
+                SetWaitParammeters (refVar, nTag, aSubTypes::look);
+
+                Yield(waitFor);
+
+                m_lockMessage = {0,0};
+
+                if (m_aSubStatus == aSubTypes::timeout)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /**
+         * @brief Check if there are waiting threads for a given reference pointer and tag value
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true
+         *
+         * @note This is a powerful tool since it create layers of waiting within the same reference pointer
+         */
+        template<typename T> bool IsWaiting(T& refVar, size_t nTag, size_t hasAtleast = 1, aSubTypes asubType = aSubTypes::wait)
+        {
+            hasAtleast = hasAtleast == 0 ? 1 : hasAtleast;
+
+            if (HasWaitings (refVar, nTag, asubType)>=hasAtleast)
+            {
+                return true;
+            }
+
             return false;
         }
 
         /**
-         * @brief Specialize and gives power to decide if a topic is subscrybed on not
+         * @brief Report how much waiting threads for a given reference pointer and tag value are there
          *
-         * @param pszKey        The Topic C String
-         * @param nKeyLenght    The Topic C String size in bytes
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used a a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
          *
-         * @return true if the given topic was subscribed, otherwise false.
+         * @return true
+         *
+         * @note This is a powerful tool since it create layers of waiting within the same reference pointer
          */
-        virtual bool IsSubscribed (const char* pszKey, size_t nKeyLenght)
+        template<typename T> size_t HasWaitings(T& refVar, size_t nTag, aSubTypes asubType = aSubTypes::wait)
         {
-            (void) pszKey; (void) nKeyLenght;
+            size_t nCounter = 0;
 
-            return false;
+            for (auto& thr : *this)
+            {
+                if (IsNotificationEligible (thr, refVar, nTag, asubType))
+                {
+                    nCounter++;
+                }
+            }
+
+            return nCounter;
         }
+
+        /**
+         * @brief Blocks/Waits a notification along with a message and tag from a specific reference pointer
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  the size_t message to be received
+         * @param refVar    the reference pointer used as a notifier
+         * @param nTag      the size_t tag that will give meaning to the the message
+         * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         * @return true if it was successfully received.
+         * 
+         * @note if tag is set to zero Waits will return false on call.
+         */
+        template<typename T> bool Wait(size_t& nMessage, T& refVar, size_t nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
+        {
+            if (nTag == 0 ) return false; 
+
+            SafeNotifyLookWaitings(refVar, nTag);
+
+            SetWaitParammeters (refVar, nTag, asubType);
+
+            m_lockMessage.tag = nTag;
+
+            Yield(waitFor);
+
+            bool bRet = false;
+
+            if (m_aSubStatus != aSubTypes::timeout)
+            {
+                nMessage = m_lockMessage.message;
+                bRet = true;
+            }
+
+            m_lockMessage = {0,0};
+
+            m_aSubStatus = aSubTypes::ok;
+
+            return bRet;
+        }
+
+        /**
+         * @brief Blocks/Waits a notification along with a tag from a specific reference pointer
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    the reference pointer used as a notifier
+         * @param nTag      the size_t tag that will give meaning to the the message, if nTag == 0 means wait all refVar regardless
+         * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true if it was successfully received.
+         */
+        template<typename T> bool Wait(T& refVar, size_t nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
+        {
+            size_t nMessage = 0;
+
+            return Wait (nMessage, refVar, nTag, waitFor, asubType);
+        }
+        
+        /**
+         * @brief Blocks/Waits for any notification from a specific reference pointer and reports message and tag
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  return ref size_t message received
+         * @param refVar    the reference pointer used as a notifier
+         * @param nTag      return ref size_t tag that will give meaning to the the message
+         * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         * @return true if it was successfully received.
+         */
+        template<typename T> bool WaitAny(size_t& nMessage, T& refVar, size_t& nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
+        {
+            nTag = 0;
+
+            SafeNotifyLookWaitings(refVar, nTag);
+
+            SetWaitParammeters (refVar, nTag, asubType);
+
+            Yield(waitFor);
+
+            bool bRet = false;
+
+            if (m_aSubStatus != aSubTypes::timeout)
+            {
+                nMessage = m_lockMessage.message;
+                nTag = m_lockMessage.tag;
+                
+                bRet = true;
+            }
+
+            m_lockMessage = {0,0};
+
+            m_aSubStatus = aSubTypes::ok;
+
+            return bRet;
+        }
+
+        /**
+         * @brief Blocks/Waits for any notification from a specific reference pointer and also return the tag
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    the reference pointer used as a notifier
+         * @param nTag      return ref size_t tag that will give meaning to the the message
+         * @param waitFor   default==0 (indefinitely), How log to wait for a notification based on atomicx_time
+         * @param asubType  Type of the notification, only use it if you know what you are doing, it creates a different
+         *                  type of wait/notify, deafault == aSubType::wait
+         *
+         * @return true if it was successfully received.
+         */
+        template<typename T> bool WaitAny(T& refVar, size_t& nTag, atomicx_time waitFor=0, aSubTypes asubType = aSubTypes::wait)
+        {
+            size_t nMessage = 0;
+            
+            return WaitAny (nMessage, refVar, nTag, waitFor, asubType);
+        }
+
+        /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * Public part for the implementation
+         * ------------------------------
+         */
+
+        /**
+         * @brief Broadcast a message to all threads
+         *
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         *
+         * @return size_t
+         */
+        size_t BroadcastMessage (const size_t messageReference, const Message message);
+
+        /**
+         *   SEND AND RECEIVE DATA USING DATA PIPES 
+         *   to 1 to many
+         */
+        
+        enum class TransferState : uint8_t
+        {
+            ready=10,
+            start=11,
+            transfering=12,
+            end=13
+        };
+
+        typedef size_t tranfer_t;
+        
+        template<typename T> uint16_t Send (T& refVar, uint8_t* pData, uint16_t nDataSize, Timeout timeout)
+        {
+            size_t nReceivers = 0;
+
+            if (pData == nullptr || nDataSize == 0) return 0;
+
+            // Starting
+            if ((nReceivers = SyncNotify (nDataSize, refVar, (size_t) TransferState::start, timeout.GetRemaining ())) == 0)
+            {
+                // There is no reader listening the same refVar
+                return 0;
+            }
+
+            uint8_t nMessage [sizeof (tranfer_t)];
+            const uint8_t nPayloadSize = sizeof (tranfer_t)-1;
+            uint16_t nDataSent = 0;
+            
+            // Transfering
+            while (nDataSize && ! timeout.IsTimedout ())
+            {
+                 nMessage [0] = nDataSize < (nPayloadSize) ? nDataSize : nPayloadSize;
+                                             
+                if (! (memcpy ((void*) &nMessage[1], pData, nMessage [0]) != nullptr 
+                   && LookForWaitings(refVar, (size_t) TransferState::transfering, (size_t) nReceivers, timeout.GetRemaining ())
+                   && ! timeout.IsTimedout ()
+                   && SyncNotify (*((size_t*) nMessage), refVar, (size_t) TransferState::transfering, timeout.GetRemaining ())))
+                {
+                    return 0;
+                }
+
+                nDataSize -= (size_t) nMessage [0];
+                pData += (size_t) nMessage [0];
+                nDataSent += (size_t) nMessage [0];
+            }
+
+            // Finishing
+            if (! (! timeout.IsTimedout () && LookForWaitings(refVar, (size_t) TransferState::transfering, (size_t) nReceivers, timeout.GetRemaining ()) && ! timeout.IsTimedout ()
+                && SyncNotify (nDataSent, refVar, (size_t) TransferState::end, timeout.GetRemaining ())))
+            {
+                return 0;
+            }
+
+            return nDataSent;
+        }
+
+        template<typename T> uint16_t Receive (T& refVar, uint8_t* pData, uint16_t nDataSize, Timeout timeout)
+        {
+            size_t nMessage = 0;
+            size_t nTag = 0;
+            TransferState state = TransferState::ready;
+        
+            uint8_t  nWriteLen = 0;
+            uint16_t nReceivedLen = 0;
+
+            if (pData == nullptr || nDataSize == 0) return 0;
+
+            while (! timeout.IsTimedout () && WaitAny (nMessage, refVar, nTag, timeout.GetRemaining ()))
+            {
+                //Wait to start
+                if (state  == TransferState::ready)
+                {
+                    if ((TransferState) nTag == TransferState::start)
+                    {
+                        state = TransferState::transfering;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if (state == TransferState::transfering && state == (TransferState) nTag && nReceivedLen < nDataSize) // transfering
+                {
+                    // Transfering
+                    uint8_t* nPayload = (uint8_t*) &nMessage;
+                    nWriteLen = (nReceivedLen + nPayload [0]) > nDataSize ? (nDataSize - nReceivedLen) : nPayload [0];
+
+                    if (memcpy (pData, &nPayload[1], nWriteLen) == nullptr)
+                    {
+                        return 0;
+                    }
+
+                    pData += nPayload [0];
+                    nReceivedLen += nPayload [0];
+                }
+                else if (state == TransferState::transfering && (TransferState) nTag == TransferState::end)
+                {
+                    // Ending
+                    break;
+                }
+            }
+            
+            return timeout.IsTimedout () ? 0 : nReceivedLen;
+        }
+
+    /**
+     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
+     */
+    protected:
+
+        /**
+         * @brief The pure virtual function that runs the thread loop
+         *
+         * @note REQUIRED implementation and once it returns it will execute finish method
+         */
+        virtual void run(void) noexcept = 0;
+
+        /**
+         * @brief Handles the StackOverflow of the current thread
+         *
+         * @note REQUIRED
+         */
+        virtual void StackOverflowHandler(void) noexcept = 0;
+
+        /**
+         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
+         *
+         * @note if not implemented a default "empty" call is used instead
+         */
+        virtual void finish() noexcept;
+
+        /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * ------------------------------
+         */
+
+         /**
+         * @brief The default broadcast handler used to received the message
+         * 
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         */
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
+        
+        /**
+         * @brief Enable or Disable async broadcast 
+         * 
+         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
+         */
+        void SetReceiveBroadcast (bool bBroadcastStatus);
 
         /**
          * @brief Set the Stack Increase Pace object
@@ -1599,7 +1808,114 @@ namespace thread
          */
         void SetStackIncreasePace(size_t nIncreasePace);
 
+
+        /**
+         *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS
+         */
     private:
+
+        /**
+         * @brief Report is the current thread, refVar, ntag and subType is eligible to receive a notification 
+         * 
+         * @tparam T        the object used as the reference pointer
+         * @param thr       The thread to be notified
+         * @param refVar    The reference pointer used as a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param subType   The subtype of the type::wait
+         * 
+         * @return false    if the current thread can not be notified with the given configuration, otherwise true
+         */
+        template<typename T> bool IsNotificationEligible (atomicx& thr, T& refVar, size_t nTag, aSubTypes subType)
+        {
+            if (thr.m_aSubStatus == subType &&
+                thr.m_aStatus == aTypes::wait &&
+                thr.m_pLockId == (void*) &refVar &&
+                (nTag == 0 || thr.m_lockMessage.tag == 0 || nTag == thr.m_lockMessage.tag))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @brief Safely notify all LookForWaitings from a specific reference pointer along with a message without triggering context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param refVar    The reference pointer used as a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SafeNotifyLookWaitings(T& refVar, size_t nTag)
+        {
+            size_t message=0;
+
+            return SafeNotifier(message, refVar, nTag, aSubTypes::look, NotifyType::all);
+        }
+
+        /**
+         * @brief Safely notify all Waits from a specific reference pointer along with a message without triggering context change
+         *
+         * @tparam T        Type of the reference pointer
+         * @param nMessage  The size_t message to be sent
+         * @param refVar    The reference pointer used as a notifier
+         * @param nTag      The size_t tag that will give meaning to the notification
+         * @param notifyAll default = false, and only the fist available refVar Waiting thread will be notified, if true all available
+         *                  refVar waiting thread will be notified.
+         *
+         * @return true     if at least one got notified, otherwise false.
+         */
+        template<typename T> size_t SafeNotifier(size_t& nMessage, T& refVar, size_t nTag, aSubTypes subType, NotifyType notifyAll=NotifyType::one)
+        {
+            size_t nRet = 0;
+
+            for (auto& thr : *this)
+            {
+                if (IsNotificationEligible (thr, refVar, nTag, subType))
+                {
+                    thr.m_aStatus = aTypes::now;
+                    thr.m_nTargetTime = 0;
+                    thr.m_pLockId = nullptr;
+
+                    thr.m_lockMessage.message = nMessage;
+                    thr.m_lockMessage.tag = nTag;
+
+                    nRet++;
+
+                    if (notifyAll == NotifyType::one)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return nRet;
+        }
+
+        /**
+         * @brief Set the Default Parameters for constructors
+         *
+         */
+        void SetDefaultInitializations ();
+
+        /**
+         * @brief Configure the Wait parameters for the current thread.
+         * 
+         * @tparam T 
+         * @param refVar 
+         * @param nTag 
+         * @param asubType 
+         */
+        template<typename T> void SetWaitParammeters (T& refVar, size_t nTag, aSubTypes asubType = aSubTypes::wait)
+        {
+            m_pLockId = (uint8_t*)&refVar;
+            m_aStatus = aTypes::wait;
+            m_aSubStatus = asubType;
+
+            m_lockMessage.tag = nTag;
+            m_lockMessage.message = 0;
+        }
 
         /**
          * @brief Add the current thread to the global thread list
@@ -1610,6 +1926,11 @@ namespace thread
          * @brief Remove the current thread to the global thread list
          */
         void RemoveThisThread();
+
+        /**
+         * @brief Internally used to unload thread parameters and detach from the static list
+         */
+        void DestroyThread();
 
         /**
          * @brief CRC16 used to compose a multi uint32_t for Topic ID
@@ -1650,8 +1971,6 @@ namespace thread
         atomicx_time m_LastUserExecTime=0;
         atomicx_time m_lastResumeUserTime=0;
 
-        uint32_t m_TopicId=0;
-
         aTypes  m_aStatus = aTypes::start;
         aSubTypes m_aSubStatus = aSubTypes::ok;
 
@@ -1663,9 +1982,12 @@ namespace thread
 
         struct
         {
+            bool KernelIsRunning : 1;
             bool autoStack : 1;
             bool dynamicNice : 1;
-        } m_flags = {};
+            bool broadcast : 1;
+            bool attached :1;
+        } m_flags = {0, 0,0,0,0};
     };
 }
 

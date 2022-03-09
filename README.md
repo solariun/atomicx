@@ -10,6 +10,54 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+## Version 1.3.0
+
+* NOW, I am thrilled to announce that AtomicX have `send` and `receive` functions that enables data transferring between two or more threads, allowing real client / server application strategy inside embedded and non-embedded application, this way, small MCUs can be used to easily transport stack data (which is protected in this thread system) to other thread.
+
+* Ported and enhanced the DotMatrix project, it implements a full Dot Led Matrix scrolling text system with
+    - Serial terminal
+    - Telnet Terminal
+    - UDP Trap (You can send a UDP message to IP/2221 and it will display, I deal for trapping messages)
+    - An amazing general log API based on `iostream`, capable of adding "Specialized Loggers", and add using `logger.AddLogger`:
+        ```cpp
+            logger << LOG::ERROR << "Failed to start WiFi." << std::endl;
+        ```
+    - based on ESP8266 and 8 or 4 Dot Matrix leds array
+    - Just connect the Led Matrix  (Dot Matrix Modul 8x8 Display Matrix Max7219 Led Lcd with 8 or 4 8x8 display)
+    ```
+        Designed for NodeMCU ESP8266
+        ################# DISPLAY CONNECTIONS ################
+        LED Matrix Pin -> ESP8266 Pin
+        Vcc            -> 3v  (3V on NodeMCU 3V3 on WEMOS)
+        Gnd            -> Gnd (G on NodeMCU)
+        DIN            -> D7  (Same Pin for WEMOS)
+        CS             -> D4  (Same Pin for WEMOS)
+        CLK            -> D5  (Same Pin for WEMOS)
+    ```
+
+* Added WaiTAny, that extends the Wait/Notify functionality, since it will also receive, and return by reference, ANY TAG. giving the developer ability to easily create a full Client / Service infra structure.
+
+* Dropping BROKER functionality, and welcoming **Broadcasting** functionality, it will enable a thread to receive all broadcasts asynchronously sent by other threads, only by enabling it and implementing the handler :
+    ```cpp 
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message) 
+    ```
+    and enabling it using the code:
+    
+    ```cpp
+        SetReceiveBroadcast (true);
+    ```
+    The handler will deliver tree parameters:
+    - `size_t MessageReference` that works like a reference of what is the message about;
+    - `size_t Message.message` which is the message payload (could be even an pointer);
+    - `size_t Message.tag` that can be used as a meaning for the message:
+
+    Example:
+    - `messageReference=BROADCAST_IRCAMERA`
+    - `Message.message=CAMERA_DONE`
+    - `Message.tag=CAMERA_READINGS`
+        
+    On this simple example using 'mnemonics', that could have been enum class or directives, a single message was able to inform asynchronously that a IR CAMERA just read something, but could have informed ERROR or even that it was READING...., the approach allows a powerful controller, since you can apply layers on your code making processing really fast and precise and less messages will travel across the systems.
+
 * `mutex` and `smartMutex` now have timeout, by using `lock(<timeout time>)` and `sharedLock(<timeout time>)`, if no timeout is  given: `lock()` or `sharedLock()` wait indefinitely (fully back compatible with existing code)
 
 ## Version 1.2.1
@@ -88,9 +136,11 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 
 * **DOES NOT DISPLACE STACK, IT WILL STILL AVAILABLE FOR PROCESSING**, the *Stack Page* will only hold a backup of the most necessary information needed, allowing stacks in few bites most if the time. This implementation if highly suitable for Microcontrollers like ATINY85, for example, that only has 512 bites, and you can have 5 or more threads doing things for you, only backup the most important context information.
-    * *IMPORTANT*: DO NOT USE CONTEXT MEMORY POINTER to exchange information to other threads, wait/notify and etc. All threads will use the *dafault stack memory* to execute, instead use Global variables, allocated memory or atomicx_smart_ptr objects.
 
-* Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads.
+*  **STACK MEMORY ARE PROTECTED** by nature and confined to the context execution only, if you want to exchange non-data global use `atomicx::send` and `atomicx::receive`.
+     * *IMPORTANT*: DO NOT USE CONTEXT(stack) MEMORY POINTER to exchange information to other threads, extractables like wait/notify, lock uses global memory instead. All threads will use the *default stack memory* which is protected during execution, instead use Global variables, allocated memory or atomicx_smart_ptr objects. Alternatively use `atomicx::send` and `atomicx::receive` to transport stack, global or heap memory data.
+
+* Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads. 
 
 * AtomicX **DOES NOT DISPLACE STACK**, yes, it will use a novel technique that allow you to use full stack memory freely, and once done, just call `Yield()` to switch the context.
     1. Allow you to use all your stack during thread execution and only switch once back to an appropriate place
@@ -124,7 +174,7 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
     * Thread can wait for an event to happen.
     * On event notification a `atomix::message` can be sent/received
 
-* A message broker based on observer pattern
+* (DEPRECATED) A message broker based on observer pattern (NOW DROPPED and REPLACED BY BROADCAST)
     * A thread can use `WaitBroker Message` to wait for any specifc topic asynchronously.
     * Instead of having a `Subcrib` call, the developer will provide a `IsSubscribed` method that the kernel will use to determine if the object/thread is subscribed to a given topic.
     * Broker uses `atomicx::message` to transport information. For inter process Object transport, please use atomicx::queue.

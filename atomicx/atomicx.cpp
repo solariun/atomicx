@@ -16,13 +16,6 @@
 
 #include <stdlib.h>
 
-extern "C"
-{
-    #pragma weak yield
-    void yield(void)
-    {}
-}
-
 namespace thread
 {
     // Static initializations
@@ -30,6 +23,7 @@ namespace thread
     static atomicx* ms_paLast=nullptr;
     static jmp_buf ms_joinContext{};
     static atomicx* ms_pCurrent=nullptr;
+    static bool ms_running=false;
 
     atomicx::semaphore::semaphore(size_t nMaxShared) : m_maxShared(nMaxShared)
     {
@@ -46,7 +40,7 @@ namespace thread
 
         while (m_counter >= m_maxShared)
         {
-            if (timeout.IsTimedout () || GetCurrent()->Wait (*this, 1, timeout.GetRemaining()) == false)
+            if (timeout.IsTimedout () || GetCurrent() == nullptr || GetCurrent()->Wait (*this, 1, timeout.GetRemaining()) == false)
             {
                 return false;
             }
@@ -59,7 +53,7 @@ namespace thread
 
     void atomicx::semaphore::release()
     {
-        if (m_counter)
+        if (m_counter && GetCurrent() != nullptr)
         {
             m_counter --;
 
@@ -79,7 +73,7 @@ namespace thread
 
     size_t atomicx::semaphore::GetWaitCount ()
     {
-        return GetCurrent()->HasWaitings (*this, 1);
+        return GetCurrent() != nullptr ? GetCurrent()->HasWaitings (*this, 1) : 0;
     }
 
     // Smart Semaphore, manages the semaphore com comply with RII
@@ -133,6 +127,11 @@ namespace thread
         return bAcquired;
     }
 
+    atomicx::Timeout::Timeout () : m_timeoutValue (0)
+    {
+        Set (0);
+    }
+
     atomicx::Timeout::Timeout (atomicx_time nTimeoutValue) : m_timeoutValue (0)
     {
         Set (nTimeoutValue);
@@ -160,27 +159,32 @@ namespace thread
         return startTime - GetRemaining ();
     }
 
-    atomicx::aiterator::aiterator(atomicx* ptr) : m_ptr(ptr)
-    {}
+    // atomicx::aiterator::aiterator(atomicx* ptr) : m_ptr(ptr)
+    // {}
 
-    atomicx& atomicx::aiterator::operator*() const
+    // atomicx& atomicx::aiterator::operator*() const
+    // {
+    //     return *m_ptr;
+    // }
+
+    // atomicx* atomicx::aiterator::operator->()
+    // {
+    //     return m_ptr;
+    // }
+
+    // atomicx::aiterator& atomicx::aiterator::operator++()
+    // {
+    //     if (m_ptr != nullptr) m_ptr = m_ptr->m_paNext;
+    //     return *this;
+    // }
+
+    iterator<atomicx> atomicx::begin() { return iterator<atomicx>(ms_paFirst); }
+    iterator<atomicx> atomicx::end()   { return iterator<atomicx>(nullptr); }
+
+    atomicx* atomicx::operator++ (void)
     {
-        return *m_ptr;
+        return m_paNext;
     }
-
-    atomicx* atomicx::aiterator::operator->()
-    {
-        return m_ptr;
-    }
-
-    atomicx::aiterator& atomicx::aiterator::operator++()
-    {
-        if (m_ptr != nullptr) m_ptr = m_ptr->m_paNext;
-        return *this;
-    }
-
-    atomicx::aiterator atomicx::begin() { return aiterator(ms_paFirst); }
-    atomicx::aiterator atomicx::end()   { return aiterator(nullptr); }
 
     atomicx* atomicx::GetCurrent()
     {
@@ -202,12 +206,45 @@ namespace thread
         }
     }
 
+    void atomicx::RemoveThisThread()
+    {
+        if (m_paNext == nullptr && m_paPrev == nullptr)
+        {
+            ms_paFirst = nullptr;
+            m_paPrev = nullptr;
+            ms_pCurrent = nullptr;
+        }
+        else if (m_paPrev == nullptr)
+        {
+            m_paNext->m_paPrev = nullptr;
+            ms_paFirst = m_paNext;
+            ms_pCurrent = ms_paFirst;
+        }
+        else if (m_paNext == nullptr)
+        {
+            m_paPrev->m_paNext = nullptr;
+            ms_paLast = m_paPrev;
+            ms_pCurrent = ms_paFirst;
+        }
+        else
+        {
+            m_paPrev->m_paNext = m_paNext;
+            m_paNext->m_paPrev = m_paPrev;
+            ms_pCurrent = m_paNext->m_paPrev;
+        }
+    }
+
     bool atomicx::SelectNextThread()
     {
         atomicx* pItem = ms_paFirst;
 
-        do
+        if (pItem != nullptr) do
         {
+            if (pItem->m_aStatus == aTypes::stop)
+            {
+                continue;
+            }
+
             if (ms_pCurrent->m_nTargetTime == 0 && pItem->m_nTargetTime > 0)
             {
                 ms_pCurrent = pItem;
@@ -263,6 +300,11 @@ namespace thread
             }
         }
 
+        if (ms_pCurrent->m_flags.dynamicNice == true)
+        {
+            ms_pCurrent->m_nice = ((ms_pCurrent->m_LastUserExecTime) + ms_pCurrent->m_nice) / 2;
+        }
+
         return true;
     }
 
@@ -270,11 +312,10 @@ namespace thread
     {
         if (ms_paFirst != nullptr)
         {
-            static bool nRunning = true;
-
+            ms_running = true;
             ms_pCurrent = ms_paFirst;
 
-            while (nRunning && SelectNextThread ())
+            while (ms_running && SelectNextThread ())
             {
                 if (setjmp(ms_joinContext) == 0)
                 {
@@ -302,33 +343,35 @@ namespace thread
             }
         }
 
+        ms_running = false;
+
         return false;
     }
 
     bool atomicx::Yield(atomicx_time nSleep)
     {
-        m_LastUserExecTime = GetCurrentTick () - m_lastResumeUserTime;
+        ms_pCurrent->m_LastUserExecTime = GetCurrentTick () - ms_pCurrent->m_lastResumeUserTime;
 
-        if (m_aStatus == aTypes::running)
+        if (ms_pCurrent->m_aStatus == aTypes::running)
         {
-            m_aStatus = aTypes::sleep;
-            m_aSubStatus = aSubTypes::ok;
-            m_nTargetTime=Atomicx_GetTick() + (nSleep == ATOMICX_TIME_MAX ? m_nice : nSleep);
+            ms_pCurrent->m_aStatus = aTypes::sleep;
+            ms_pCurrent->m_aSubStatus = aSubTypes::ok;
+            ms_pCurrent->m_nTargetTime=Atomicx_GetTick() + (nSleep == ATOMICX_TIME_MAX ? ms_pCurrent->m_nice : nSleep);
         }
-        else if (m_aStatus == aTypes::wait)
+        else if (ms_pCurrent->m_aStatus == aTypes::wait)
         {
-            m_nTargetTime=nSleep > 0 ? nSleep + Atomicx_GetTick() : 0;
+            ms_pCurrent->m_nTargetTime=nSleep > 0 ? nSleep + Atomicx_GetTick() : 0;
         }
         else
         {
-            m_nTargetTime = (atomicx_time)~0;
+            ms_pCurrent->m_nTargetTime = (atomicx_time)~0;
         }
 
         volatile uint8_t nStackEnd=0;
-        m_pStaskEnd = &nStackEnd;
-        m_stacUsedkSize = (size_t) (m_pStaskStart - m_pStaskEnd);
+        ms_pCurrent->m_pStaskEnd = &nStackEnd;
+        ms_pCurrent->m_stacUsedkSize = static_cast<size_t>(ms_pCurrent->m_pStaskStart - ms_pCurrent->m_pStaskEnd + 1);
 
-        if (m_stacUsedkSize > m_stackSize || m_stack == nullptr)
+        if (ms_pCurrent->m_stacUsedkSize > ms_pCurrent->m_stackSize || ms_pCurrent->m_stack == nullptr)
         {
             /*
             * Controll the auto-stack memory
@@ -338,63 +381,62 @@ namespace thread
             *   to control errors
             */
 
-            if (m_flags.autoStack == true)
+            if (ms_pCurrent->m_flags.autoStack == true)
             {
-                if (m_stack != nullptr)
+                if (ms_pCurrent->m_stack != nullptr)
                 {
-                    free ((void*) m_stack);
+                    free ((void*) ms_pCurrent->m_stack);
                 }
 
-                if (m_stacUsedkSize > m_stackSize)
+                if (ms_pCurrent->m_stacUsedkSize > ms_pCurrent->m_stackSize)
                 {
-                    m_stackSize = m_stacUsedkSize + m_stackIncreasePace;
+                    ms_pCurrent->m_stackSize = ms_pCurrent->m_stacUsedkSize + ms_pCurrent->m_stackIncreasePace;
                 }
 
-                if ((m_stack = (uint8_t*) malloc (m_stackSize)) == nullptr)
+                if ((ms_pCurrent->m_stack = (volatile uint8_t*) malloc (ms_pCurrent->m_stackSize)) == nullptr)
                 {
-                    m_aStatus = aTypes::stackOverflow;
+                    ms_pCurrent->m_aStatus = aTypes::stackOverflow;
                 }
             }
             else
             {
-                m_aStatus = aTypes::stackOverflow;
+                ms_pCurrent->m_aStatus = aTypes::stackOverflow;
             }
 
-            if (m_aStatus == aTypes::stackOverflow)
+            if (ms_pCurrent->m_aStatus == aTypes::stackOverflow)
             {
-                (void) StackOverflowHandler();
+                (void) ms_pCurrent->StackOverflowHandler();
                 abort();
             }
         }
 
-        if (m_aStatus != aTypes::stackOverflow && memcpy((void*)m_stack, (const void*) m_pStaskEnd, m_stacUsedkSize) != (void*) m_stack)
+        if (ms_pCurrent->m_aStatus != aTypes::stackOverflow && memcpy((void*)ms_pCurrent->m_stack, (const void*) ms_pCurrent->m_pStaskEnd, ms_pCurrent->m_stacUsedkSize) != (void*) ms_pCurrent->m_stack)
         {
             return false;
         }
 
-        if (setjmp(m_context) == 0)
+        if (setjmp(ms_pCurrent->m_context) == 0)
         {
             longjmp(ms_joinContext, 1);
         }
         else
         {
-            ms_pCurrent->m_stacUsedkSize = (size_t) (ms_pCurrent->m_pStaskStart - &nStackEnd);
             if (memcpy((void*) ms_pCurrent->m_pStaskEnd, (const void*) ms_pCurrent->m_stack, ms_pCurrent->m_stacUsedkSize) != (void*) ms_pCurrent->m_pStaskEnd)
             {
                 return false;
             }
-        }
 
-        ms_pCurrent->m_lastResumeUserTime = GetCurrentTick ();
+            ms_pCurrent->m_aStatus = aTypes::running;
 
-        ms_pCurrent->m_aStatus = aTypes::running;
-
-        if (ms_pCurrent->m_flags.dynamicNice == true)
-        {
-            ms_pCurrent->m_nice = ((ms_pCurrent->m_LastUserExecTime) + ms_pCurrent->m_nice) / 2;
+            ms_pCurrent->m_lastResumeUserTime = Atomicx_GetTick ();
         }
 
         return true;
+    }
+
+    bool atomicx::IsKernelRunning()
+    {
+        return ms_running;
     }
 
     void atomicx::YieldNow ()
@@ -419,57 +461,63 @@ namespace thread
         return m_stacUsedkSize;
     }
 
-    void atomicx::RemoveThisThread()
-    {
-        if (m_paNext == nullptr && m_paPrev == nullptr)
-        {
-            ms_paFirst = nullptr;
-            m_paPrev = nullptr;
-            ms_pCurrent = nullptr;
-        }
-        else if (m_paPrev == nullptr)
-        {
-            m_paNext->m_paPrev = nullptr;
-            ms_paFirst = m_paNext;
-            ms_pCurrent = ms_paFirst;
-        }
-        else if (m_paNext == nullptr)
-        {
-            m_paPrev->m_paNext = nullptr;
-            ms_paLast = m_paPrev;
-            ms_pCurrent = ms_paFirst;
-        }
-        else
-        {
-            m_paPrev->m_paNext = m_paNext;
-            m_paNext->m_paPrev = m_paPrev;
-            ms_pCurrent = m_paNext->m_paPrev;
-        }
-    }
-
-    void atomicx::SetDefaultParameters ()
+    void atomicx::SetDefaultInitializations ()
     {
         m_flags.autoStack = false;
         m_flags.dynamicNice = false;
+        m_flags.broadcast = false;
+        m_flags.attached = true;
+        
+        AddThisThread();
     }
 
     atomicx::atomicx(size_t nStackSize, int nStackIncreasePace) : m_context{}, m_stackSize(nStackSize), m_stackIncreasePace(nStackIncreasePace), m_stack(nullptr)
     {
-        SetDefaultParameters ();
+        SetDefaultInitializations ();
 
         m_flags.autoStack = true;
 
-        AddThisThread();
+    }
+
+    void atomicx::DestroyThread()
+    {
+        if (m_flags.attached)
+        {
+            RemoveThisThread();
+
+            if (m_flags.autoStack == true && m_stack != nullptr)
+            {
+                free((void*)m_stack);
+            }
+
+            m_flags.attached = false;
+        }
+    }
+
+    void atomicx::finish() noexcept
+    {
+        return;
+    }
+
+    void atomicx::Detach()
+    {
+        this->finish ();
+        DestroyThread ();
+
+        Yield ();
+    }
+
+    void atomicx::Restart()
+    {
+       this->finish ();
+        m_aStatus = aTypes::start;
+
+        Yield ();
     }
 
     atomicx::~atomicx()
     {
-        RemoveThisThread();
-
-        if (m_flags.autoStack == true && m_stack != nullptr)
-        {
-            free((void*)m_stack);
-        }
+        DestroyThread ();
     }
 
     const char* atomicx::GetName(void)
@@ -675,170 +723,6 @@ namespace thread
         return (nCRC);
     }
 
-    uint32_t atomicx::GetTopicID (const char* pszTopic, size_t nKeyLenght)
-    {
-        return ((uint32_t) ((crc16 ((const uint8_t*)pszTopic, nKeyLenght, 0) << 15) | crc16 ((const uint8_t*)pszTopic, nKeyLenght, 0x8408)));
-    }
-
-    bool atomicx::HasSubscriptions (const char* pszKey, size_t nKeyLenght)
-    {
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            uint32_t nKeyID = GetTopicID(pszKey, nKeyLenght);
-
-            for (auto& thr : *this)
-            {
-                if (nKeyID == thr.m_TopicId || IsSubscribed (pszKey, nKeyLenght))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    bool atomicx::HasSubscriptions (uint32_t nKeyID)
-    {
-        for (auto& thr : *this)
-        {
-            if (nKeyID == thr.m_TopicId)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    bool atomicx::WaitBrokerMessage (const char* pszKey, size_t nKeyLenght, Message& message)
-    {
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            m_aStatus = aTypes::subscription;
-
-            m_TopicId = GetTopicID(pszKey, nKeyLenght);
-            m_nTargetTime = Atomicx_GetTick();
-
-            m_lockMessage = {0,0};
-
-            Yield();
-
-            message.message = m_lockMessage.message;
-            message.tag = m_lockMessage.tag;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    bool atomicx::WaitBrokerMessage (const char* pszKey, size_t nKeyLenght)
-    {
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            m_aStatus = aTypes::subscription;
-
-            m_TopicId = GetTopicID(pszKey, nKeyLenght);
-            m_nTargetTime = Atomicx_GetTick();
-
-            Yield();
-
-            m_lockMessage = {0,0};
-
-            return true;
-        }
-
-        return false;
-    }
-
-    bool atomicx::SafePublish (const char* pszKey, size_t nKeyLenght, const Message message)
-    {
-        size_t nCounter=0;
-
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            uint32_t nTagId = GetTopicID(pszKey, nKeyLenght);
-
-            for (auto& thr : *this)
-            {
-                if (nTagId == thr.m_TopicId)
-                {
-                    nCounter++;
-
-                    thr.m_aStatus = aTypes::now;
-                    thr.m_TopicId = 0;
-                    thr.m_nTargetTime = Atomicx_GetTick();
-                    thr.m_lockMessage.message = message.message;
-                    thr.m_lockMessage.tag = message.tag;
-                }
-
-                if (thr.IsSubscribed(pszKey, nKeyLenght))
-                {
-                    nCounter++;
-
-                    thr.BrokerHandler(pszKey, nKeyLenght, thr.m_lockMessage);
-                }
-            }
-        }
-
-        return nCounter ? true : false;
-    }
-
-    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght, const Message message)
-    {
-        bool nReturn = SafePublish(pszKey, nKeyLenght, message);
-
-        if (nReturn) Yield();
-
-        return nReturn;
-    }
-
-    bool atomicx::SafePublish (const char* pszKey, size_t nKeyLenght)
-    {
-        size_t nCounter=0;
-
-        if (pszKey != nullptr && nKeyLenght > 0)
-        {
-            uint32_t nTagId = GetTopicID(pszKey, nKeyLenght);
-
-            for (auto& thr : *this)
-            {
-                if (nTagId == thr.m_TopicId)
-                {
-                    nCounter++;
-
-                    thr.m_aStatus = aTypes::now;
-                    thr.m_TopicId = 0;
-                    thr.m_nTargetTime = Atomicx_GetTick();
-                    thr.m_lockMessage = {0,0};
-                }
-
-                if (thr.IsSubscribed(pszKey, nKeyLenght))
-                {
-                    nCounter++;
-
-                    thr.m_lockMessage = {0,0};
-                    thr.BrokerHandler(pszKey, nKeyLenght, thr.m_lockMessage);
-                }
-
-            }
-
-            if (nCounter) Yield();
-        }
-
-        return nCounter ? true : false;
-    }
-
-    bool atomicx::Publish (const char* pszKey, size_t nKeyLenght)
-    {
-        bool nReturn = SafePublish(pszKey, nKeyLenght);
-
-        if (nReturn) Yield();
-
-        return nReturn;
-    }
-
     atomicx_time atomicx::GetCurrentTick(void)
     {
         return Atomicx_GetTick ();
@@ -873,4 +757,86 @@ namespace thread
     {
         return m_flags.dynamicNice;
     }
+
+    atomicx* atomicx::GetThread(size_t threadId)
+    {
+        for (auto& th : *(thread::atomicx::GetCurrent()))
+        {
+            if (reinterpret_cast<size_t>(&th) == threadId)
+            {
+                return &th;
+            }
+        }
+
+        return nullptr;
+    }
+
+    atomicx& atomicx::GetThread (void)
+    {
+        return *this;
+    }
+
+    size_t  atomicx::GetThreadCount()
+    {
+        size_t nCounter=0;
+
+        for (auto& th : *(thread::atomicx::GetCurrent()))
+        {
+            (void) th;
+            nCounter++;
+        }
+
+        return nCounter;
+    }
+
+    void atomicx::SetReceiveBroadcast (bool bBroadcastStatus)
+    {
+        m_flags.broadcast = bBroadcastStatus;
+    }
+
+    size_t atomicx::BroadcastMessage (const size_t messageReference, const Message message)
+    {
+        size_t nReceived = 0;
+
+        for (auto& thr : *this)
+        {
+            if (thr.m_flags.broadcast == true)
+            {
+                BroadcastHandler (messageReference, message);
+                nReceived++;
+            }
+        }
+
+        return nReceived;
+    }
+
+    void atomicx::BroadcastHandler (const size_t& messageReference, const Message& message)
+    {
+        (void) messageReference; // to avoid unused variable
+        (void) message; // to avoid unused variable
+    }
+
+    void atomicx::Stop ()
+    {
+        m_aStatus = aTypes::stop;
+        m_aSubStatus = aSubTypes::none;
+        m_nTargetTime = 0;
+
+        Yield();
+    }
+
+    void atomicx::Resume ()
+    {
+        m_aStatus = aTypes::now;
+        m_aSubStatus = aSubTypes::ok;
+        m_nTargetTime = 0;
+
+        Yield();        
+    }
+
+    bool atomicx::IsStopped ()
+    {
+        return  m_aStatus == aTypes::stop;
+    }
+
 }
