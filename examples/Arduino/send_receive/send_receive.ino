@@ -37,7 +37,7 @@ uint8_t dataPoint = 0;
 struct transf
 {
     int Counter;
-    char pszData[40];
+    char pszData[20];
 };
 
 class Consumer : public atomicx
@@ -66,18 +66,20 @@ public:
 
         for (;;)
         {
-            Serial.print (sizeof (size_t));
-            Serial.println (" len, Receiving data..."); Serial.flush ();
+            Serial.print (GetLastUserExecTime());
+            Serial.println (F("ms last exec time, Receiving data...")); Serial.flush ();
 
             if ((nReceived = Receive(dataPoint, (uint8_t*) &tr, (uint16_t) sizeof (tr), 10000)))
             {
-                Serial.print ("Received: val: ");
+                Serial.print (F("Received: val: "));
+                Serial.print (tr.Counter);
+                Serial.print (F(", String: "));
                 Serial.println (tr.pszData);
                 Serial.flush ();
             }
             else
             {
-                Serial.println ("Failed to receive information.");
+                Serial.println (F("Failed to receive information."));
                 Serial.println (tr.Counter);
                 Serial.flush ();
             }        
@@ -98,7 +100,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(50)];
+    uint8_t m_stack[::GetStackSize(65)];
 };
 
 class Producer : public atomicx
@@ -129,15 +131,16 @@ public:
         {
             tr.Counter ++;
             snprintf(tr.pszData, sizeof (tr.pszData), "Counter: %u", tr.Counter);
-             Serial.print ("Sending data...:"); Serial.println (tr.pszData); Serial.flush ();
+             Serial.print (GetLastUserExecTime());
+             Serial.print (F("ms last exectime, Sending data...:")); Serial.println (tr.pszData); Serial.flush ();
    
             if ((nResponse = Send (dataPoint, (uint8_t*) &tr, (uint16_t) sizeof (tr), 10000)) > 0)
             {
-                Serial.print ("Data Sent:"); Serial.println (nResponse); Serial.flush ();
+                Serial.print (F("Data Sent:")); Serial.println (nResponse); Serial.flush ();
             }
             else
             {
-                Serial.print ("Failed to send data...");  Serial.println (nResponse); Serial.flush ();
+                Serial.print (F("Failed to send data..."));  Serial.println (nResponse); Serial.flush ();
             }
         }
     }
@@ -154,7 +157,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(50)];
+    uint8_t m_stack[::GetStackSize(65)];
     String m_threadName;
 };
 

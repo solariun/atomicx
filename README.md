@@ -10,6 +10,8 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+* NOW, I am thrilled to announce that AtomicX have `send` and `receive` functions that enables data transferring between two or more threads, allowing real client / server application strategy inside embedded and non-embedded application, this way, small MCUs can be used to easily transport stack data (which is protected in this thread system) to other thread.
+
 * Ported and enhanced the DotMatrix project, it implements a full Dot Led Matrix scrolling text system with
     - Serial terminal
     - Telnet Terminal
@@ -132,9 +134,11 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 
 * **DOES NOT DISPLACE STACK, IT WILL STILL AVAILABLE FOR PROCESSING**, the *Stack Page* will only hold a backup of the most necessary information needed, allowing stacks in few bites most if the time. This implementation if highly suitable for Microcontrollers like ATINY85, for example, that only has 512 bites, and you can have 5 or more threads doing things for you, only backup the most important context information.
-    * *IMPORTANT*: DO NOT USE CONTEXT MEMORY POINTER to exchange information to other threads, wait/notify and etc. All threads will use the *dafault stack memory* to execute, instead use Global variables, allocated memory or atomicx_smart_ptr objects.
 
-* Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads.
+*  **STACK MEMORY ARE PROTECTED** by nature and confined to the context execution only, if you want to exchange non-data global use `atomicx::send` and `atomicx::receive`.
+     * *IMPORTANT*: DO NOT USE CONTEXT(stack) MEMORY POINTER to exchange information to other threads, extractables like wait/notify, lock uses global memory instead. All threads will use the *default stack memory* which is protected during execution, instead use Global variables, allocated memory or atomicx_smart_ptr objects. Alternatively use `atomicx::send` and `atomicx::receive` to transport stack, global or heap memory data.
+
+* Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads. 
 
 * AtomicX **DOES NOT DISPLACE STACK**, yes, it will use a novel technique that allow you to use full stack memory freely, and once done, just call `Yield()` to switch the context.
     1. Allow you to use all your stack during thread execution and only switch once back to an appropriate place

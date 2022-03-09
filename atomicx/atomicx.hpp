@@ -1643,62 +1643,6 @@ namespace thread
          */
         size_t BroadcastMessage (const size_t messageReference, const Message message);
 
-    /**
-     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
-     */
-    protected:
-
-        /**
-         * @brief The pure virtual function that runs the thread loop
-         *
-         * @note REQUIRED implementation and once it returns it will execute finish method
-         */
-        virtual void run(void) noexcept = 0;
-
-        /**
-         * @brief Handles the StackOverflow of the current thread
-         *
-         * @note REQUIRED
-         */
-        virtual void StackOverflowHandler(void) noexcept = 0;
-
-        /**
-         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
-         *
-         * @note if not implemented a default "empty" call is used instead
-         */
-        virtual void finish() noexcept;
-
-        /**
-         * ------------------------------
-         * MESSAGE BROADCAST IMPLEMENTATION
-         * ------------------------------
-         */
-
-         /**
-         * @brief The default broadcast handler used to received the message
-         * 
-         * @param messageReference Works as the signaling
-         * @param message   Message structure with the message
-         *                  message is the payload
-         *                  tag is the meaning
-         */
-        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
-        
-        /**
-         * @brief Enable or Disable async broadcast 
-         * 
-         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
-         */
-        void SetReceiveBroadcast (bool bBroadcastStatus);
-
-        /**
-         * @brief Set the Stack Increase Pace object
-         *
-         * @param nIncreasePace The new stack increase pace value
-         */
-        void SetStackIncreasePace(size_t nIncreasePace);
-
         /**
          *   SEND AND RECEIVE DATA USING DATA PIPES 
          *   to 1 to many
@@ -1712,7 +1656,7 @@ namespace thread
             end=13
         };
 
-        typedef uint16_t tranfer_t;
+        typedef size_t tranfer_t;
         
         template<typename T> uint16_t Send (T& refVar, uint8_t* pData, uint16_t nDataSize, Timeout timeout)
         {
@@ -1807,6 +1751,63 @@ namespace thread
             
             return timeout.IsTimedout () ? 0 : nReceivedLen;
         }
+        
+    /**
+     *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
+     */
+    protected:
+
+        /**
+         * @brief The pure virtual function that runs the thread loop
+         *
+         * @note REQUIRED implementation and once it returns it will execute finish method
+         */
+        virtual void run(void) noexcept = 0;
+
+        /**
+         * @brief Handles the StackOverflow of the current thread
+         *
+         * @note REQUIRED
+         */
+        virtual void StackOverflowHandler(void) noexcept = 0;
+
+        /**
+         * @brief Called right after run returns, can be used to self-destroy the object and other maintenance actions
+         *
+         * @note if not implemented a default "empty" call is used instead
+         */
+        virtual void finish() noexcept;
+
+        /**
+         * ------------------------------
+         * MESSAGE BROADCAST IMPLEMENTATION
+         * ------------------------------
+         */
+
+         /**
+         * @brief The default broadcast handler used to received the message
+         * 
+         * @param messageReference Works as the signaling
+         * @param message   Message structure with the message
+         *                  message is the payload
+         *                  tag is the meaning
+         */
+        virtual void BroadcastHandler (const size_t& messageReference, const Message& message);
+        
+        /**
+         * @brief Enable or Disable async broadcast 
+         * 
+         * @param bBroadcastStatus   if true, the thread will receive broadcast otherwise no
+         */
+        void SetReceiveBroadcast (bool bBroadcastStatus);
+
+        /**
+         * @brief Set the Stack Increase Pace object
+         *
+         * @param nIncreasePace The new stack increase pace value
+         */
+        void SetStackIncreasePace(size_t nIncreasePace);
+
 
         /**
          *  SPECIAL PRIVATE SECTION FOR HELPER METHODS USED BY PROCTED METHODS

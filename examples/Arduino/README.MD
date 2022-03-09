@@ -25,6 +25,8 @@ arduino-cli lib search AMG88
 
 ```bash
 
+arduino-cli compile -b arduino:samd:mkrzero  --upload -p <serial path>  <project dir>
+
 arduino-cli compile -b arduino:avr:nano:cpu=atmega328  --upload -p "$1" "$2"
 
 # upload AVR using USB-ASP
