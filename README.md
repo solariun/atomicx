@@ -10,6 +10,8 @@ What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for emb
 
 ## Implementations from Work on progress
 
+## Version 1.3.0
+
 * NOW, I am thrilled to announce that AtomicX have `send` and `receive` functions that enables data transferring between two or more threads, allowing real client / server application strategy inside embedded and non-embedded application, this way, small MCUs can be used to easily transport stack data (which is protected in this thread system) to other thread.
 
 * Ported and enhanced the DotMatrix project, it implements a full Dot Led Matrix scrolling text system with

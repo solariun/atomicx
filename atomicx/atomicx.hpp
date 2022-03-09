@@ -16,7 +16,7 @@
 #include <string.h>
 
 /* Official version */
-#define ATOMICX_VERSION "1.2.1"
+#define ATOMICX_VERSION "1.3.0"
 #define ATOMIC_VERSION_LABEL "AtomicX v" ATOMICX_VERSION " built at " __TIMESTAMP__
 
 using atomicx_time = uint32_t;
@@ -1751,7 +1751,7 @@ namespace thread
             
             return timeout.IsTimedout () ? 0 : nReceivedLen;
         }
-        
+
     /**
      *  PROTECTED METHODS, THOSE WILL BE ONLY ACCESSIBLE BY THE THREAD ITSELF
      */
