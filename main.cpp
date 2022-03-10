@@ -103,7 +103,7 @@ public:
     }
 
 private:
-    uint8_t stack[1024]="";
+    size_t stack[100]={};
     const char* m_pszName;
 };
 

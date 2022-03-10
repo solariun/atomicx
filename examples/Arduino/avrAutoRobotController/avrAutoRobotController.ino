@@ -376,6 +376,8 @@ public:
         return nChars;
     }
 
+#define TERMINAL_BS 8
+
     bool ReadCommandLine (String& readCommand)
     {
         uint8_t chChar = 0;

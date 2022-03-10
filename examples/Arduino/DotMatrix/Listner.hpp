@@ -27,7 +27,7 @@ extern LoggerStream logger;
 class ListenerServer : public thread::atomicx
 {
 public:
-    ListenerServer(atomicx_time nNice) : thread::atomicx (250, 50), m_tcpServer(m_tcpPort)
+    ListenerServer(atomicx_time nNice) : thread::atomicx (63, 10), m_tcpServer(m_tcpPort)
     {
         SetNice (nNice);
     }

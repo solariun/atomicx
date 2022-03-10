@@ -112,7 +112,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(30)];
+    size_t m_stack[30];
 };
 
 class Producer : public atomicx
@@ -158,7 +158,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(20)];
+    size_t m_stack[20];
     String m_threadName;
 };
 

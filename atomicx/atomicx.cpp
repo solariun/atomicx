@@ -25,6 +25,12 @@ namespace thread
     static atomicx* ms_pCurrent=nullptr;
     static bool ms_running=false;
 
+    void yield_ ()  __attribute__ ((weak));
+    void yield_ ()
+    {
+        
+    }
+
     atomicx::semaphore::semaphore(size_t nMaxShared) : m_maxShared(nMaxShared)
     {
     }
@@ -390,7 +396,13 @@ namespace thread
 
                 if (ms_pCurrent->m_stacUsedkSize > ms_pCurrent->m_stackSize)
                 {
-                    ms_pCurrent->m_stackSize = ms_pCurrent->m_stacUsedkSize + ms_pCurrent->m_stackIncreasePace;
+                    ms_pCurrent->m_stackSize = ms_pCurrent->m_stacUsedkSize + (ms_pCurrent->m_stackIncreasePace * sizeof (size_t));
+                    
+                    // Guarantee size of the new value must be mod of size_t
+                    ms_pCurrent->m_stackSize += sizeof (size_t)  - (ms_pCurrent->m_stackSize % sizeof (size_t));
+
+                    //Just to be sure 
+                    if (ms_pCurrent->m_stackSize % sizeof(size_t) != 0) abort();
                 }
 
                 if ((ms_pCurrent->m_stack = (volatile uint8_t*) malloc (ms_pCurrent->m_stackSize)) == nullptr)
@@ -471,7 +483,7 @@ namespace thread
         AddThisThread();
     }
 
-    atomicx::atomicx(size_t nStackSize, int nStackIncreasePace) : m_context{}, m_stackSize(nStackSize), m_stackIncreasePace(nStackIncreasePace), m_stack(nullptr)
+    atomicx::atomicx(size_t nStackSize, size_t nStackIncreasePace) : m_context{}, m_stackSize(nStackSize * sizeof (1024)), m_stackIncreasePace(nStackIncreasePace), m_stack(nullptr)
     {
         SetDefaultInitializations ();
 

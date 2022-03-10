@@ -66,6 +66,10 @@ public:
 
         for (;;)
         {
+            Serial.print (GetStackSize ()); 
+            Serial.print ("/");
+            Serial.print (GetUsedStackSize ());
+            Serial.print ("b stack size, ");
             Serial.print (GetLastUserExecTime());
             Serial.println (F("ms last exec time, Receiving data...")); Serial.flush ();
 
@@ -100,7 +104,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(65)];
+    size_t m_stack[65];
 };
 
 class Producer : public atomicx
@@ -131,8 +135,13 @@ public:
         {
             tr.Counter ++;
             snprintf(tr.pszData, sizeof (tr.pszData), "Counter: %u", tr.Counter);
-             Serial.print (GetLastUserExecTime());
-             Serial.print (F("ms last exectime, Sending data...:")); Serial.println (tr.pszData); Serial.flush ();
+
+            Serial.print (GetStackSize ()); 
+            Serial.print ("/");
+            Serial.print (GetUsedStackSize ());
+            Serial.print ("b stack size, ");
+            Serial.print (GetLastUserExecTime());
+            Serial.print (F("ms last exectime, Sending data...:")); Serial.println (tr.pszData); Serial.flush ();
    
             if ((nResponse = Send (dataPoint, (uint8_t*) &tr, (uint16_t) sizeof (tr), 10000)) > 0)
             {
@@ -157,7 +166,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(65)];
+    size_t m_stack[65];
     String m_threadName;
 };
 

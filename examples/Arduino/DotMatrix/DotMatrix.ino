@@ -94,7 +94,7 @@ std::string strSystemNextMessage="AtomicX";
 class System : public thread::atomicx
 {
 public:
-    System (atomicx_time nNice) : atomicx(250,50)
+    System (atomicx_time nNice) : atomicx(63,10)
     {
         Serial.println (F("Starting up System..."));
         Serial.flush ();

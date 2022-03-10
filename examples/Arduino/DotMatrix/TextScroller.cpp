@@ -138,7 +138,7 @@ bool TextScroller::begin()
     return true;
 }
 
-TextScroller::TextScroller (atomicx_time nNice) : atomicx(250, 50), nOffset (0), nSpeed (2),  lc(LedControl (DIN, CLK, CS, MAX_LED_MATRIX))
+TextScroller::TextScroller (atomicx_time nNice) : atomicx(80, 20), nOffset (0), nSpeed (2),  lc(LedControl (DIN, CLK, CS, MAX_LED_MATRIX))
 {
     nNumberDigits = MAX_LED_MATRIX;
     nIndex = (nSpeed == 0) ? nNumberDigits * (-1) : 0;

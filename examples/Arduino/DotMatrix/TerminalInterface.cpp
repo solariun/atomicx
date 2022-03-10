@@ -156,7 +156,7 @@ uint8_t ParseOption (const std::string& commandLine, uint8_t nCommandIndex, std:
 
 //  Default methods implementations
 
-TerminalInterface::TerminalInterface(atomicx_time nNice, Stream& client) : atomicx(500, 50), m_client(client)
+TerminalInterface::TerminalInterface(atomicx_time nNice, Stream& client) : atomicx(125, 20), m_client(client)
 {
     SetNice (nNice);
 }

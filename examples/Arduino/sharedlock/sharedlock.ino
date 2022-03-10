@@ -106,7 +106,7 @@ class Eventual : public atomicx
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(40)];
+    size_t m_stack[40];
     String m_threadName="";
     static bool started;
 };
@@ -193,7 +193,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(45)];
+    size_t m_stack[45];
     String m_threadName="";
 };
 
@@ -304,7 +304,7 @@ public:
     }
 
 private:
-    uint8_t m_stack[::GetStackSize(40)];
+    size_t m_stack[40];
     String m_threadName;
 };
 

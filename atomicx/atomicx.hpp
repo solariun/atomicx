@@ -994,9 +994,9 @@ namespace thread
          * @brief Construct a new atomicx object and set initial auto stack and increase pace
          *
          * @param nStackSize            Initial Size of the stack
-         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
+         * @param nStackIncreasePace    defalt=1, The increase pace on each resize (size_t multiples)
          */
-        atomicx(size_t nStackSize=0, int nStackIncreasePace=1);
+        atomicx(size_t nStackSize=0, size_t nStackIncreasePace=1);
 
         /**
          * @brief Get the Thread pointer from a object
@@ -1119,11 +1119,10 @@ namespace thread
 
         /**
          * @brief Construct a new atomicx thread
-         *
-         * @tparam T Stack memory page type
+         *  d
          * @tparam N Stack memory page size
          */
-        template<typename T, size_t N> atomicx(T (&stack)[N]) : m_context{}, m_stackSize{N}, m_stack((volatile uint8_t*) stack)
+        template<size_t N> atomicx(size_t (&stack)[N]) : m_context{}, m_stackSize{N * sizeof (size_t)}, m_stack((volatile uint8_t*) stack)
         {
            SetDefaultInitializations();
         }
