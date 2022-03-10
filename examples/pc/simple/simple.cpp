@@ -142,7 +142,7 @@ public:
     }
 
 private:
-    uint8_t stack[1024]=""; //Static initialization to avoid initialization order problem
+    size_t stack[128]={}; //Static initialization to avoid initialization order problem
 };
 
 

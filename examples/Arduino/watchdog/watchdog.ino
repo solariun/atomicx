@@ -37,7 +37,7 @@ constexpr size_t GetStackSize(size_t sizeRef)
 class ThreadAllarm : public atomicx, public Watchdog::Item
 {
 public:
-    ThreadAllarm(uint32_t nNice) :  atomicx (::GetStackSize(20), 10), Item (GetThread (), 1000)
+    ThreadAllarm(uint32_t nNice) :  atomicx (20, 5), Item (GetThread (), 1000)
     {
         SetNice(nNice);
     }
@@ -99,7 +99,7 @@ private:
 class ThreadAllarm2 : public atomicx, Watchdog::Item
 {
 public:
-    ThreadAllarm2(uint32_t nNice) :  atomicx (::GetStackSize(20), 10),  Item (GetThread (), 1800, true)
+    ThreadAllarm2(uint32_t nNice) :  atomicx (20, 5),  Item (GetThread (), 1800, true)
     {
         SetNice(nNice);
     }

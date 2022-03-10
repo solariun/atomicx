@@ -483,7 +483,7 @@ namespace thread
         AddThisThread();
     }
 
-    atomicx::atomicx(size_t nStackSize, size_t nStackIncreasePace) : m_context{}, m_stackSize(nStackSize * sizeof (1024)), m_stackIncreasePace(nStackIncreasePace), m_stack(nullptr)
+    atomicx::atomicx(size_t nStackSize, size_t nStackIncreasePace) : m_context{}, m_stackSize(nStackSize * sizeof (size_t)), m_stackIncreasePace(nStackIncreasePace), m_stack(nullptr)
     {
         SetDefaultInitializations ();
 

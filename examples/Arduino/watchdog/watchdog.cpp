@@ -161,7 +161,7 @@ void Watchdog::StackOverflowHandler(void)
     Serial.flush();
 }
 
-Watchdog::Watchdog() : atomicx (CALCSTACKSIZE(20), 10)
+Watchdog::Watchdog() : atomicx (20, 5)
 {
     SetNice(1000);
 }

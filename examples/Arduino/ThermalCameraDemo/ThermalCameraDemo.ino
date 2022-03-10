@@ -300,7 +300,7 @@ public:
         return true;
     }
 private:
-    uint8_t m_stack [65]={};
+    size_t m_stack [35]={};
 
 } Matrix (10);
 

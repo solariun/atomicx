@@ -4,11 +4,13 @@ Version 1.2.1 release
 
 ![image](https://user-images.githubusercontent.com/1805792/125191254-6591cf80-e239-11eb-9e89-d7500e793cd4.png)
 
-What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
+What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS or OSs likes Windows, Linux, Mac and etc.) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
 
 # Backlog and updates
 
 ## Implementations from Work on progress
+
+* To enhance stack size compatibility across multiple platform AtomicX will use size_t multiples as stack, it means, the stack size will change accordingly with the system. ex `size_t stack [10]`; on 8bits and 16 bits MCU, normally size_t is 16bits, `stack==20`, on 32bits `stack==40`, on 64bits `stack==80`and finally 128btis MCUs, `stack==160`.
 
 ## Version 1.3.0
 
@@ -338,7 +340,7 @@ public:
     }
 
 private:
-    uint8_t stack[1024]=""; //Static initialization to avoid initialization order problem
+    size_t stack[128]={}; //Static initialization to avoid initialization order problem
 };
 
 
