@@ -1,12 +1,16 @@
+# Docs:
+# http://clang.llvm.org/docs/ClangFormatStyleOptions.html
+
 ---
 Language:        Cpp
-BasedOnStyle:    Mozilla
+Standard:        c++11
+BasedOnStyle:    LLVM
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Left
-AlignOperands:   true
+AlignOperands: true
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: false
@@ -16,35 +20,35 @@ AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
-AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
-BraceWrapping:   
-  AfterClass:      true
-  AfterControlStatement: true
-  AfterEnum:       true
-  AfterFunction:   true
-  AfterNamespace:  true
-  AfterObjCDeclaration: true
-  AfterStruct:     true
-  AfterUnion:      true
-  AfterExternBlock: true
-  BeforeCatch:     true
-  BeforeElse:      true
-  IndentBraces:    true
-  SplitEmptyFunction: true
-  SplitEmptyRecord: true
-  SplitEmptyNamespace: true
-BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Custom #Attach
+BraceWrapping:
+ AfterClass:      true
+ AfterControlStatement: false
+ AfterEnum:       true
+ AfterFunction:   true
+ AfterNamespace:  true
+ AfterObjCDeclaration: true
+ AfterStruct:     true
+ AfterUnion:      true
+ AfterExternBlock: true
+ BeforeCatch:     false
+ BeforeElse:      false
+ IndentBraces:    false
+ SplitEmptyFunction: false
+ SplitEmptyRecord: false
+ SplitEmptyNamespace: false
+BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: AfterColon
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: false
 BreakConstructorInitializers: AfterColon
 BreakAfterJavaFieldAnnotations: false
-BreakStringLiterals: true
+BreakStringLiterals: false
 ColumnLimit:     150
 CommentPragmas:  '^ IWYU pragma:'
 CompactNamespaces: true
@@ -56,12 +60,12 @@ DerivePointerAlignment: false
 DisableFormat:   false
 ExperimentalAutoDetectBinPacking: false
 FixNamespaceComments: true
-ForEachMacros:   
+ForEachMacros:
   - foreach
   - Q_FOREACH
   - BOOST_FOREACH
 IncludeBlocks:   Preserve
-IncludeCategories: 
+IncludeCategories:
   - Regex:           '^<ext/.*\.h>'
     Priority:        2
   - Regex:           '^<.*\.h>'
@@ -95,9 +99,9 @@ PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 200
 PointerAlignment: Left
-RawStringFormats: 
+RawStringFormats:
   - Language:        Cpp
-    Delimiters:      
+    Delimiters:
       - cc
       - CC
       - cpp
@@ -109,12 +113,12 @@ RawStringFormats:
     CanonicalDelimiter: ''
     BasedOnStyle:    google
   - Language:        TextProto
-    Delimiters:      
+    Delimiters:
       - pb
       - PB
       - proto
       - PROTO
-    EnclosingFunctions: 
+    EnclosingFunctions:
       - EqualsProto
       - EquivToProto
       - PARSE_PARTIAL_TEXT_PROTO
@@ -133,8 +137,8 @@ SpaceBeforeAssignmentOperators: true
 SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
-#SpaceBeforeParens: ControlStatements
-SpaceBeforeParens: Always
+SpaceBeforeParens: ControlStatements
+#SpaceBeforeParens: Always
 SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 2
@@ -147,4 +151,3 @@ Standard:        Auto
 TabWidth:        4
 UseTab:          Never
 ...
-

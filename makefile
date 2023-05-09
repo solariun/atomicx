@@ -21,23 +21,22 @@
 #//
 #// See LICENSE file for the complete information
 
-
 #
-# 'make depend' uses makedepend to automatically generate dependencies
-#               (dependencies are added to end of Makefile)
-# 'make'        build executable file 'mycc'
+# 'make'        build executable file 'atomicx.bin'
 # 'make clean'  removes all .o and executable files
 #
+# use EXTRA_FLAGS=_DEBUG=<TRACE, DEBUG, INFO. WARNING. ERROR, CRITICAL>
+# .   for logging
 
 # define the C compiler to use
 CC = g++
 
 # define any compile-time flags
-CFLAGS = -Ofast -Wall -g --std=c++11 -Wall -Wextra -Werror
+CFLAGS = -Ofast -Wall -g --std=c++11 -Wall -Wextra #-Werror
 
-ifndef CPX_DIR
-	CPX_DIR=./atomicx
-endif
+CPX_DIR ?= ./source
+TEST_DIR ?= ./test
+BIN_DIR ?= ./bin
 
 # define any directories containing header files other than /usr/include
 #
@@ -54,7 +53,7 @@ INCLUDES = -I$(CPX_DIR)
 #LIBS = -lmylib -lm
 
 # define the C source files
-SRCS = $(wildcard *.cpp) $(wildcard $(CPX_DIR)/*.cpp)
+SRCS = $(wildcard $(TEST_DIR)/*.cpp) $(wildcard $(CPX_DIR)/*.cpp)
 
 # define the C object files
 #
@@ -67,38 +66,88 @@ SRCS = $(wildcard *.cpp) $(wildcard $(CPX_DIR)/*.cpp)
 OBJS = $(SRCS:.cpp=.o)
 
 # define the executable file
-MAIN = demo_atomix.bin
+TARGET = $(BIN_DIR)/atomix.bin
 
 #
 # The following part of the makefile is generic; it can be used to
 # build any executable just by changing the definitions above and by
-# deleting dependencies appended to the file from 'make depend'
+# deleting dependencies appended to the file from 'make` depend'
 #
 
-.PHONY: depend clean
+define FUNC_MAKE_DIR
+	echo "Bin diretory: [$(1)]"; \
+	if [ ! -d "$(1)" ]; \
+	then \
+		if mkdir -p "$(1)"; \
+		then \
+			echo "Bin directory generated: $(1)"; \
+		else \
+			echo "Error, could not create a $(1)"; \
+			exit 1; \
+		fi; \
+	fi
+endef
 
-all:    $(MAIN)
-	@echo  AtomicX binary $(MAIN) has beem compilled
+TEST_DIR ?= test
 
-$(MAIN): $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
+PROJECT ?= test
 
-# this is a suffix replacement rule for building .o's from .c's
+SOURCE_DIR ?= $(TEST_DIR)/$(PROJECT)
+
+.PHONY: build
+
+# same as all:
+# 	Making multiple targets and you want all of them to run? Make an all target.
+# *Since this is the first rule listed*, it will run by default if make is called without
+# specifying a target, regardless the name, "all" is a convention name for it.
+default: build
+	@echo  AtomicX binary $(TARGET) has been compiled
+	@echo executing $(TARGET)
+	$(TARGET)
+
+pc: clean default
+
+makedir:
+	$(call FUNC_MAKE_DIR,$(BIN_DIR))
+	@echo "OBJs: [$(OBJS)]"
+
+build: makedir $(TARGET)
+
+lldb: clean build
+	@echo  AtomicX binary $(TARGET) has been compiled
+	@echo starting lldb $(TARGET)
+	lldb $(TARGET)
+
+gdb: clean build
+	@echo  AtomicX binary $(TARGET) has been compiled
+	@echo starting lldb $(TARGET)
+	gdb $(TARGET)
+
+# ------------------------------
+# Arduino project, use variable PROJECT=name 
+# to select which project to compile and flash
+# if not supplied it will use test/test as default.
+# ------------------------------
+
+nano:
+	arduino-cli compile -b arduino:avr:nano:cpu=atmega328 --build-property build.extra_flags='$(EXTRA_FLAGS)' --upload -P usbasp  "$(SOURCE_DIR)"
+
+esp8266:
+	arduino-cli compile -v -b esp8266:esp8266:nodemcuv2:baud=921600 --build-property build.extra_flags='$(EXTRA_FLAGS)' -upload -p "$(serial)" "$(SOURCE_DIR)"
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIBS)
+
+# this is a suffix replacement rule for building .o's from .cpp's
 # it uses automatic variables $<: the name of the prerequisite of
-# the rule(a .c file) and $@: the name of the target of the rule (a .o file)
+# the rule(a .cpp file) and $@: the name of the target of the rule (a .o file)
 # (see the gnu make manual section about automatic variables)
 .cpp.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
+	$(CC) $(CFLAGS) $(EXTRA_FLAGS) $(INCLUDES) -c $<  -o $@
 
 clean:
-	$(RM) $(OBJS) *~ $(MAIN)
-
-depend: $(SRCS)
-	makedepend $(INCLUDES) $^
-
-$(info CPX_DIR:$(CPX_DIR))
-$(info SRCS:$(SRCS))
-# DO NOT DELETE THIS LINE -- make depend needs it
+	@echo "CLEANING: $(OBJ) $(TARGET) *~ "
+	$(RM) $(OBJS) *~ $(TARGET)
 
 document:
 	@echo  AtomicX Generating documents
