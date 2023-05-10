@@ -1,56 +1,90 @@
 
 #include "atomicx.hpp"
 
-#include "test.h"
-
 uint8_t notify = 0;
 
-atomicx_time atomicx::Thread::GetTick(void)
+atomicx::Tick atomicx::Tick::getTick(void)
 {
     return millis();
 }
 
-void atomicx::Thread::SleepTick(atomicx_time nSleep)
+void atomicx::Tick::sleepTick(atomicx::Tick nSleep)
 {
     delay(nSleep);
 }
 
-void yield_in ()
+class Test : public atomicx::Thread
 {
-    atomicx::Thread::Yield ();
-}
+public:
+    Test() : Thread(10, mStack), mId(mIdCounter++)
+    {}
 
-th th1;
-th th2;
-th th3;
-th th4;
+protected:
+    size_t add(size_t nValue)
+    {
+        atomicx::Tick tk;
+        
+        yield();
+        nValue++;
+        
+        auto& dt = getParams();
+        Serial.print((size_t)mId);
+        Serial.print(F(": Yield Time:"));
+        Serial.print(tk.diff());
+        Serial.print(F("ms: value:"));
+        Serial.print(nValue);
+        Serial.print(F(", Stack:"));
+        Serial.print(dt.usedStackSize);
+        Serial.print(F("/"));
+        Serial.print(dt.stackSize);
+        Serial.println(F("b"));
+        Serial.flush();
+
+        return nValue;
+    }
+
+    void run()
+    {
+        size_t nValue{(size_t)this};
+
+        while (true) {
+            nValue =  add(nValue);
+        }
+    }
+private:
+    size_t mId;
+    size_t mStack[15]{};
+    static size_t mIdCounter;
+};
+
+size_t Test::mIdCounter{0};
+
+Test th[10];
 
 void setup()
 {
-   
-    Serial.begin (115200);
+    Serial.begin(115200);
 
-    Serial.println (F(""));
-    Serial.println (F("Starting atomicx 3 demo."));
-    Serial.flush ();
+    Serial.println(F(""));
+    Serial.println(F("Starting atomicx 3 demo."));
+    Serial.flush();
     delay(1000);
 
-    Serial.println ("-------------------------------------");
+    Serial.println("-------------------------------------");
 
-    for (auto& th : th1)
-    {
-        Serial.print (__func__);
-        Serial.print (": Listing thread: ");
-        Serial.print (th.GetName ());
-        Serial.print (", ID:");
-        Serial.println ((size_t) &th);
-        Serial.flush ();
+    for (auto& th : th[0]) {
+        auto& dt = th.getParams();
+        Serial.print(__func__);
+        Serial.print(": Listing thread: ");
+        Serial.print(", ID:");
+        Serial.println((size_t)&th);
+        Serial.flush();
     }
 
-    Serial.println ("-------------------------------------");
+    Serial.println("-------------------------------------");
 
-    atomicx::Thread::Join ();
+    atomicx::Thread::start();
 }
 
-void loop() {
-}
+void loop()
+{}

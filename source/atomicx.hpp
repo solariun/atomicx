@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <iostream>
 
 // ------------------------------------------------------
 // LOG FACILITIES
@@ -69,18 +68,137 @@ enum class DBGLevel
 
 namespace atomicx
 {
-    typedef uint32_t Tick;
+    // typedef uint32_t Tick;
 
     enum class Status : uint8_t
     {
         STARTING,
         RUNNING,
-        PAUSED
+        PAUSED,
+        NOW,
+        WAIT
     };
 
     /*
-     * ITERATOR IMPLEMENTATION
+    * Tick time object implementation
     */
+    using Tick_t = int32_t;
+
+    class Tick
+    {
+    public:
+        Tick();
+        Tick(Tick_t val);
+
+        Tick& operator=(Tick_t& val);
+
+        operator const Tick_t&() const;
+
+        Tick_t value() const;
+
+        Tick& update();
+        /*
+         * BOTH getTick and sleepTick must be defined EXTERNALLY
+         */
+        static Tick getTick(void);
+        static void sleepTick(Tick nSleep);
+
+        Tick_t diffT(Tick tick) const;
+        Tick_t diffT() const;
+
+        Tick diff(Tick tick) const;
+        Tick diff() const;
+
+    private:
+        Tick_t mTick;
+    };
+
+	/**
+     * @brief General purpose timeout  facility
+     */
+
+	class Timeout
+	{
+	public:
+		/**
+         * @brief Default construct a new Timeout object
+         *
+         * @note    To decrease the amount of memory, Timeout does not save
+         *          the start time.
+         *          Special use case: if nTimeoutValue == 0, IsTimedout is always false.
+         */
+		Timeout();
+
+		/**
+         * @brief Construct a new Timeout object
+         *
+         * @param nTimeoutValue  Timeout value to be calculated
+         *
+         * @note    To decrease the amount of memory, Timeout does not save
+         *          the start time.
+         *          Special use case: if nTimeoutValue == 0, IsTimedout is always false.
+         */
+		Timeout(Tick nTimeoutValue);
+
+        bool operator > (Timeout& tm);
+        bool operator < (Timeout& tm);
+        bool operator != (Timeout& tm);
+        bool operator == (Timeout& tm);
+
+		/**
+         * 
+         * @brief Set a timeout from now
+         *
+         * @param nTimeoutValue timeout in Tick
+         */
+		void set(Tick nTimeoutValue);
+
+        bool operator = (Tick tm);
+
+        void update();
+
+		/**
+         * @brief Check wether it has timeout
+         *
+         * @return true if it timeout otherwise 0
+         */
+		operator bool() const;
+
+        /**
+         * @brief Check wether it Can timeout
+         *
+         * @return true if tiemout value > 0 otherwise false
+         */
+        bool hasTimeout() const;
+        
+		/**
+         * @brief Get the remaining time till timeout
+         *
+         * @return Tick Remaining time till timeout, otherwise 0;
+         */
+		Tick until() const;
+
+		/**
+         * @brief Get the Time Since the specific point in time
+         *
+         * @param startTime     The specific point in time
+         *
+         * @return Tick How long since the point in time
+         *
+         * @note    To decrease the amount of memory, Timeout does not save
+         *          the start time.
+         */
+		Tick since(Tick startTime);
+
+        Tick since();
+
+	private:
+		Tick m_timeoutValue = 0;
+	};
+
+    /*
+     * ITERATOR IMPLEMENTATION
+     */
     template <class T>
     class Iterator
     {
@@ -115,15 +233,28 @@ namespace atomicx
         };
 
     private:
+
         T* mObj;
     };
 
     /*
      * THREAD IMPLEMENTATION
-    */
+     */
     class Thread
     {
     public:
+        /**
+         * @brief User controllable Params
+         */
+        struct Params
+        {
+            Status status{Status::STARTING};
+            Tick nice{0};
+            size_t stackSize{0};
+            size_t usedStackSize{0};
+            Timeout timeout{0};
+        };
+
         Thread* next();
 
         Iterator<Thread> begin();
@@ -132,42 +263,46 @@ namespace atomicx
 
         static bool start();
 
+        const Params& getParams() const;
+
     protected:
         virtual void run() = 0;
 
-        Tick getTick (void);
-        void sleepTick(Tick nSleep);
-
         template <size_t N>
-        Thread(Tick nNice, volatile size_t (&stack)[N]) : mStackSize{N}, mNice(nNice), mVirtualStack(stack[0])
+        Thread(Tick nNice, volatile size_t (&stack)[N]) : mVirtualStack(stack[0])
         {
+            mDt.stackSize = N * sizeof(size_t);
+            mDt.nice = nNice;
+
             addThread(*this);
         }
 
         static bool yield();
 
     private:
-        void addThread(Thread& thread);
+        static void scheduler();
+
+        static void addThread(Thread& thread);
 
         static Thread* mBegin;
         static Thread* mEnd;
         static Thread* mCurrent;
         static jmp_buf mJmpStart;
 
+        // The single point from Start
         static volatile uint8_t* mStackBegin;
 
-        // Initialized by constructor
-        size_t mStackSize;
-        Tick mNice;
+        // Initialized by the constructor
         volatile size_t& mVirtualStack;
 
+        // Thread Data
+        Params mDt{};
+
         // Self-Initialized
-        Status mStatus{Status::STARTING};
         Thread* mNext{nullptr};
         jmp_buf mJmpThread{};
 
         volatile uint8_t* mStackEnd{nullptr};
-        size_t mUsedStackSize{0};
     };
 
 }  // namespace atomicx

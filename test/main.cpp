@@ -7,62 +7,72 @@
 
 #include "atomicx.hpp"
 
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
-#include <string.h>
-#include <stdint.h>
-
-#include <stdlib.h>
 #include <iostream>
 
-atomicx::Tick atomicx::Thread::getTick (void)
+atomicx::Tick atomicx::Tick::getTick(void)
 {
     struct timeval tp;
-    gettimeofday (&tp, NULL);
+    gettimeofday(&tp, NULL);
 
     return (atomicx::Tick)tp.tv_sec * 1000 + tp.tv_usec / 1000;
 }
 
-void atomicx::Thread::sleepTick(atomicx::Tick nSleep)
+void atomicx::Tick::sleepTick(atomicx::Tick nSleep)
 {
-    usleep ((useconds_t)nSleep * 1000);
+    usleep((useconds_t)nSleep * 1000);
 }
 
-class Test : public atomicx::Thread {
+class Test : public atomicx::Thread
+{
 private:
-  size_t mStack[256]{};
+    size_t mStack[256]{};
 
 protected:
-  size_t add(size_t nValue) {
-    yield();
-    nValue++;
+    size_t add(size_t nValue)
+    {
+        yield();
+        nValue++;
 
-    return nValue;
-  }
-  void run() {
-    size_t nValue{0};
-
-    while (yield()) {
-      std::cout << this << ": Value:" << nValue << std::endl << std::flush;
-
-      nValue = add(nValue);
+        return nValue;
     }
-  }
+
+    void run()
+    {
+        size_t nValue{0};
+        atomicx::Tick tk{0};
+        while (yield()) {
+            auto& dt = getParams();
+            std::cout << this << ": time:" << tk.diff() << "ms: Value:" << nValue << ", Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
+                      << dt.stackSize << "b" << std::endl
+                      << std::flush;
+            nValue = add(nValue);
+
+            tk = atomicx::Tick::getTick();
+        }
+    }
 
 public:
-  Test() : Thread(0, mStack) {}
+    Test() : Thread(10, mStack)
+    {}
 };
 
-Test t1[10];
+Test t1[5];
 
-int main() {
-  for (auto &th : t1[0]) {
-    std::cout << "Thread:" << &th << std::endl;
-  }
+int main()
+{
+    for (auto& th : t1[0]) {
+        auto dt = th.getParams();
+        std::cout << "Thread:" << &th << ", StackSize:" << dt.stackSize << std::endl;
+    }
 
-  atomicx::Thread::start();
+    atomicx::Thread::start();
 
-  return 0;
+    return 0;
 }

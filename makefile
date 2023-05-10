@@ -25,14 +25,14 @@
 # 'make'        build executable file 'atomicx.bin'
 # 'make clean'  removes all .o and executable files
 #
-# use EXTRA_FLAGS=_DEBUG=<TRACE, DEBUG, INFO. WARNING. ERROR, CRITICAL>
+# use EXTRA_FLAGS=-D_DEBUG=<TRACE, DEBUG, INFO. WARNING. ERROR, CRITICAL>
 # .   for logging
 
 # define the C compiler to use
 CC = g++
 
 # define any compile-time flags
-CFLAGS = -Ofast -Wall -g --std=c++11 -Wall -Wextra #-Werror
+CFLAGS = -Ofast -Wall -g --std=c++11 -Wall -Wextra -Werror
 
 CPX_DIR ?= ./source
 TEST_DIR ?= ./test
