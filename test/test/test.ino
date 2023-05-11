@@ -3,12 +3,12 @@
 
 uint8_t notify = 0;
 
-atomicx::Tick atomicx::Tick::getTick(void)
+atomicx::Tick atomicx::Tick::now(void)
 {
     return millis();
 }
 
-void atomicx::Tick::sleepTick(atomicx::Tick nSleep)
+void atomicx::Tick::sleep(atomicx::Tick nSleep)
 {
     delay(nSleep);
 }
@@ -16,7 +16,7 @@ void atomicx::Tick::sleepTick(atomicx::Tick nSleep)
 class Test : public atomicx::Thread
 {
 public:
-    Test() : Thread(10, mStack), mId(mIdCounter++)
+    Test() : Thread(0, mStack), mId(mIdCounter++)
     {}
 
 protected:
@@ -71,7 +71,7 @@ private:
 
 size_t Test::mIdCounter{0};
 
-Test th[10];
+Test th[2];
 
 void setup()
 {

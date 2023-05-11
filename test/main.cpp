@@ -16,7 +16,7 @@
 
 #include <iostream>
 
-atomicx::Tick atomicx::Tick::getTick(void)
+atomicx::Tick atomicx::Tick::now(void)
 {
     struct timeval tp;
     gettimeofday(&tp, NULL);
@@ -24,15 +24,16 @@ atomicx::Tick atomicx::Tick::getTick(void)
     return (atomicx::Tick)tp.tv_sec * 1000 + tp.tv_usec / 1000;
 }
 
-void atomicx::Tick::sleepTick(atomicx::Tick nSleep)
+void atomicx::Tick::sleep(atomicx::Tick nSleep)
 {
     usleep((useconds_t)nSleep * 1000);
 }
 
 class Test : public atomicx::Thread
 {
-private:
-    size_t mStack[256]{};
+public:
+    Test() : Thread(0, mStack)
+    {}
 
 protected:
     size_t add(size_t nValue)
@@ -46,24 +47,32 @@ protected:
     void run()
     {
         size_t nValue{0};
-        atomicx::Tick tk{0};
-        while (yield()) {
-            auto& dt = getParams();
-            std::cout << this << ": time:" << tk.diff() << "ms: Value:" << nValue << ", Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
-                      << dt.stackSize << "b" << ", Tick_t:" << sizeof(atomicx::Tick_t) << std::endl
-                      << std::flush;
+        atomicx::Tick tk{};
+        while (true) {
+            {
+                auto& dt = getParams();
+                std::cout << mId << ": time:" << tk.diff() << "ms: Value:" << nValue << ", Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
+                          << dt.stackSize << "b"
+                          << ", Tick_t:" << sizeof(atomicx::Tick_t) << std::endl
+                          << std::flush;
+            }
+
+            tk = atomicx::Tick::now();
             nValue = add(nValue);
 
-            tk = atomicx::Tick::getTick();
+            // yield(0, atomicx::Status::NOW);
         }
     }
 
-public:
-    Test() : Thread(10, mStack)
-    {}
+private:
+    size_t mStack[64]{};
+    static size_t mIdCounter;
+    size_t mId{mIdCounter++};
 };
 
-Test t1[5];
+size_t Test::mIdCounter{0};
+
+Test t1[1000];
 
 int main()
 {

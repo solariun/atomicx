@@ -30,13 +30,6 @@
 #define ATOMICX_VERSION "2.0.0"
 #define ATOMIC_VERSION_LABEL "AtomicX v" ATOMICX_VERSION " built at " __TIMESTAMP__
 
-#include <setjmp.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
 // ------------------------------------------------------
 // LOG FACILITIES
 //
@@ -56,7 +49,7 @@
 #include <iostream>
 #define TRACE(i, x)                                                                                          \
     if (DBGLevel::i <= DBGLevel::_DEBUG)                                                                     \
-    std::cout << Thread::GetCurrent() << "(" << Thread::GetCurrent()->GetName() << ")[" << #i << "] "        \
+    std::cout << "[" << #i << "] "        \
               << "(" << __FUNCTION__ << ", " << __FILE_NAME__ << ":" << __LINE__ << "):  " << x << std::endl \
               << std::flush
 #else
@@ -65,15 +58,18 @@
 
 enum class DBGLevel
 {
+    KERNEL_CRITICAL,
     CRITICAL,
+    KERNEL_ERROR,
     ERROR,
     WARNING,
+    INFO,
+    TRACE,
+    DEBUG,
+    SCHEDULER,
     KERNEL,
     WAIT,
     LOCK,
-    INFO,
-    TRACE,
-    DEBUG
 };
 
 namespace atomicx
@@ -97,8 +93,10 @@ namespace atomicx
     */
 #if SIZE_MAX >= UINT32_MAX 
     using Tick_t = int64_t;
+    static constexpr size_t TICK_DEFAULT = static_cast<size_t>(INT64_MAX);
 #else
      using Tick_t = int32_t;
+     static constexpr size_t TICK_DEFAULT = INT32_MAX;
 #endif
 
     class Tick
@@ -114,11 +112,12 @@ namespace atomicx
         Tick_t value() const;
 
         Tick& update();
+
         /*
-         * BOTH getTick and sleepTick must be defined EXTERNALLY
+         * BOTH Tick::now and Tick::sleep must be defined EXTERNALLY
          */
-        static Tick getTick(void);
-        static void sleepTick(Tick nSleep);
+        static Tick now(void);
+        static void sleep(Tick nSleep);
 
         Tick_t diffT(Tick tick) const;
         Tick_t diffT() const;
@@ -157,9 +156,40 @@ namespace atomicx
          */
 		Timeout(Tick nTimeoutValue);
 
+        /**
+         * @brief greater operator
+         * 
+         * @param tm        Timeout object to compare
+         * 
+         * @return true     if greater otherwise false
+         */
         bool operator > (Timeout& tm);
+
+        /**
+         * @brief lesser operator
+         * 
+         * @param tm        Timeout object to compare
+         * 
+         * @return true     if lesses otherwise false
+         */
         bool operator < (Timeout& tm);
+
+        /**
+         * @brief different operator
+         * 
+         * @param tm        Timeout object to compare
+         * 
+         * @return true     if different otherwise false
+         */
         bool operator != (Timeout& tm);
+
+        /**
+         * @brief equal operator
+         * 
+         * @param tm        Timeout object to compare
+         * 
+         * @return true     if equal otherwise false
+         */
         bool operator == (Timeout& tm);
 
 		/**
@@ -169,6 +199,14 @@ namespace atomicx
          * @param nTimeoutValue timeout in Tick
          */
 		void set(Tick nTimeoutValue);
+
+        /**
+         * @brief assignment operator
+         * 
+         * @param tm        Timeout object to assign
+         * 
+         * @return true     always returns true
+         */
 
         bool operator = (Tick tm);
 
@@ -192,22 +230,19 @@ namespace atomicx
          * @brief Get the remaining time till timeout
          *
          * @return Tick Remaining time till timeout, otherwise 0;
+         * 
+         * @note: the ref Now point is taken from getTick
          */
 		Tick until() const;
 
 		/**
-         * @brief Get the Time Since the specific point in time
+         * @brief Get the remaining time till timeout from a ref now point
          *
-         * @param startTime     The specific point in time
-         *
-         * @return Tick How long since the point in time
-         *
-         * @note    To decrease the amount of memory, Timeout does not save
-         *          the start time.
+         * @param  the ref Now point 
+         * 
+         * @return Tick Remaining time till timeout, otherwise 0;
          */
-		Tick since(Tick startTime);
-
-        Tick since();
+		Tick until(Tick now) const;
 
 	private:
 		Tick m_timeoutValue = 0;
@@ -294,10 +329,10 @@ namespace atomicx
             addThread(*this);
         }
 
-        static bool yield();
+        static bool yield(Tick tm = TICK_DEFAULT, Status st = Status::RUNNING);
 
     private:
-        static void scheduler();
+        static Thread* scheduler();
 
         static void addThread(Thread& thread);
 
@@ -305,6 +340,7 @@ namespace atomicx
         static Thread* mEnd;
         static Thread* mCurrent;
         static jmp_buf mJmpStart;
+        static size_t mThreadCount;
 
         // The single point from Start
         static volatile uint8_t* mStackBegin;

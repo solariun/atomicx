@@ -1,23 +1,18 @@
 
-#include <setjmp.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
 #include "atomicx.hpp"
 
 namespace atomicx
 {
-    /* Tick object and integer emulator */
-    Tick::Tick() : mTick(getTick()){};
-    Tick::Tick(Tick_t val) : mTick(val){};
+    /* STATIC INITIALIZATIONS */
+    Thread* Thread::mBegin{nullptr};
+    Thread* Thread::mEnd{nullptr};
+    Thread* Thread::mCurrent{nullptr};
+    size_t Thread::mThreadCount{0};
 
-    // Tick& Tick::Tick::operator=(Tick& tick)
-    // {
-    //     mTick = tick.mTick;
-    // }
+    /* Tick object and integer emulator */
+
+    Tick::Tick() : mTick(now()){};
+    Tick::Tick(Tick_t val) : mTick(val){};
 
     Tick& Tick::operator=(Tick_t& val)
     {
@@ -37,7 +32,7 @@ namespace atomicx
 
     Tick& Tick::update()
     {
-        mTick = getTick();
+        mTick = now();
         return *this;
     }
 
@@ -48,7 +43,7 @@ namespace atomicx
 
     Tick_t Tick::diffT() const
     {
-        return (getTick() - mTick);
+        return (now() - mTick);
     }
 
     Tick Tick::diff(Tick tick) const
@@ -58,21 +53,17 @@ namespace atomicx
 
     Tick Tick::diff() const
     {
-        return Tick(getTick() - mTick);
+        return Tick(now() - mTick);
     }
 
     /* TIMEOUT */
-
-    /*
-     * timeout methods implementations
-     */
 
     Timeout::Timeout() : m_timeoutValue(0)
     {
         set(0);
     }
 
-    Timeout::Timeout(Tick nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + Tick::getTick() : 0)
+    Timeout::Timeout(Tick nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + Tick::now() : 0)
     {}
 
     bool Timeout::operator>(Timeout& tm)
@@ -82,6 +73,7 @@ namespace atomicx
 
     bool Timeout::operator<(Timeout& tm)
     {
+         TRACE(KERNEL, "operator<: " << m_timeoutValue << " < " << tm.m_timeoutValue);
         return m_timeoutValue < tm.m_timeoutValue;
     }
 
@@ -92,16 +84,13 @@ namespace atomicx
 
     bool Timeout::operator==(Timeout& tm)
     {
+        TRACE(KERNEL, "operator==: " << m_timeoutValue << " == " << tm.m_timeoutValue);
         return m_timeoutValue == tm.m_timeoutValue;
     }
 
-    // bool Timeout::operator<(Timeout& tm);
-    // bool Timeout::operator!=(Timeout& tm);
-    // bool Timeout::operator==(Timeout& tm);
-
     void Timeout::set(Tick nTimeoutValue)
     {
-        m_timeoutValue = nTimeoutValue ? nTimeoutValue + Tick::getTick() : 0;
+        m_timeoutValue = nTimeoutValue ? nTimeoutValue + Tick::now() : 0;
     }
 
     bool Timeout::operator=(Tick tm)
@@ -111,7 +100,7 @@ namespace atomicx
 
     void Timeout::update()
     {
-        m_timeoutValue = Tick::getTick();
+        m_timeoutValue = Tick::now();
     }
 
     bool Timeout::hasTimeout() const
@@ -121,31 +110,20 @@ namespace atomicx
 
     Timeout::operator bool() const
     {
-        return (m_timeoutValue == 0 || m_timeoutValue > Tick::getTick()) ? false : true;
+        return (m_timeoutValue == 0 || m_timeoutValue > Tick::now()) ? false : true;
     }
 
     Tick Timeout::until() const
     {
-        auto nNow = Tick::getTick();
-
-        return (m_timeoutValue && nNow < m_timeoutValue) ? m_timeoutValue - Tick::getTick() : 0;
+        return (m_timeoutValue - Tick::now());
     }
 
-    Tick Timeout::since(Tick startTime)
+    Tick Timeout::until(Tick now) const
     {
-        return startTime - until();
-    }
-
-    Tick Timeout::since()
-    {
-        return Tick::getTick() - until();
+        return (m_timeoutValue - now);
     }
 
     /* THREAD */
-    Thread* Thread::mBegin{nullptr};
-    Thread* Thread::mEnd{nullptr};
-    Thread* Thread::mCurrent{nullptr};
-
     jmp_buf Thread::mJmpStart{};
 
     volatile uint8_t* Thread::mStackBegin{nullptr};
@@ -181,33 +159,53 @@ namespace atomicx
         }
 
         thread.mNext = nullptr;
+        mThreadCount++;
     }
 
-    void Thread::scheduler()
+    Thread* Thread::scheduler()
     {
-        if (mCurrent == nullptr) return;
+        if (mCurrent == nullptr) return nullptr;
 
         Tick now;
         Thread* candidate = nullptr;
         bool stop = false;
 
-        for (auto& th : *mCurrent) {
-            switch (mCurrent->mDt.status) {
+        Thread* th = mCurrent;
+        size_t thCount = mThreadCount;
+        
+        while (thCount--) {
+            th = th->mNext ? th->mNext : mBegin;
+
+            TRACE(SCHEDULER, "SELECT: [" << th << "]: Status:" << static_cast<size_t>(th->mDt.status) << ", until:" << th->mDt.timeout.until());    
+            switch (th->mDt.status) {
                 case Status::STARTING:
                 case Status::NOW:
-                    candidate = &th;
+                    // If NOW it will be executed now
+                    candidate = th;
                     candidate->mDt.timeout.update();
-                    stop = false;
+                    stop = true;
                     break;
                 case Status::PAUSED:
                 case Status::RUNNING:
                 case Status::WAIT:
-                    if (!candidate || th.mDt.timeout < candidate->mDt.timeout) candidate = &th;
+                    // if candidate == null or th will timout sooner than candidate, use th
+                    if (!candidate || th->mDt.timeout < candidate->mDt.timeout) 
+                        candidate = th;
                     break;
             }
 
             if (stop) break;
         }
+
+        TRACE(SCHEDULER, "Candidate: " << (candidate) << ", next:" << candidate->mDt.timeout.until());
+
+        if (candidate->mDt.timeout.until(now) > 0)
+        {
+            TRACE(SCHEDULER, "SLEEP: " << (candidate) << ", for:" << candidate->mDt.timeout.until());
+            Tick::sleep(candidate->mDt.timeout.until());
+        }
+
+        return candidate;
     }
 
     bool Thread::start()
@@ -220,45 +218,66 @@ namespace atomicx
             volatile uint8_t stackBegin = 0xAA;
             mStackBegin = &stackBegin;
 
-            while (mCurrent) {
+            while (mCurrent != nullptr) {
+                // Set the context for the start
                 if (setjmp(mJmpStart) == 0) {
                     switch (mCurrent->mDt.status) {
                         case Status::STARTING:
+                            // Mark the new thread as running
                             mCurrent->mDt.status = Status::RUNNING;
+                            // Execute the object
                             mCurrent->run();
                             break;
                         default:
                             break;
                     }
-
+                    // Jump back to the thread
                     longjmp(mCurrent->mJmpThread, 1);
                 }
 
-                scheduler();
-                mCurrent = mCurrent->mNext ? mCurrent->mNext : mBegin;
+                // get the next thread, schedule can proactively sleep if no other
+                // task is due to the time.
+                mCurrent = scheduler(); //mCurrent->mNext ? mCurrent->mNext : mBegin;
             }
         }
 
         return ret;
     }
 
-    bool Thread::yield()
+    bool Thread::yield(Tick tm, Status st)
     {
         if (mCurrent) {
-            volatile uint8_t stackEnd = 0xBB;
-            mCurrent->mStackEnd = &stackEnd;
-            mCurrent->mDt.usedStackSize = static_cast<size_t>(mCurrent->mStackBegin - mCurrent->mStackEnd);
-
-            memcpy((void*)&mCurrent->mVirtualStack, (const void*)mCurrent->mStackEnd, mCurrent->mDt.usedStackSize);
-
-            if (setjmp(mCurrent->mJmpThread) == 0) {
-                mCurrent->mDt.status = Status::PAUSED;
-                longjmp(mCurrent->mJmpStart, 1);
+            
+            if (st == Status::RUNNING)
+            {
+                // Set running to sleep
+                st = Status::PAUSED;
             }
 
+            // Update value for nice or custom (if tm is defined)
+            tm = Tick::now() + ((tm == TICK_DEFAULT) ? mCurrent->mDt.nice : tm);
+            // Set timeout for the context switching thread
+            mCurrent->mDt.timeout = tm;
+            // Set status 
+            mCurrent->mDt.status = st;
+
+            volatile uint8_t stackEnd = 0xBB;
+            // Discover the end of the used stack;
+            mCurrent->mStackEnd = &stackEnd;
+            // Calculate the amount of stack used
+            mCurrent->mDt.usedStackSize = static_cast<size_t>(mCurrent->mStackBegin - mCurrent->mStackEnd);
+            // Backup the stack in the virutal stack memory of the thread
+            memcpy((void*)&mCurrent->mVirtualStack, (const void*)mCurrent->mStackEnd, mCurrent->mDt.usedStackSize);
+
+            //Execute the context switching
+            if (setjmp(mCurrent->mJmpThread) == 0) {
+                // Jump back for the start loop
+                longjmp(mCurrent->mJmpStart, 1);
+            }
+            
+            // Restore stack from the thread's virtual stack memory
             memcpy((void*)mCurrent->mStackEnd, (const void*)&mCurrent->mVirtualStack, mCurrent->mDt.usedStackSize);
 
-            // mCurrent->mDt.status = Status::RUNNING;
             return true;
         }
 
