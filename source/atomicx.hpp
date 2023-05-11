@@ -1,20 +1,30 @@
-//
-//  atomic.hpp
-//  atomic
-//
-//  Created by GUSTAVO CAMPOS on 31/01/2023.
-
+/**
+ * @file atomicx.hpp
+ * @author Gustavo Campos
+ * @brief  Atomicx header
+ * @version 2.0
+ * @date 2023-05-11
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #pragma once
 
 #ifndef ATOMICX_H_
 #define ATOMICX_H_
 
+/**
+ * @note: standard <c.....> that replaces original C header are
+ *        not used here for general compatibility with constraint
+ *        and old microprocessors. ex: avr c++11 compatible.
+*/
 #include <setjmp.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
 
 /* Official version */
 #define ATOMICX_VERSION "2.0.0"
@@ -79,10 +89,17 @@ namespace atomicx
         WAIT
     };
 
-    /*
+    /**
     * Tick time object implementation
+    * @note:    Tick_t will auto select if 
+    *           size_t >= 32bits = Tick_t 64bits
+    *           size_t < 32bits  = Tick_t 32bits
     */
-    using Tick_t = int32_t;
+#if SIZE_MAX >= UINT32_MAX 
+    using Tick_t = int64_t;
+#else
+     using Tick_t = int32_t;
+#endif
 
     class Tick
     {

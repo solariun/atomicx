@@ -37,7 +37,10 @@ protected:
         Serial.print(dt.usedStackSize);
         Serial.print(F("/"));
         Serial.print(dt.stackSize);
-        Serial.println(F("b"));
+        Serial.print(F("b"));
+        Serial.print(F(", Tick_t:"));
+        Serial.print(sizeof(atomicx::Tick_t));
+        Serial.println(F(""));
         Serial.flush();
 
         return nValue;
@@ -55,6 +58,15 @@ private:
     size_t mId;
     size_t mStack[15]{};
     static size_t mIdCounter;
+};
+
+template <class T = uint32_t>
+class example
+{
+public:
+    bool sum(){ return true;}
+private:
+
 };
 
 size_t Test::mIdCounter{0};

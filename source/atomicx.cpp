@@ -106,7 +106,7 @@ namespace atomicx
 
     bool Timeout::operator=(Tick tm)
     {
-        return m_timeoutValue = tm;
+        return (m_timeoutValue = tm);
     }
 
     void Timeout::update()
