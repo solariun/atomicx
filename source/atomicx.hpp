@@ -4,9 +4,9 @@
  * @brief  Atomicx header
  * @version 2.0
  * @date 2023-05-11
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 #pragma once
 
@@ -17,14 +17,14 @@
  * @note: standard <c.....> that replaces original C header are
  *        not used here for general compatibility with constraint
  *        and old microprocessors. ex: avr c++11 compatible.
-*/
+ */
+#include <limits.h>
 #include <setjmp.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <limits.h>
 
 /* Official version */
 #define ATOMICX_VERSION "2.0.0"
@@ -49,7 +49,7 @@
 #include <iostream>
 #define TRACE(i, x)                                                                                          \
     if (DBGLevel::i <= DBGLevel::_DEBUG)                                                                     \
-    std::cout << "[" << #i << "] "        \
+    std::cout << "[" << #i << "] "                                                                           \
               << "(" << __FUNCTION__ << ", " << __FILE_NAME__ << ":" << __LINE__ << "):  " << x << std::endl \
               << std::flush
 #else
@@ -82,21 +82,22 @@ namespace atomicx
         RUNNING,
         PAUSED,
         NOW,
-        WAIT
+        WAIT,
+        SYNC_WAIT
     };
 
     /**
-    * Tick time object implementation
-    * @note:    Tick_t will auto select if 
-    *           size_t >= 32bits = Tick_t 64bits
-    *           size_t < 32bits  = Tick_t 32bits
-    */
-#if SIZE_MAX >= UINT32_MAX 
+     * Tick time object implementation
+     * @note:    Tick_t will auto select if
+     *           size_t >= 32bits = Tick_t 64bits
+     *           size_t < 32bits  = Tick_t 32bits
+     */
+#if SIZE_MAX >= UINT32_MAX
     using Tick_t = int64_t;
     static constexpr size_t TICK_DEFAULT = static_cast<size_t>(INT64_MAX);
 #else
-     using Tick_t = int32_t;
-     static constexpr size_t TICK_DEFAULT = INT32_MAX;
+    using Tick_t = int32_t;
+    static constexpr size_t TICK_DEFAULT = INT32_MAX;
 #endif
 
     class Tick
@@ -129,23 +130,23 @@ namespace atomicx
         Tick_t mTick;
     };
 
-	/**
+    /**
      * @brief General purpose timeout  facility
      */
 
-	class Timeout
-	{
-	public:
-		/**
+    class Timeout
+    {
+    public:
+        /**
          * @brief Default construct a new Timeout object
          *
          * @note    To decrease the amount of memory, Timeout does not save
          *          the start time.
          *          Special use case: if nTimeoutValue == 0, IsTimedout is always false.
          */
-		Timeout();
+        Timeout();
 
-		/**
+        /**
          * @brief Construct a new Timeout object
          *
          * @param nTimeoutValue  Timeout value to be calculated
@@ -154,70 +155,70 @@ namespace atomicx
          *          the start time.
          *          Special use case: if nTimeoutValue == 0, IsTimedout is always false.
          */
-		Timeout(Tick nTimeoutValue);
+        Timeout(Tick nTimeoutValue);
 
         /**
          * @brief greater operator
-         * 
+         *
          * @param tm        Timeout object to compare
-         * 
+         *
          * @return true     if greater otherwise false
          */
-        bool operator > (Timeout& tm);
+        bool operator>(Timeout& tm);
 
         /**
          * @brief lesser operator
-         * 
+         *
          * @param tm        Timeout object to compare
-         * 
+         *
          * @return true     if lesses otherwise false
          */
-        bool operator < (Timeout& tm);
+        bool operator<(Timeout& tm);
 
         /**
          * @brief different operator
-         * 
+         *
          * @param tm        Timeout object to compare
-         * 
+         *
          * @return true     if different otherwise false
          */
-        bool operator != (Timeout& tm);
+        bool operator!=(Timeout& tm);
 
         /**
          * @brief equal operator
-         * 
+         *
          * @param tm        Timeout object to compare
-         * 
+         *
          * @return true     if equal otherwise false
          */
-        bool operator == (Timeout& tm);
+        bool operator==(Timeout& tm);
 
-		/**
-         * 
+        /**
+         *
          * @brief Set a timeout from now
          *
          * @param nTimeoutValue timeout in Tick
          */
-		void set(Tick nTimeoutValue);
+        void set(Tick nTimeoutValue);
 
         /**
          * @brief assignment operator
-         * 
+         *
          * @param tm        Timeout object to assign
-         * 
+         *
          * @return true     always returns true
          */
 
-        bool operator = (Tick tm);
+        bool operator=(Tick tm);
 
         void update();
 
-		/**
+        /**
          * @brief Check wether it has timeout
          *
          * @return true if it timeout otherwise 0
          */
-		operator bool() const;
+        operator bool() const;
 
         /**
          * @brief Check wether it Can timeout
@@ -225,28 +226,30 @@ namespace atomicx
          * @return true if tiemout value > 0 otherwise false
          */
         bool hasTimeout() const;
-        
-		/**
+
+        /**
          * @brief Get the remaining time till timeout
          *
          * @return Tick Remaining time till timeout, otherwise 0;
-         * 
+         *
          * @note: the ref Now point is taken from getTick
          */
-		Tick until() const;
+        Tick until() const;
 
-		/**
+        /**
          * @brief Get the remaining time till timeout from a ref now point
          *
-         * @param  the ref Now point 
-         * 
+         * @param  the ref Now point
+         *
          * @return Tick Remaining time till timeout, otherwise 0;
          */
-		Tick until(Tick now) const;
+        Tick until(Tick now) const;
 
-	private:
-		Tick m_timeoutValue = 0;
-	};
+        const Tick& value();
+
+    private:
+        Tick m_timeoutValue = 0;
+    };
 
     /*
      * ITERATOR IMPLEMENTATION
@@ -285,7 +288,6 @@ namespace atomicx
         };
 
     private:
-
         T* mObj;
     };
 
@@ -295,6 +297,16 @@ namespace atomicx
     class Thread
     {
     public:
+        struct Payload
+        {
+            Payload();
+            Payload(size_t type, size_t message);
+            Payload(size_t type, size_t message, size_t channel);
+            size_t channel{0};
+            size_t type;
+            size_t message;
+        };
+
         /**
          * @brief User controllable Params
          */
@@ -305,6 +317,8 @@ namespace atomicx
             size_t stackSize{0};
             size_t usedStackSize{0};
             Timeout timeout{0};
+            void* endpoint{nullptr};
+            Payload payload{};
         };
 
         Thread* next();
@@ -329,7 +343,26 @@ namespace atomicx
             addThread(*this);
         }
 
-        static bool yield(Tick tm = TICK_DEFAULT, Status st = Status::RUNNING);
+        static inline void contextChange();
+        static bool yield(Tick tm, Status st = Status::RUNNING);
+        static bool yield();
+        static bool now();
+
+        size_t safeNotify(void* endpoint, Payload& payload);
+
+        template <typename T>
+        size_t notify(T endpoint, Payload payload, Timeout tm)
+        {
+            size_t nCount = 0;
+
+            if (!tm) {
+                TRACE(WAIT, "endp:" << &endpoint << ", payl:(" << payload.channel << "," << payload.type << "," << payload.message);
+                nCount = safeNotify(static_cast<void*>(&endpoint), payload);
+                now();
+            }
+
+            return nCount;
+        }
 
     private:
         static Thread* scheduler();

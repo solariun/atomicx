@@ -72,7 +72,7 @@ private:
 
 size_t Test::mIdCounter{0};
 
-Test t1[1000];
+Test t1[10];
 
 int main()
 {

@@ -13,6 +13,8 @@ void atomicx::Tick::sleep(atomicx::Tick nSleep)
     delay(nSleep);
 }
 
+uint8_t endpoint{0};
+
 class Test : public atomicx::Thread
 {
 public:
@@ -24,7 +26,10 @@ protected:
     {
         atomicx::Tick tk;
         
-        yield();
+        yield(0);
+
+        //size_t ret = notify(endpoint, {1, 0, 0}, atomicx::Tick(10));
+
         nValue++;
         
         auto& dt = getParams();
@@ -38,8 +43,12 @@ protected:
         Serial.print(F("/"));
         Serial.print(dt.stackSize);
         Serial.print(F("b"));
-        Serial.print(F(", Tick_t:"));
-        Serial.print(sizeof(atomicx::Tick_t));
+        // Serial.print(F(", Tick_t:"));
+        // Serial.print(sizeof(atomicx::Tick_t));
+        // Serial.print(F(", St:"));
+        // Serial.print((size_t)dt.status);
+        // Serial.print(F(", Ret:"));
+        // Serial.print(ret);
         Serial.println(F(""));
         Serial.flush();
 
