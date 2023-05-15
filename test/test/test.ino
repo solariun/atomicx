@@ -82,8 +82,21 @@ size_t Test::mIdCounter{0};
 
 Test th[2];
 
+template <typename func>
+void doCalc(func calc)
+{
+    auto val = calc(10,20);
+}
+
+int cal(int x, int y) { return x*y;}
+
 void setup()
 {
+    auto t = [&](int x, int y)->int{ return x*y;};
+
+    doCalc(t);
+    doCalc(cal);
+
     Serial.begin(115200);
 
     Serial.println(F(""));

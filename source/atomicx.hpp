@@ -76,14 +76,27 @@ namespace atomicx
 {
     // typedef uint32_t Tick;
 
-    enum class Status : uint8_t
+    enum class Status
     {
         STARTING,
         RUNNING,
         PAUSED,
+        TIMEOUT,
         NOW,
         WAIT,
         SYNC_WAIT
+    };
+
+    enum class Notify
+    {
+        ONE,
+        ALL
+    };
+
+    enum class Wait
+    {
+        MESSAGE,
+        NOTIFY_ONLY
     };
 
     /**
@@ -155,7 +168,8 @@ namespace atomicx
          *          the start time.
          *          Special use case: if nTimeoutValue == 0, IsTimedout is always false.
          */
-        Timeout(Tick nTimeoutValue);
+        explicit Timeout(Tick nTimeoutValue);
+        Timeout(Tick_t nTimeoutValue);
 
         /**
          * @brief greater operator
@@ -346,24 +360,61 @@ namespace atomicx
         static inline void contextChange();
         static bool yield(Tick tm, Status st = Status::RUNNING);
         static bool yield();
-        static bool now();
+        static bool yieldNow();
 
-        size_t safeNotify(void* endpoint, Payload& payload);
+        size_t safeNotify(void* endpoint, Payload& payload, Status st, bool notifyOnly, bool notifyAll);
 
         template <typename T>
-        size_t notify(T endpoint, Payload payload, Timeout tm)
+        inline size_t notify(T& endpoint, Payload& payload, Status st, bool notifyOnly, bool notifyAll)
         {
             size_t nCount = 0;
 
-            if (!tm) {
-                TRACE(WAIT, "endp:" << &endpoint << ", payl:(" << payload.channel << "," << payload.type << "," << payload.message);
-                nCount = safeNotify(static_cast<void*>(&endpoint), payload);
-                now();
-            }
+            TRACE(WAIT, "endp:" << &endpoint << ", payl:(" << payload.channel << "," << payload.type << "," << payload.message);
+            nCount = safeNotify(static_cast<void*>(&endpoint), payload, st, notifyOnly, notifyAll);
+
+            yieldNow();
 
             return nCount;
         }
 
+        template <typename T>
+        inline bool wait(T& endpoint, Payload& payload, Timeout& tm, Status st)
+        {
+            // Prepare payload
+            mDt.endpoint = static_cast<void*>(&endpoint);
+            mDt.payload = payload;
+            // Start waiting
+            yield(tm.until(), st);
+
+            if (st == Status::TIMEOUT) return false;
+
+            return true;
+        }
+
+        template <typename T>
+        size_t notify(T endpoint, Payload payload, Timeout tm, bool notifyAll = true)
+        {
+            size_t nCount{0};
+            while (!tm && wait(endpoint, payload, tm, Status::SYNC_WAIT)) {
+                nCount = notify(endpoint, payload, Status::WAIT, false, notifyAll);
+            }
+
+            if (nCount == 0 && mDt.status == Status::TIMEOUT) return 0;
+
+            return nCount;
+        }
+
+        template <typename T, typename FUNC>
+        bool wait(T endpoint, Payload payload, Timeout tm, FUNC func = []()->bool{return true;})
+        {
+            while (!func()) {
+                notify(endpoint, payload, Status::SYNC_WAIT, true, false);
+                if (!wait(endpoint, payload, tm, Status::WAIT))
+                    return false;
+            }
+
+            return true;
+        }
     private:
         static Thread* scheduler();
 

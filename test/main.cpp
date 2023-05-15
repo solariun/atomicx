@@ -29,16 +29,19 @@ void atomicx::Tick::sleep(atomicx::Tick nSleep)
     usleep((useconds_t)nSleep * 1000);
 }
 
+uint8_t endpoint{0};
+
 class Test : public atomicx::Thread
 {
 public:
-    Test() : Thread(0, mStack)
+    Test() : Thread(10, mStack)
     {}
 
 protected:
     size_t add(size_t nValue)
     {
-        yield();
+        //yield();
+        notify(endpoint, {1,1}, 100);
         nValue++;
 
         return nValue;
@@ -72,7 +75,7 @@ private:
 
 size_t Test::mIdCounter{0};
 
-Test t1[10];
+Test t1[1];
 
 int main()
 {

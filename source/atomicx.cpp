@@ -10,11 +10,12 @@ namespace atomicx
     size_t Thread::mThreadCount{0};
 
     /* PAYLOAD INITIALIZATION */
-    Thread::Payload::Payload(): type(0), message(0)
+    Thread::Payload::Payload() : type(0), message(0)
     {
         channel = 0;
     }
-    Thread::Payload::Payload(size_t type, size_t message) : type(type), message(message) {}
+    Thread::Payload::Payload(size_t type, size_t message) : type(type), message(message)
+    {}
     Thread::Payload::Payload(size_t channel, size_t type, size_t message) : type(type), message(message)
     {
         this->channel = channel;
@@ -75,6 +76,9 @@ namespace atomicx
     }
 
     Timeout::Timeout(Tick nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + Tick::now() : 0)
+    {}
+
+    Timeout::Timeout(Tick_t nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + Tick::now() : 0)
     {}
 
     bool Timeout::operator>(Timeout& tm)
@@ -178,6 +182,26 @@ namespace atomicx
         mThreadCount++;
     }
 
+    /* WAIT / NOTIFY */
+    size_t Thread::safeNotify(void* endpoint, Payload& payload, Status st, bool notifyOnly, bool notifyAll)
+    {
+        size_t nCount = 10 * (size_t)this;
+
+        for (auto& th : *this) {
+            if (st == th.mDt.status)
+                if (endpoint == th.mDt.endpoint && th.mDt.payload.channel == payload.channel && th.mDt.payload.type == payload.type) {
+                    if(!notifyOnly)th.mDt.payload.message = payload.message;
+                    th.mDt.status = Status::NOW;
+                    th.mDt.timeout.set(0);
+                    nCount++;
+                    if(notifyAll) break;
+                }
+        }
+
+        return nCount;
+    }
+
+    /* CONTEXT HANDLERS */
     Thread* Thread::scheduler()
     {
         if (mCurrent == nullptr) return nullptr;
@@ -192,13 +216,13 @@ namespace atomicx
         while (thCount--) {
             th = th->mNext ? th->mNext : mBegin;
 
-            TRACE(SCHEDULER, "SELECT: [" << th << "]: Status:" << static_cast<size_t>(th->mDt.status) << ", until:" << th->mDt.timeout.until());
+            TRACE(SCHEDULER, "SELECT: [" << th << "]: Status:" << ((size_t)th->mDt.status) << ", until:" << th->mDt.timeout.until());
             switch (th->mDt.status) {
                 case Status::STARTING:
                 case Status::NOW:
                     // If NOW it will be executed now
                     candidate = th;
-                    candidate->mDt.timeout.update();
+                    candidate->mDt.timeout = now;
                     stop = true;
                     break;
                 case Status::PAUSED:
@@ -208,16 +232,20 @@ namespace atomicx
                     // if candidate == null or th will timout sooner than candidate, use th
                     if (!candidate || th->mDt.timeout < candidate->mDt.timeout) candidate = th;
                     break;
+                default:
+                    break;
             }
 
             if (stop) break;
         }
 
-        TRACE(SCHEDULER, "Candidate: " << (candidate) << ", next:" << candidate->mDt.timeout.until());
+        TRACE(SCHEDULER, "Candidate: " << (candidate) << ", next:" << candidate->mDt.timeout.until() << ", value:" << candidate->mDt.timeout.value());
 
-        if (candidate->mDt.timeout.until(now) > 0) {
-            TRACE(SCHEDULER, "SLEEP: " << (candidate) << ", for:" << candidate->mDt.timeout.until());
-            Tick::sleep(candidate->mDt.timeout.until());
+        if ((candidate->mDt.status == Status::WAIT || candidate->mDt.status == Status::SYNC_WAIT) && candidate->mDt.timeout) {
+            candidate->mDt.status = Status::TIMEOUT;
+        } else if (candidate->mDt.timeout.until(now) > 0) {
+            TRACE(SCHEDULER, "SLEEP: " << (candidate) << ", for:" << candidate->mDt.timeout.until(now));
+            Tick::sleep(candidate->mDt.timeout.until(now));
         }
 
         return candidate;
@@ -311,23 +339,9 @@ namespace atomicx
         return mCurrent ? yield(mCurrent->mDt.nice) : false;
     }
 
-    bool Thread::now()
+    bool Thread::yieldNow()
     {
         return mCurrent ? yield(0, Status::NOW) : false;
-    }
-
-    size_t Thread::safeNotify(void* endpoint, Payload& payload)
-    {
-        size_t nCount = 10 * (size_t)this;
-
-        for (auto& th : *this) {
-            if (endpoint == th.mDt.endpoint && th.mDt.payload.channel == payload.channel && th.mDt.payload.type == payload.type) {
-                th.mDt.payload.message = payload.message;
-                nCount++;
-            }
-        }
-
-        return nCount;
     }
 
 }  // namespace atomicx
