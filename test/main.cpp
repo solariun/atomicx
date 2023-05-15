@@ -31,6 +31,49 @@ void atomicx::Tick::sleep(atomicx::Tick nSleep)
 
 uint8_t endpoint{0};
 
+class TestRecv : public atomicx::Thread
+{
+public:
+    TestRecv() : Thread(10, mStack)
+    {}
+
+protected:
+    void add()
+    {
+        atomicx::Tick tk{};
+        // yield();
+
+        atomicx::Thread::Payload payload{1, 1};
+        wait(endpoint, payload, 10);
+
+        {
+            auto& dt = getParams();
+            std::cout << getName() << mId << ": time:" << tk.diff() << "ms: Value:" << payload.message << ", Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
+                      << dt.stackSize << "b"
+                      << ", Tick_t:" << sizeof(atomicx::Tick_t) << std::endl
+                      << std::flush;
+        }
+    }
+
+    void run() override
+    {
+        while (true) {
+            add();
+        }
+    }
+
+    const char* getName() const override
+    {
+        return "TH:WAIT";
+    }
+private:
+    size_t mStack[64]{};
+    static size_t mIdCounter;
+    size_t mId{mIdCounter++};
+};
+
+size_t TestRecv::mIdCounter{0};
+
 class Test : public atomicx::Thread
 {
 public:
@@ -40,21 +83,21 @@ public:
 protected:
     size_t add(size_t nValue)
     {
-        //yield();
-        notify(endpoint, {1,1}, 100);
+        // yield();
+        notify(endpoint, {1, nValue}, 100);
         nValue++;
 
         return nValue;
     }
 
-    void run()
+    void run() override
     {
         size_t nValue{0};
         atomicx::Tick tk{};
         while (true) {
             {
                 auto& dt = getParams();
-                std::cout << mId << ": time:" << tk.diff() << "ms: Value:" << nValue << ", Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
+                std::cout << getName() << mId << ": time:" << tk.diff() << "ms: Value:" << nValue << ", Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
                           << dt.stackSize << "b"
                           << ", Tick_t:" << sizeof(atomicx::Tick_t) << std::endl
                           << std::flush;
@@ -67,6 +110,11 @@ protected:
         }
     }
 
+    const char* getName() const override
+    {
+        return "TH:NOTF";
+    }
+
 private:
     size_t mStack[64]{};
     static size_t mIdCounter;
@@ -75,6 +123,7 @@ private:
 
 size_t Test::mIdCounter{0};
 
+TestRecv r1[1];
 Test t1[1];
 
 int main()

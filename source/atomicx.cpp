@@ -9,6 +9,24 @@ namespace atomicx
     Thread* Thread::mCurrent{nullptr};
     size_t Thread::mThreadCount{0};
 
+    const char* statusName(Status st)
+    {
+#define CASE_STATUS(x) \
+    case Status::x:    \
+        return #x
+        switch (st) {
+            CASE_STATUS(STARTING);
+            CASE_STATUS(RUNNING);
+            CASE_STATUS(PAUSED);
+            CASE_STATUS(TIMEOUT);
+            CASE_STATUS(NOW);
+            CASE_STATUS(WAIT);
+            CASE_STATUS(SYNC_WAIT);
+            default:
+                return "UNKNOW";
+        }
+    }
+
     /* PAYLOAD INITIALIZATION */
     Thread::Payload::Payload() : type(0), message(0)
     {
@@ -185,16 +203,23 @@ namespace atomicx
     /* WAIT / NOTIFY */
     size_t Thread::safeNotify(void* endpoint, Payload& payload, Status st, bool notifyOnly, bool notifyAll)
     {
-        size_t nCount = 10 * (size_t)this;
+        size_t nCount{0};
+
+        TRACE(WAIT,
+              "NOTIFYING:" << endpoint << ", st:" << statusName(st) << ", t:" << payload.type << ", m:" << payload.message
+                           << ", ch:" << payload.channel << ", NotOnly:" << notifyOnly << ", NotifyAll:" << notifyAll);
 
         for (auto& th : *this) {
-            if (st == th.mDt.status)
+            if (st == th.mDt.status && &th != mCurrent)
                 if (endpoint == th.mDt.endpoint && th.mDt.payload.channel == payload.channel && th.mDt.payload.type == payload.type) {
-                    if(!notifyOnly)th.mDt.payload.message = payload.message;
+                    if (!notifyOnly) th.mDt.payload.message = payload.message;
                     th.mDt.status = Status::NOW;
                     th.mDt.timeout.set(0);
                     nCount++;
-                    if(notifyAll) break;
+                    TRACE(WAIT,
+                          nCount << "," << &th << "." << th.getName() << ", endp:" << th.mDt.endpoint << ", st:" << statusName(th.mDt.status)
+                                 << ", t:" << th.mDt.payload.type << ", m:" << th.mDt.payload.message << ", ch:" << th.mDt.payload.channel);
+                    if (notifyAll) break;
                 }
         }
 

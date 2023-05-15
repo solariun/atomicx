@@ -15,6 +15,67 @@ void atomicx::Tick::sleep(atomicx::Tick nSleep)
 
 uint8_t endpoint{0};
 
+class TestRecv : public atomicx::Thread
+{
+public:
+    TestRecv() : Thread(0, mStack), mId(mIdCounter++)
+    {}
+
+protected:
+    void  add()
+    {
+        atomicx::Thread::Payload payload;
+        atomicx::Tick tk;
+        
+        //yield(0);
+
+        payload = {.type = 1, .message=0};
+        wait(endpoint, payload, atomicx::Timeout(10));
+
+        auto& dt = getParams();
+        Serial.print(F("WIT:"));
+        Serial.print((size_t)mId);
+        Serial.print(F(": Yield Time:"));
+        Serial.print(tk.diff());
+        Serial.print(F("ms: value:"));
+        Serial.print(payload.message);
+        Serial.print(F(", Stack:"));
+        Serial.print(dt.usedStackSize);
+        Serial.print(F("/"));
+        Serial.print(dt.stackSize);
+        Serial.print(F("b"));
+        Serial.print(F(", Status:"));
+        Serial.print((size_t)dt.status);
+        // Serial.print(F(", Tick_t:"));
+        // Serial.print(sizeof(atomicx::Tick_t));
+        // Serial.print(F(", St:"));
+        // Serial.print((size_t)dt.status);
+        // Serial.print(F(", Ret:"));
+        // Serial.print(ret);
+        Serial.println(F(""));
+        Serial.flush();
+    }
+
+    void run()
+    {
+        while (true) {
+            add();
+        }
+    }
+
+    const char* getName() const override
+    {
+        return "TH:WAIT";
+    }
+
+private:
+    size_t mId;
+    size_t mStack[15]{};
+    static size_t mIdCounter;
+};
+
+size_t TestRecv::mIdCounter{0};
+
 class Test : public atomicx::Thread
 {
 public:
@@ -26,13 +87,14 @@ protected:
     {
         atomicx::Tick tk;
         
-        yield(0);
+        //yield(0);
 
-        //size_t ret = notify(endpoint, {1, 0, 0}, atomicx::Tick(10));
+        size_t ret = notify(endpoint, {1, 0, nValue}, 1);
 
         nValue++;
         
         auto& dt = getParams();
+        Serial.print(F("NOT:"));
         Serial.print((size_t)mId);
         Serial.print(F(": Yield Time:"));
         Serial.print(tk.diff());
@@ -63,6 +125,12 @@ protected:
             nValue =  add(nValue);
         }
     }
+
+    const char* getName() const override
+    {
+        return "TH:NOTF";
+    }
+
 private:
     size_t mId;
     size_t mStack[15]{};
@@ -80,7 +148,9 @@ private:
 
 size_t Test::mIdCounter{0};
 
-Test th[2];
+TestRecv threcv[1];
+
+Test th[1];
 
 template <typename func>
 void doCalc(func calc)

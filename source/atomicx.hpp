@@ -66,10 +66,10 @@ enum class DBGLevel
     INFO,
     TRACE,
     DEBUG,
-    SCHEDULER,
-    KERNEL,
-    WAIT,
     LOCK,
+    WAIT,
+    KERNEL,
+    SCHEDULER,
 };
 
 namespace atomicx
@@ -86,6 +86,8 @@ namespace atomicx
         WAIT,
         SYNC_WAIT
     };
+
+    const char* statusName(Status st);
 
     enum class Notify
     {
@@ -347,7 +349,7 @@ namespace atomicx
 
     protected:
         virtual void run() = 0;
-
+        virtual const char* getName() const = 0;
         template <size_t N>
         Thread(Tick nNice, volatile size_t (&stack)[N]) : mVirtualStack(stack[0])
         {
@@ -369,7 +371,7 @@ namespace atomicx
         {
             size_t nCount = 0;
 
-            TRACE(WAIT, "endp:" << &endpoint << ", payl:(" << payload.channel << "," << payload.type << "," << payload.message);
+            TRACE(WAIT, "endp:" << &endpoint << ", payl:" << payload.type << "," << payload.message << "," << payload.channel);
             nCount = safeNotify(static_cast<void*>(&endpoint), payload, st, notifyOnly, notifyAll);
 
             yieldNow();
@@ -380,34 +382,37 @@ namespace atomicx
         template <typename T>
         inline bool wait(T& endpoint, Payload& payload, Timeout& tm, Status st)
         {
+           TRACE(WAIT, "WAITING:" << &endpoint << ", t:" << payload.type << ", m:" << payload.message << ", ch:" << payload.channel << ", TM:" << tm.value());
+
             // Prepare payload
             mDt.endpoint = static_cast<void*>(&endpoint);
             mDt.payload = payload;
             // Start waiting
             yield(tm.until(), st);
 
-            if (st == Status::TIMEOUT) return false;
+            if (mDt.status == Status::TIMEOUT) return false;
 
             return true;
         }
 
         template <typename T>
-        size_t notify(T endpoint, Payload payload, Timeout tm, bool notifyAll = true)
+        size_t notify(T& endpoint, Payload payload, Timeout tm, bool notifyAll = true)
         {
             size_t nCount{0};
-            while (!tm && wait(endpoint, payload, tm, Status::SYNC_WAIT)) {
-                nCount = notify(endpoint, payload, Status::WAIT, false, notifyAll);
+            while (!tm && !(nCount = notify(endpoint, payload, Status::WAIT, false, notifyAll))) {
+                wait(endpoint, payload, tm, Status::SYNC_WAIT);
             }
 
+            TRACE(WAIT, "NOTIFY: endp:" << &endpoint << ", count:" << nCount << ", st:" << statusName(mDt.status));
             if (nCount == 0 && mDt.status == Status::TIMEOUT) return 0;
 
             return nCount;
         }
 
         template <typename T, typename FUNC>
-        bool wait(T endpoint, Payload payload, Timeout tm, FUNC func = []()->bool{return true;})
+        bool wait(T& endpoint, Payload& payload, Timeout tm, FUNC condition = []()->bool{return true;})
         {
-            while (!func()) {
+            while (!tm && !condition()) {
                 notify(endpoint, payload, Status::SYNC_WAIT, true, false);
                 if (!wait(endpoint, payload, tm, Status::WAIT))
                     return false;
@@ -415,6 +420,17 @@ namespace atomicx
 
             return true;
         }
+
+        template <typename T>
+        bool wait(T& endpoint, Payload& payload, Timeout tm)
+        {
+            notify(endpoint, payload, Status::SYNC_WAIT, true, false);
+            if (!wait(endpoint, payload, tm, Status::WAIT))
+                return false;
+
+            return true;
+        }
+
     private:
         static Thread* scheduler();
 
