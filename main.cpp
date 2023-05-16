@@ -55,41 +55,29 @@ struct transf
     char   pszData[80];
 };
 
-class ThreadConsummer : public atomicx
+class T1 : public atomicx
 {
 public:
-    ThreadConsummer() = delete;
-
-    ThreadConsummer(atomicx_time nNice, const char* pszName) : atomicx (stack), m_pszName(pszName)
+    T1(atomicx_time nNice, const char* pszName) : atomicx(1024, 250), m_pszName(pszName)
     {
-        std::cout << "Creating Eventual: " << pszName << ", ID: " << (size_t) this << std::endl;
-
         SetNice(nNice);
     }
 
-    ~ThreadConsummer()
+    ~T1()
     {
-        std::cout << "Deleting Eventual: " << GetName() << ": " << (size_t) this << std::endl;
+        std::cout << "Deleting " << GetName() << ": " << (size_t) this << std::endl;
     }
 
-    void run(void) noexcept override
+    void run() noexcept override
     {
-        size_t nReceived;
+        size_t value = 0;
 
-        for (;;)
+        while (Yield())
         {
-            transf tr = {.Counter=19, .pszData=""};
-            
-            if ((nReceived = Receive(nGlobalCount, (uint8_t*) &tr, (uint16_t) sizeof (tr), 1000)))
-            {
-                printf ("Receiver: nReceived: %zu, Counter: %zu (%s)\n", nReceived, tr.Counter, tr.pszData);
-            }
-            else
-            {
-                printf ("Receiver: failed receive...\n");
-                ListAllThreads();
-            }
+	    value++;
+	    std::cout << "value:" << value << ", Stack:" << GetUsedStackSize() << std::endl;
         }
+
     }
 
     void StackOverflowHandler (void) noexcept override
@@ -101,43 +89,32 @@ public:
     {
         return m_pszName;
     }
-
 private:
-    uint8_t stack[1024]="";
     const char* m_pszName;
 };
 
-
-class Thread : public atomicx
+class T2 : public atomicx
 {
 public:
-    Thread(atomicx_time nNice, const char* pszName) : atomicx(1024, 250), m_pszName(pszName)
+    T2(atomicx_time nNice, const char* pszName) : atomicx(1024, 250), m_pszName(pszName)
     {
         SetNice(nNice);
     }
 
-    ~Thread()
+    T2()
     {
         std::cout << "Deleting " << GetName() << ": " << (size_t) this << std::endl;
     }
 
     void run() noexcept override
     {
-        transf tr { .Counter=0, .pszData=""};
-        
-        for (;;)
+        size_t value = 0;
+        char data[] = "DATA TO BE DISPLAYED";
+
+        while (Yield())
         {
-            tr.Counter ++;
-            snprintf(tr.pszData, sizeof tr.pszData, "Counter: %zu", tr.Counter);
-            
-            if (Send (nGlobalCount, (uint8_t*) &tr, (uint16_t) sizeof (tr), 1000) == false)
-            {
-                printf ("Publish %zu: (%s) Failed to send data.\n", GetID(), GetName ());
-            }
-            else
-            {
-                printf ("%zu: (%s) Data Sent..\n", GetID(), GetName ());
-            }
+	    value++;
+	    std::cout << "value:" << value << ", Stack:" << GetUsedStackSize() << ", DT:" << data << std::endl;
         }
 
     }
@@ -171,12 +148,11 @@ void ListAllThreads()
 int main()
 {
 
-    Thread t1(1000, "Producer 1");
+    T1 t1(1000, "Producer 1");
+    T2 t2(1000, "Producer 1");
     //Thread t2(1000, "Producer 2");
     //Thread t3(1000, "Producer 3");
     //Thread t4(1000, "Producer 4");
-    
-    ThreadConsummer e1(500, "Consumer 1");
     
     std::cout << "LISTING....." << std::endl;
 

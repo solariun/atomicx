@@ -33,7 +33,7 @@
 CC = g++
 
 # define any compile-time flags
-CFLAGS = -Ofast -Wall -g --std=c++11 -Wall -Wextra -Werror
+CFLAGS = -O0 -Wall -g --std=c++11 -Wall -Wextra #-Werror
 
 ifndef CPX_DIR
 	CPX_DIR=./atomicx
