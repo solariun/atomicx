@@ -26,7 +26,7 @@ protected:
     {
         atomicx::Tick tk;
 
-        //yield(10);
+        yield(10);
 
         atomicx::Thread::Payload payload = {.type = 1, .message = 0};
         wait(endpoint, payload, 10);
@@ -67,7 +67,7 @@ protected:
 
 private:
     size_t mId;
-    size_t mStack[15]{};
+    size_t mStack[25]{};
     static size_t mIdCounter;
 };
 

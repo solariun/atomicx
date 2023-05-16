@@ -267,7 +267,7 @@ namespace atomicx
                 // Set the context for the start
                 if (setjmp(mJmpStart) == 0) {
                     if (mCurrent->mDt.status == Status::STARTING) {
-                        uint8_t stackBegin = 0xAA;
+                        volatile uint8_t stackBegin = 0xAA;
                         mCurrent->mStackBegin = &stackBegin;
 
                         // Mark the new thread as running
@@ -332,7 +332,7 @@ namespace atomicx
             mCurrent->mDt.status = st;
 
             // Discover the end of the used stack;
-            uint8_t stackEnd = 0xBB;
+            volatile uint8_t stackEnd = 0xBB;
             mCurrent->mStackEnd = &stackEnd;
 
             // Calculate the amount of stack used
