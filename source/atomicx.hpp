@@ -47,10 +47,10 @@
 
 #ifdef _DEBUG
 #include <iostream>
-#define TRACE(i, x)                                                                                          \
-    if (DBGLevel::i <= DBGLevel::_DEBUG)                                                                     \
-    std::cout << "[" << #i << "] "                                                                           \
-              << "(" << __FUNCTION__ << ", " << __FILE_NAME__ << ":" << __LINE__ << "):  " << x << std::endl \
+#define TRACE(i, x)                                                                                                      \
+    if (DBGLevel::i <= DBGLevel::_DEBUG)                                                                                 \
+    std::cout << atomicx::Thread::getCurrent().getName() << "." << &(atomicx::Thread::getCurrent()) << "[" << #i << "] " \
+              << "(" << __FUNCTION__ << ", " << __FILE_NAME__ << ":" << __LINE__ << "):  " << x << std::endl             \
               << std::flush
 #else
 #define TRACE(i, x) NOTRACE(i, x)
@@ -109,10 +109,10 @@ namespace atomicx
      */
 #if SIZE_MAX >= UINT32_MAX
     using Tick_t = int64_t;
-    static constexpr size_t TICK_DEFAULT = static_cast<size_t>(INT64_MAX);
+    static constexpr Tick_t TICK_DEFAULT = static_cast<size_t>(INT64_MAX);
 #else
     using Tick_t = int32_t;
-    static constexpr size_t TICK_DEFAULT = INT32_MAX;
+    static constexpr Tick_t TICK_DEFAULT = INT32_MAX;
 #endif
 
     class Tick
@@ -180,7 +180,7 @@ namespace atomicx
          *
          * @return true     if greater otherwise false
          */
-        bool operator>(Timeout& tm);
+        bool operator>(Timeout& tm) const;
 
         /**
          * @brief lesser operator
@@ -189,7 +189,7 @@ namespace atomicx
          *
          * @return true     if lesses otherwise false
          */
-        bool operator<(Timeout& tm);
+        bool operator<(Timeout& tm) const;
 
         /**
          * @brief different operator
@@ -198,7 +198,7 @@ namespace atomicx
          *
          * @return true     if different otherwise false
          */
-        bool operator!=(Timeout& tm);
+        bool operator!=(Timeout& tm) const;
 
         /**
          * @brief equal operator
@@ -207,7 +207,7 @@ namespace atomicx
          *
          * @return true     if equal otherwise false
          */
-        bool operator==(Timeout& tm);
+        bool operator==(Timeout& tm) const;
 
         /**
          *
@@ -261,7 +261,7 @@ namespace atomicx
          */
         Tick until(Tick now) const;
 
-        const Tick& value();
+        const Tick& value() const;
 
     private:
         Tick m_timeoutValue = 0;
@@ -333,7 +333,7 @@ namespace atomicx
             size_t stackSize{0};
             size_t usedStackSize{0};
             Timeout timeout{0};
-            void* endpoint{nullptr};
+            const void* endpoint{nullptr};
             Payload payload{};
         };
 
@@ -347,9 +347,12 @@ namespace atomicx
 
         const Params& getParams() const;
 
+        static Thread& getCurrent();
+
+        virtual const char* getName() const = 0;
+
     protected:
         virtual void run() = 0;
-        virtual const char* getName() const = 0;
         template <size_t N>
         Thread(Tick nNice, volatile size_t (&stack)[N]) : mVirtualStack(stack[0])
         {
@@ -360,37 +363,89 @@ namespace atomicx
         }
 
         static inline void contextChange();
-        static bool yield(Tick tm, Status st = Status::RUNNING);
-        static bool yield();
-        static bool yieldNow();
-
-        size_t safeNotify(void* endpoint, Payload& payload, Status st, bool notifyOnly, bool notifyAll);
+        bool yield(Tick tm = TICK_DEFAULT,Status st = Status::RUNNING);
 
         template <typename T>
-        inline size_t notify(T& endpoint, Payload& payload, Status st, bool notifyOnly, bool notifyAll)
+        static size_t hasWaitings(const T& endpoint, const Payload& payload, Status st)
         {
-            size_t nCount = 0;
+            bool ret = false;
 
-            TRACE(WAIT, "endp:" << &endpoint << ", payl:" << payload.type << "," << payload.message << "," << payload.channel);
-            nCount = safeNotify(static_cast<void*>(&endpoint), payload, st, notifyOnly, notifyAll);
+            for (auto& th : getCurrent()) {
+                if (st == th.mDt.status && &endpoint == th.mDt.endpoint && th.mDt.payload.channel == payload.channel
+                    && th.mDt.payload.type == payload.type) {
+                    ret = true;
+                }
+            }
 
-            yieldNow();
+            TRACE(WAIT,
+                  "HASWAIT: (" << (ret ? "TRUE" : "FALSE") << ") Expecting: endp:" << (void*)&endpoint << ", st:" << statusName(st)
+                               << ", t:" << payload.type << ", c:" << payload.channel);
+
+            return ret;
+        }
+
+        template <typename T>
+        static size_t safeNotify(const T& endpoint, const Payload& payload, Status st, bool notifyOnly, bool notifyAll)
+        {
+            size_t nCount{0};
+
+            TRACE(WAIT,
+                  "NOTIFYING:" << &endpoint << ", st:" << statusName(st) << ", t:" << payload.type << ", m:" << payload.message
+                               << ", ch:" << payload.channel << ", NotOnly:" << notifyOnly << ", NotifyAll:" << notifyAll);
+
+            for (auto& th : getCurrent()) {
+                if (st == th.mDt.status)
+                    if (&endpoint == th.mDt.endpoint && th.mDt.payload.channel == payload.channel && th.mDt.payload.type == payload.type) {
+                        if (!notifyOnly)
+                            th.mDt.payload.message = payload.message;
+                        th.mDt.status = Status::NOW;
+                        th.mDt.timeout.set(0);
+                        nCount++;
+                        TRACE(WAIT,
+                              "FOUND:" << nCount << "," << &th << "." << th.getName() << ", endp:" << th.mDt.endpoint
+                                       << ", st:" << statusName(th.mDt.status) << ", t:" << th.mDt.payload.type << ", m:" << th.mDt.payload.message
+                                       << ", ch:" << th.mDt.payload.channel);
+                        if (notifyAll)
+                            break;
+                    }
+            }
 
             return nCount;
         }
 
         template <typename T>
-        inline bool wait(T& endpoint, Payload& payload, Timeout& tm, Status st)
+        inline size_t notifyEng(const T& endpoint, const Payload& payload, Status st, bool notifyOnly, bool notifyAll)
         {
-           TRACE(WAIT, "WAITING:" << &endpoint << ", t:" << payload.type << ", m:" << payload.message << ", ch:" << payload.channel << ", TM:" << tm.value());
+            size_t nCount = 0;
 
+            nCount = safeNotify(endpoint, payload, st, notifyOnly, notifyAll);
+
+            yield(0, Status::NOW);
+
+            return nCount;
+        }
+
+        template <typename T>
+        inline bool waitEng(const T& endpoint, Payload& payload, const Timeout& tm, Status st)
+        {
+            TRACE(WAIT,
+                  "WAITING:" << &endpoint << ", st:" << statusName(st) << ", t:" << payload.type << ", m:" << payload.message
+                             << ", ch:" << payload.channel);
             // Prepare payload
-            mDt.endpoint = static_cast<void*>(&endpoint);
+            mDt.endpoint = static_cast<const void*>(&endpoint);
             mDt.payload = payload;
             // Start waiting
             yield(tm.until(), st);
 
-            if (mDt.status == Status::TIMEOUT) return false;
+            payload = mDt.payload;
+            mDt.payload = {};
+
+            TRACE(WAIT,
+                  "WAITING-RET:" << &endpoint << ", st:" << statusName(st) << ", t:" << payload.type << ", m:" << payload.message
+                                 << ", ch:" << payload.channel);
+
+            if (mDt.status == Status::TIMEOUT)
+                return false;
 
             return true;
         }
@@ -399,23 +454,30 @@ namespace atomicx
         size_t notify(T& endpoint, Payload payload, Timeout tm, bool notifyAll = true)
         {
             size_t nCount{0};
-            while (!tm && !(nCount = notify(endpoint, payload, Status::WAIT, false, notifyAll))) {
-                wait(endpoint, payload, tm, Status::SYNC_WAIT);
-            }
+            while (!nCount && !tm) {
+                if (hasWaitings(endpoint, payload, Status::WAIT) || waitEng(endpoint, payload, tm, Status::SYNC_WAIT))
+                    nCount = notifyEng(endpoint, payload, Status::WAIT, false, notifyAll);
 
-            TRACE(WAIT, "NOTIFY: endp:" << &endpoint << ", count:" << nCount << ", st:" << statusName(mDt.status));
-            if (nCount == 0 && mDt.status == Status::TIMEOUT) return 0;
+                if (mDt.status == Status::TIMEOUT)
+                    return 0;
+            }
 
             return nCount;
         }
 
         template <typename T, typename FUNC>
-        bool wait(T& endpoint, Payload& payload, Timeout tm, FUNC condition = []()->bool{return true;})
+        bool wait(
+                T& endpoint,
+                Payload& payload,
+                Timeout tm,
+                FUNC condition = []() -> bool { return true; })
         {
-            while (!tm && !condition()) {
-                notify(endpoint, payload, Status::SYNC_WAIT, true, false);
-                if (!wait(endpoint, payload, tm, Status::WAIT))
-                    return false;
+            while (!condition() && mDt.status != Status::TIMEOUT && !tm) {
+                if (hasWaitings(endpoint, payload, Status::SYNC_WAIT))
+                    notifyEng(endpoint, payload, Status::SYNC_WAIT, true, false);
+
+                if (waitEng(endpoint, payload, tm, Status::WAIT))
+                    return true;
             }
 
             return true;
@@ -424,11 +486,13 @@ namespace atomicx
         template <typename T>
         bool wait(T& endpoint, Payload& payload, Timeout tm)
         {
-            notify(endpoint, payload, Status::SYNC_WAIT, true, false);
-            if (!wait(endpoint, payload, tm, Status::WAIT))
-                return false;
+            if (hasWaitings(endpoint, payload, Status::SYNC_WAIT))
+                notifyEng(endpoint, payload, Status::SYNC_WAIT, true, false);
 
-            return true;
+            if (waitEng(endpoint, payload, tm, Status::WAIT))
+                return true;
+
+            return false;
         }
 
     private:
@@ -444,6 +508,7 @@ namespace atomicx
 
         // The single point from Start
         static volatile uint8_t* mStackBegin;
+        volatile uint8_t* mStackEnd{nullptr};
 
         // Initialized by the constructor
         volatile size_t& mVirtualStack;
@@ -454,8 +519,6 @@ namespace atomicx
         // Self-Initialized
         Thread* mNext{nullptr};
         jmp_buf mJmpThread{};
-
-        volatile uint8_t* mStackEnd{nullptr};
     };
 
 }  // namespace atomicx

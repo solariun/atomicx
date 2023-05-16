@@ -44,14 +44,16 @@ protected:
         // yield();
 
         atomicx::Thread::Payload payload{1, 1};
-        wait(endpoint, payload, 10);
+        wait(endpoint, payload, 1);
 
         {
             auto& dt = getParams();
-            std::cout << getName() << mId << ": time:" << tk.diff() << "ms: Value:" << payload.message << ", Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
-                      << dt.stackSize << "b"
-                      << ", Tick_t:" << sizeof(atomicx::Tick_t) << std::endl
-                      << std::flush;
+            TRACE(INFO,
+                  statusName(dt.status) << mId << ": time:" << tk.diff() << "ms: Value:" << payload.message << ", Nice:" << dt.nice
+                                        << ", Stack:" << dt.usedStackSize << "/" << dt.stackSize << "b"
+                                        << ", Tick_t:" << sizeof(atomicx::Tick_t));
+            if (dt.status == atomicx::Status::TIMEOUT)
+                exit(1);
         }
     }
 
@@ -66,6 +68,7 @@ protected:
     {
         return "TH:WAIT";
     }
+
 private:
     size_t mStack[64]{};
     static size_t mIdCounter;
@@ -97,10 +100,15 @@ protected:
         while (true) {
             {
                 auto& dt = getParams();
-                std::cout << getName() << mId << ": time:" << tk.diff() << "ms: Value:" << nValue << ", Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
-                          << dt.stackSize << "b"
-                          << ", Tick_t:" << sizeof(atomicx::Tick_t) << std::endl
-                          << std::flush;
+                TRACE(INFO,
+                      statusName(dt.status) << mId << ": time:" << tk.diff() << "ms: Value:" << nValue << ", Nice:" << dt.nice
+                                            << ", Stack:" << dt.usedStackSize << "/" << dt.stackSize << "b"
+                                            << ", Tick_t:" << sizeof(atomicx::Tick_t));
+
+                if (dt.status == atomicx::Status::TIMEOUT)
+                    exit(1);
+                
+                yield(10);
             }
 
             tk = atomicx::Tick::now();
@@ -123,7 +131,7 @@ private:
 
 size_t Test::mIdCounter{0};
 
-TestRecv r1[1];
+TestRecv r1[1000];
 Test t1[1];
 
 int main()

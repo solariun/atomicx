@@ -8,6 +8,8 @@ namespace atomicx
     Thread* Thread::mEnd{nullptr};
     Thread* Thread::mCurrent{nullptr};
     size_t Thread::mThreadCount{0};
+    jmp_buf Thread::mJmpStart{};
+    volatile uint8_t* Thread::mStackBegin{nullptr};
 
     const char* statusName(Status st)
     {
@@ -99,25 +101,23 @@ namespace atomicx
     Timeout::Timeout(Tick_t nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + Tick::now() : 0)
     {}
 
-    bool Timeout::operator>(Timeout& tm)
+    bool Timeout::operator>(Timeout& tm) const
     {
         return m_timeoutValue > tm.m_timeoutValue;
     }
 
-    bool Timeout::operator<(Timeout& tm)
+    bool Timeout::operator<(Timeout& tm) const
     {
-        TRACE(KERNEL, "operator<: " << m_timeoutValue << " < " << tm.m_timeoutValue);
         return m_timeoutValue < tm.m_timeoutValue;
     }
 
-    bool Timeout::operator!=(Timeout& tm)
+    bool Timeout::operator!=(Timeout& tm) const
     {
         return m_timeoutValue != tm.m_timeoutValue;
     }
 
-    bool Timeout::operator==(Timeout& tm)
+    bool Timeout::operator==(Timeout& tm) const
     {
-        TRACE(KERNEL, "operator==: " << m_timeoutValue << " == " << tm.m_timeoutValue);
         return m_timeoutValue == tm.m_timeoutValue;
     }
 
@@ -156,16 +156,12 @@ namespace atomicx
         return (m_timeoutValue - now);
     }
 
-    const Tick& Timeout::value()
+    const Tick& Timeout::value() const
     {
         return m_timeoutValue;
     }
 
     /* THREAD */
-    jmp_buf Thread::mJmpStart{};
-
-    volatile uint8_t* Thread::mStackBegin{nullptr};
-
     Thread* Thread::next()
     {
         return mNext;
@@ -200,36 +196,16 @@ namespace atomicx
         mThreadCount++;
     }
 
-    /* WAIT / NOTIFY */
-    size_t Thread::safeNotify(void* endpoint, Payload& payload, Status st, bool notifyOnly, bool notifyAll)
+    Thread& Thread::getCurrent()
     {
-        size_t nCount{0};
-
-        TRACE(WAIT,
-              "NOTIFYING:" << endpoint << ", st:" << statusName(st) << ", t:" << payload.type << ", m:" << payload.message
-                           << ", ch:" << payload.channel << ", NotOnly:" << notifyOnly << ", NotifyAll:" << notifyAll);
-
-        for (auto& th : *this) {
-            if (st == th.mDt.status && &th != mCurrent)
-                if (endpoint == th.mDt.endpoint && th.mDt.payload.channel == payload.channel && th.mDt.payload.type == payload.type) {
-                    if (!notifyOnly) th.mDt.payload.message = payload.message;
-                    th.mDt.status = Status::NOW;
-                    th.mDt.timeout.set(0);
-                    nCount++;
-                    TRACE(WAIT,
-                          nCount << "," << &th << "." << th.getName() << ", endp:" << th.mDt.endpoint << ", st:" << statusName(th.mDt.status)
-                                 << ", t:" << th.mDt.payload.type << ", m:" << th.mDt.payload.message << ", ch:" << th.mDt.payload.channel);
-                    if (notifyAll) break;
-                }
-        }
-
-        return nCount;
+        return *mCurrent;
     }
 
     /* CONTEXT HANDLERS */
     Thread* Thread::scheduler()
     {
-        if (mCurrent == nullptr) return nullptr;
+        if (mCurrent == nullptr)
+            return nullptr;
 
         Tick now;
         Thread* candidate = nullptr;
@@ -241,7 +217,7 @@ namespace atomicx
         while (thCount--) {
             th = th->mNext ? th->mNext : mBegin;
 
-            TRACE(SCHEDULER, "SELECT: [" << th << "]: Status:" << ((size_t)th->mDt.status) << ", until:" << th->mDt.timeout.until());
+            TRACE(SCHEDULER, "SELECT: [" << th << "]: Status:" << statusName(th->mDt.status) << ", until:" << th->mDt.timeout.until());
             switch (th->mDt.status) {
                 case Status::STARTING:
                 case Status::NOW:
@@ -255,22 +231,26 @@ namespace atomicx
                 case Status::WAIT:
                 case Status::SYNC_WAIT:
                     // if candidate == null or th will timout sooner than candidate, use th
-                    if (!candidate || th->mDt.timeout < candidate->mDt.timeout) candidate = th;
+                    if (!candidate || th->mDt.timeout < candidate->mDt.timeout)
+                        candidate = th;
                     break;
                 default:
                     break;
             }
 
-            if (stop) break;
+            if (stop)
+                break;
         }
 
         TRACE(SCHEDULER, "Candidate: " << (candidate) << ", next:" << candidate->mDt.timeout.until() << ", value:" << candidate->mDt.timeout.value());
 
-        if ((candidate->mDt.status == Status::WAIT || candidate->mDt.status == Status::SYNC_WAIT) && candidate->mDt.timeout) {
-            candidate->mDt.status = Status::TIMEOUT;
-        } else if (candidate->mDt.timeout.until(now) > 0) {
+        if (candidate->mDt.timeout.until(now) > 0) {
             TRACE(SCHEDULER, "SLEEP: " << (candidate) << ", for:" << candidate->mDt.timeout.until(now));
             Tick::sleep(candidate->mDt.timeout.until(now));
+        }
+
+        if ((candidate->mDt.status == Status::WAIT || candidate->mDt.status == Status::SYNC_WAIT) && candidate->mDt.timeout) {
+            candidate->mDt.status = Status::TIMEOUT;
         }
 
         return candidate;
@@ -283,24 +263,23 @@ namespace atomicx
         if (mBegin != nullptr) {
             mCurrent = mBegin;
 
-            volatile uint8_t stackBegin = 0xAA;
-            mStackBegin = &stackBegin;
-
             while (mCurrent != nullptr) {
                 // Set the context for the start
                 if (setjmp(mJmpStart) == 0) {
-                    switch (mCurrent->mDt.status) {
-                        case Status::STARTING:
-                            // Mark the new thread as running
+                    if (mCurrent->mDt.status == Status::STARTING) {
+                        uint8_t stackBegin = 0xAA;
+                        mCurrent->mStackBegin = &stackBegin;
+
+                        // Mark the new thread as running
+                        mCurrent->mDt.status = Status::RUNNING;
+                        // Execute the object
+                        mCurrent->run();
+                    } else {
+                        // Jump back to the thread
+                        if (mCurrent->mDt.status != Status::TIMEOUT)
                             mCurrent->mDt.status = Status::RUNNING;
-                            // Execute the object
-                            mCurrent->run();
-                            break;
-                        default:
-                            break;
+                        longjmp(mCurrent->mJmpThread, 1);
                     }
-                    // Jump back to the thread
-                    longjmp(mCurrent->mJmpThread, 1);
                 }
 
                 // get the next thread, schedule can proactively sleep if no other
@@ -320,6 +299,7 @@ namespace atomicx
             mCurrent->mStackEnd = &stackEnd;
             // Calculate the amount of stack used
             mCurrent->mDt.usedStackSize = static_cast<size_t>(mCurrent->mStackBegin - mCurrent->mStackEnd);
+            TRACE(KERNEL, "CTX: size:" << mCurrent->mDt.usedStackSize);
             // Backup the stack in the virutal stack memory of the thread
             memcpy((void*)&mCurrent->mVirtualStack, (const void*)mCurrent->mStackEnd, mCurrent->mDt.usedStackSize);
         }
@@ -341,7 +321,7 @@ namespace atomicx
                 // Set running to sleep
                 st = Status::PAUSED;
                 // Update value for nice or custom (if tm is defined)
-                tm = Tick::now() + tm;
+                tm = Tick::now() + (static_cast<Tick_t>(tm) == TICK_DEFAULT ? mCurrent->mDt.nice : tm);
             } else {
                 tm = tm ? Tick(Tick::now() + tm) : tm;
             }
@@ -351,22 +331,31 @@ namespace atomicx
             // Set status
             mCurrent->mDt.status = st;
 
-            contextChange();
+            // Discover the end of the used stack;
+            uint8_t stackEnd = 0xBB;
+            mCurrent->mStackEnd = &stackEnd;
+
+            // Calculate the amount of stack used
+            mCurrent->mDt.usedStackSize = static_cast<size_t>(mCurrent->mStackBegin - mCurrent->mStackEnd);
+
+            TRACE(KERNEL, "CTX: size:" << mCurrent->mDt.usedStackSize << ", Bgn:" << (size_t)mCurrent->mStackBegin << ", end:" << (size_t)mCurrent->mStackEnd);
+
+            // Backup the stack in the virutal stack memory of the thread
+            memcpy((void*)&mCurrent->mVirtualStack, (const void*)mCurrent->mStackEnd, mCurrent->mDt.usedStackSize);
+
+            // Execute the context switching
+            if (setjmp(mCurrent->mJmpThread) == 0) {
+                // Jump back for the start loop
+                longjmp(mCurrent->mJmpStart, 1);
+            }
+
+            // Restore stack from the thread's virtual stack memory
+            memcpy((void*)mCurrent->mStackEnd, (const void*)&mCurrent->mVirtualStack, mCurrent->mDt.usedStackSize);
 
             return true;
         }
 
         return false;
-    }
-
-    bool Thread::yield()
-    {
-        return mCurrent ? yield(mCurrent->mDt.nice) : false;
-    }
-
-    bool Thread::yieldNow()
-    {
-        return mCurrent ? yield(0, Status::NOW) : false;
     }
 
 }  // namespace atomicx
