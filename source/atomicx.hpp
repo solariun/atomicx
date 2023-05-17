@@ -114,6 +114,13 @@ namespace atomicx
     using Tick_t = int32_t;
     static constexpr Tick_t TICK_DEFAULT = INT32_MAX;
 #endif
+    /*
+     * BOTH now and sleep must be defined EXTERNALLY
+     */
+    class Tick;
+
+    Tick now(void);
+    void sleep(Tick nSleep);
 
     class Tick
     {
@@ -128,12 +135,7 @@ namespace atomicx
         Tick_t value() const;
 
         Tick& update();
-
-        /*
-         * BOTH Tick::now and Tick::sleep must be defined EXTERNALLY
-         */
-        static Tick now(void);
-        static void sleep(Tick nSleep);
+        Tick& update(Tick_t add);
 
         Tick_t diffT(Tick tick) const;
         Tick_t diffT() const;
@@ -362,8 +364,7 @@ namespace atomicx
             addThread(*this);
         }
 
-        static inline void contextChange();
-        bool yield(Tick tm = TICK_DEFAULT,Status st = Status::RUNNING);
+        bool yield(Tick tm = TICK_DEFAULT, Status st = Status::RUNNING);
 
         template <typename T>
         static size_t hasWaitings(const T& endpoint, const Payload& payload, Status st)
@@ -414,19 +415,7 @@ namespace atomicx
         }
 
         template <typename T>
-        inline size_t notifyEng(const T& endpoint, const Payload& payload, Status st, bool notifyOnly, bool notifyAll)
-        {
-            size_t nCount = 0;
-
-            nCount = safeNotify(endpoint, payload, st, notifyOnly, notifyAll);
-
-            yield(0, Status::NOW);
-
-            return nCount;
-        }
-
-        template <typename T>
-        inline bool waitEng(const T& endpoint, Payload& payload, const Timeout& tm, Status st)
+        inline void setWait(const T& endpoint, Payload& payload, Status st)
         {
             TRACE(WAIT,
                   "WAITING:" << &endpoint << ", st:" << statusName(st) << ", t:" << payload.type << ", m:" << payload.message
@@ -434,50 +423,43 @@ namespace atomicx
             // Prepare payload
             mDt.endpoint = static_cast<const void*>(&endpoint);
             mDt.payload = payload;
-            // Start waiting
-            yield(tm.until(), st);
-
-            payload = mDt.payload;
-            mDt.payload = {};
-
-            TRACE(WAIT,
-                  "WAITING-RET:" << &endpoint << ", st:" << statusName(st) << ", t:" << payload.type << ", m:" << payload.message
-                                 << ", ch:" << payload.channel);
-
-            if (mDt.status == Status::TIMEOUT)
-                return false;
-
-            return true;
         }
 
         template <typename T>
         size_t notify(T& endpoint, Payload payload, Timeout tm, bool notifyAll = true)
         {
             size_t nCount{0};
-            while (!nCount && !tm) {
-                if (hasWaitings(endpoint, payload, Status::WAIT) || waitEng(endpoint, payload, tm, Status::SYNC_WAIT))
-                    nCount = notifyEng(endpoint, payload, Status::WAIT, false, notifyAll);
-
-                if (mDt.status == Status::TIMEOUT)
-                    return 0;
+            if (!hasWaitings(endpoint, payload, Status::WAIT)) {
+                setWait(endpoint, payload, Status::SYNC_WAIT);
+                yield(tm.until(), Status::SYNC_WAIT);
             }
+
+            nCount = safeNotify(endpoint, payload, Status::WAIT, false, notifyAll);
+            yield(0, Status::NOW);
 
             return nCount;
         }
 
+        static bool defaultFunc(){ return true; }
         template <typename T, typename FUNC>
         bool wait(
                 T& endpoint,
                 Payload& payload,
                 Timeout tm,
-                FUNC condition = []() -> bool { return true; })
+                FUNC condition = defaultFunc)
         {
-            while (!condition() && mDt.status != Status::TIMEOUT && !tm) {
+            while (!condition() && mDt.status != Status::TIMEOUT) {
                 if (hasWaitings(endpoint, payload, Status::SYNC_WAIT))
-                    notifyEng(endpoint, payload, Status::SYNC_WAIT, true, false);
+                    safeNotify(endpoint, payload, Status::SYNC_WAIT, true, false);
 
-                if (waitEng(endpoint, payload, tm, Status::WAIT))
-                    return true;
+                setWait(endpoint, payload, Status::WAIT);
+                yield(tm.until(), Status::WAIT);
+            }
+
+            if (!tm && mDt.status != Status::TIMEOUT) {
+                payload = mDt.payload;
+                mDt.payload = {};
+                return true;
             }
 
             return true;
@@ -487,11 +469,16 @@ namespace atomicx
         bool wait(T& endpoint, Payload& payload, Timeout tm)
         {
             if (hasWaitings(endpoint, payload, Status::SYNC_WAIT))
-                notifyEng(endpoint, payload, Status::SYNC_WAIT, true, false);
+                safeNotify(endpoint, payload, Status::SYNC_WAIT, true, false);
 
-            if (waitEng(endpoint, payload, tm, Status::WAIT))
+            setWait(endpoint, payload, Status::WAIT);
+            yield(tm.until(), Status::WAIT);
+
+            if (mDt.status != Status::TIMEOUT) {
+                payload = mDt.payload;
+                mDt.payload = {};
                 return true;
-
+            }
             return false;
         }
 

@@ -68,6 +68,12 @@ namespace atomicx
         return *this;
     }
 
+    Tick& Tick::update(Tick_t add)
+    {
+        mTick = now() + add;
+        return *this;
+    }
+
     Tick_t Tick::diffT(Tick tick) const
     {
         return (tick - mTick);
@@ -95,10 +101,10 @@ namespace atomicx
         set(0);
     }
 
-    Timeout::Timeout(Tick nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + Tick::now() : 0)
+    Timeout::Timeout(Tick nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + now() : 0)
     {}
 
-    Timeout::Timeout(Tick_t nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + Tick::now() : 0)
+    Timeout::Timeout(Tick_t nTimeoutValue) : m_timeoutValue(nTimeoutValue ? nTimeoutValue + now() : 0)
     {}
 
     bool Timeout::operator>(Timeout& tm) const
@@ -123,7 +129,7 @@ namespace atomicx
 
     void Timeout::set(Tick nTimeoutValue)
     {
-        m_timeoutValue = nTimeoutValue ? nTimeoutValue + Tick::now() : 0;
+        m_timeoutValue = nTimeoutValue ? nTimeoutValue + now() : 0;
     }
 
     bool Timeout::operator=(Tick tm)
@@ -133,7 +139,7 @@ namespace atomicx
 
     void Timeout::update()
     {
-        m_timeoutValue = Tick::now();
+        m_timeoutValue = now();
     }
 
     bool Timeout::hasTimeout() const
@@ -143,12 +149,12 @@ namespace atomicx
 
     Timeout::operator bool() const
     {
-        return (m_timeoutValue == 0 || m_timeoutValue > Tick::now()) ? false : true;
+        return (m_timeoutValue == 0 || m_timeoutValue > now()) ? false : true;
     }
 
     Tick Timeout::until() const
     {
-        return (m_timeoutValue - Tick::now());
+        return (m_timeoutValue - now());
     }
 
     Tick Timeout::until(Tick now) const
@@ -246,7 +252,7 @@ namespace atomicx
 
         if (candidate->mDt.timeout.until(now) > 0) {
             TRACE(SCHEDULER, "SLEEP: " << (candidate) << ", for:" << candidate->mDt.timeout.until(now));
-            Tick::sleep(candidate->mDt.timeout.until(now));
+            sleep(candidate->mDt.timeout.until(now));
         }
 
         if ((candidate->mDt.status == Status::WAIT || candidate->mDt.status == Status::SYNC_WAIT) && candidate->mDt.timeout) {
@@ -291,29 +297,6 @@ namespace atomicx
         return ret;
     }
 
-    inline void Thread::contextChange()
-    {
-        {
-            volatile uint8_t stackEnd = 0xBB;
-            // Discover the end of the used stack;
-            mCurrent->mStackEnd = &stackEnd;
-            // Calculate the amount of stack used
-            mCurrent->mDt.usedStackSize = static_cast<size_t>(mCurrent->mStackBegin - mCurrent->mStackEnd);
-            TRACE(KERNEL, "CTX: size:" << mCurrent->mDt.usedStackSize);
-            // Backup the stack in the virutal stack memory of the thread
-            memcpy((void*)&mCurrent->mVirtualStack, (const void*)mCurrent->mStackEnd, mCurrent->mDt.usedStackSize);
-        }
-
-        // Execute the context switching
-        if (setjmp(mCurrent->mJmpThread) == 0) {
-            // Jump back for the start loop
-            longjmp(mCurrent->mJmpStart, 1);
-        }
-
-        // Restore stack from the thread's virtual stack memory
-        memcpy((void*)mCurrent->mStackEnd, (const void*)&mCurrent->mVirtualStack, mCurrent->mDt.usedStackSize);
-    }
-
     bool Thread::yield(Tick tm, Status st)
     {
         if (mCurrent) {
@@ -321,9 +304,9 @@ namespace atomicx
                 // Set running to sleep
                 st = Status::PAUSED;
                 // Update value for nice or custom (if tm is defined)
-                tm = Tick::now() + (static_cast<Tick_t>(tm) == TICK_DEFAULT ? mCurrent->mDt.nice : tm);
+                tm = now() + (static_cast<Tick_t>(tm) == TICK_DEFAULT ? mCurrent->mDt.nice : tm);
             } else {
-                tm = tm ? Tick(Tick::now() + tm) : tm;
+                tm = tm ? Tick(now() + tm) : tm;
             }
 
             // Set timeout for the context switching thread

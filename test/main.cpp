@@ -16,7 +16,7 @@
 
 #include <iostream>
 
-atomicx::Tick atomicx::Tick::now(void)
+atomicx::Tick atomicx::now(void)
 {
     struct timeval tp;
     gettimeofday(&tp, NULL);
@@ -24,7 +24,7 @@ atomicx::Tick atomicx::Tick::now(void)
     return (atomicx::Tick)tp.tv_sec * 1000 + tp.tv_usec / 1000;
 }
 
-void atomicx::Tick::sleep(atomicx::Tick nSleep)
+void atomicx::sleep(atomicx::Tick nSleep)
 {
     usleep((useconds_t)nSleep * 1000);
 }
@@ -34,24 +34,24 @@ uint8_t endpoint{0};
 class TestRecv : public atomicx::Thread
 {
 public:
-    TestRecv() : Thread(10, mStack)
+    TestRecv() : Thread(100, mStack)
     {}
 
 protected:
     void add()
     {
         atomicx::Tick tk{};
-        // yield();
+        //yield();
 
         atomicx::Thread::Payload payload{1, 1};
-        wait(endpoint, payload, 1);
+        wait(endpoint, payload, 100);
 
         {
             auto& dt = getParams();
             TRACE(INFO,
-                  statusName(dt.status) << mId << ": time:" << tk.diff() << "ms: Value:" << payload.message << ", Nice:" << dt.nice
+                  statusName(dt.status) << mId << ": time:" << tk.diff() << "ms, Nice:" << dt.nice
                                         << ", Stack:" << dt.usedStackSize << "/" << dt.stackSize << "b"
-                                        << ", Tick_t:" << sizeof(atomicx::Tick_t));
+                                        << ", Tick_t:" << sizeof(atomicx::Tick_t) << ", MSG:" << payload.message);
             if (dt.status == atomicx::Status::TIMEOUT)
                 exit(1);
         }
@@ -86,7 +86,6 @@ public:
 protected:
     size_t add(size_t nValue)
     {
-        // yield();
         notify(endpoint, {1, nValue}, 100);
         nValue++;
 
@@ -107,14 +106,10 @@ protected:
 
                 if (dt.status == atomicx::Status::TIMEOUT)
                     exit(1);
-                
-                yield(10);
             }
 
-            tk = atomicx::Tick::now();
+            tk = atomicx::now();
             nValue = add(nValue);
-
-            // yield(0, atomicx::Status::NOW);
         }
     }
 
@@ -131,8 +126,8 @@ private:
 
 size_t Test::mIdCounter{0};
 
-TestRecv r1[1000];
 Test t1[1];
+TestRecv r1[1];
 
 int main()
 {

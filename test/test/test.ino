@@ -3,12 +3,12 @@
 
 uint8_t notify = 0;
 
-atomicx::Tick atomicx::Tick::now(void)
+atomicx::Tick atomicx::now(void)
 {
     return millis();
 }
 
-void atomicx::Tick::sleep(atomicx::Tick nSleep)
+void atomicx::sleep(atomicx::Tick nSleep)
 {
     delay(nSleep);
 }
@@ -22,14 +22,9 @@ public:
     {}
 
 protected:
-    void add()
+    void print()
     {
-        atomicx::Tick tk;
-
-        yield(10);
-
-        atomicx::Thread::Payload payload = {.type = 1, .message = 0};
-        wait(endpoint, payload, 10);
+        static atomicx::Tick tk;
 
         auto& dt = getParams();
         Serial.print(F("WIT:"));
@@ -40,22 +35,40 @@ protected:
         Serial.print(dt.usedStackSize);
         Serial.print(F("/"));
         Serial.print(dt.stackSize);
-        Serial.print(F("b"));
-        Serial.print(F(", Status:"));
-        Serial.print(atomicx::statusName(dt.status));
+        Serial.print(F(", value:"));
+        Serial.println(mValue);
+        // Serial.print(F("b"));
+        // Serial.print(F(", Status:"));
+        // Serial.print(atomicx::statusName(dt.status));
         // Serial.print(F(", Tick_t:"));
         // Serial.print(sizeof(atomicx::Tick_t));
         // Serial.print(F(", St:"));
         // Serial.print((size_t)dt.status);
         // Serial.print(F(", Ret:"));
         // Serial.print(ret);
-        Serial.println(F(""));
-        Serial.flush();
+        // Serial.println(F(""));
+        // Serial.flush();
+
+        tk.update();
+    }
+    void add()
+    {
+        // atomicx::Thread::Payload payload = {.type = 1, .message = 0};
+        // wait(endpoint, payload, 10);
+
+        print();
     }
 
     void run()
     {
         while (true) {
+            {
+                atomicx::Thread::Payload payload = {.type = 1, .message = 0};
+                wait(endpoint, payload, 10);
+                mValue = payload.message;
+            }
+
+            //yield();
             add();
         }
     }
@@ -69,6 +82,7 @@ private:
     size_t mId;
     size_t mStack[25]{};
     static size_t mIdCounter;
+    size_t mValue;
 };
 
 size_t TestRecv::mIdCounter{0};
@@ -80,35 +94,35 @@ public:
     {}
 
 protected:
-    size_t add(size_t nValue)
+    void print()
     {
-        atomicx::Tick tk;
-
-        //yield(10);
-
-        size_t ret = notify(endpoint, {1, 0, nValue}, 1);
-
-        nValue++;
+        static atomicx::Tick tk;
 
         Serial.print(F("NOTF:"));
         Serial.print((size_t)mId);
         Serial.print(F(": Yield Time:"));
         Serial.print(tk.diff());
-        Serial.print(F("ms: value:"));
-        Serial.print(nValue);
-        Serial.print(F(", Stack:"));
+        Serial.print(F("ms, Stack:"));
         Serial.print(getParams().usedStackSize);
         Serial.print(F("/"));
         Serial.print(getParams().stackSize);
-        Serial.print(F("b"));
+        Serial.println(F("b"));
         // Serial.print(F(", Tick_t:"));
         // Serial.print(sizeof(atomicx::Tick_t));
         // Serial.print(F(", St:"));
         // Serial.print((size_t)dt.status);
         // Serial.print(F(", Ret:"));
         // Serial.print(ret);
-        Serial.println(F(""));
-        Serial.flush();
+        // Serial.println(F(""));
+        // Serial.flush();
+
+        tk.update();
+    }
+    size_t add(size_t nValue)
+    {
+        print();
+
+        nValue++;
 
         return nValue;
     }
@@ -126,6 +140,9 @@ protected:
         char testSzStr[] = "TESTE DE TAMANHO";
         while (true) {
             yield();
+            notify(endpoint, {1, nValue}, 10);
+
+            atomicx::Tick tk;
 
             nValue = add(nValue);
         }
@@ -142,41 +159,13 @@ private:
     static size_t mIdCounter;
 };
 
-template <class T = uint32_t>
-class example
-{
-public:
-    bool sum()
-    {
-        return true;
-    }
-
-private:
-};
-
 size_t Test::mIdCounter{0};
-
-template <typename func>
-void doCalc(func calc)
-{
-    auto val = calc(10, 20);
-}
-
-int cal(int x, int y)
-{
-    return x * y;
-}
 
 Test th;
 
 void setup()
 {
     TestRecv threcv;
-
-    auto t = [&](int x, int y) -> int { return x * y; };
-
-    doCalc(t);
-    doCalc(cal);
 
     Serial.begin(115200);
 
