@@ -5,7 +5,7 @@
 //  Created by GUSTAVO CAMPOS on 29/08/2021.
 //
 
-#include "atomicx.hpp"
+#include "atx.hpp"
 
 #include <stdio.h>
 #include <sys/time.h>
@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <iostream>
 
-class th : atomicx::Thread
+class th : atx::Thread
 {
     private:
 
@@ -80,14 +80,14 @@ int main ()
 
     std::cout << "-------------------------------" << std::endl;
 
-    for (atomicx::Thread& a : atomicx::kernel)
+    for (atx::Thread& a : atx::kernel)
     {
         std::cout << (size_t) &a << " thread" << std::endl;
     }
 
     std::cout << "-------------------------------" << std::endl << std::endl;
 
-    atomicx::kernel.Join ();
+    atx::kernel.Join ();
     
     std::cout << "End Application" << std::endl << std::endl;
        

@@ -1,7 +1,7 @@
 
 #include "atomicx.hpp"
 
-namespace atomicx
+namespace atx
 {
     /* STATIC INITIALIZATIONS */
     Thread* Thread::mBegin{nullptr};
@@ -30,13 +30,13 @@ namespace atomicx
     }
 
     /* PAYLOAD INITIALIZATION */
-    Thread::Payload::Payload() : type(0), message(0)
+    Payload::Payload() : type(0), message(0)
     {
         channel = 0;
     }
-    Thread::Payload::Payload(size_t type, size_t message) : type(type), message(message)
+    Payload::Payload(size_t type, size_t message) : type(type), message(message)
     {}
-    Thread::Payload::Payload(size_t channel, size_t type, size_t message) : type(type), message(message)
+    Payload::Payload(size_t channel, size_t type, size_t message) : type(type), message(message)
     {
         this->channel = channel;
     }
@@ -109,12 +109,12 @@ namespace atomicx
 
     bool Timeout::operator>(Timeout& tm) const
     {
-        return m_timeoutValue > tm.m_timeoutValue;
+        return m_timeoutValue != 0 ? m_timeoutValue > tm.m_timeoutValue : true;
     }
 
     bool Timeout::operator<(Timeout& tm) const
     {
-        return m_timeoutValue < tm.m_timeoutValue;
+        return m_timeoutValue != 0 ? m_timeoutValue < tm.m_timeoutValue : false;
     }
 
     bool Timeout::operator!=(Timeout& tm) const
@@ -129,7 +129,7 @@ namespace atomicx
 
     void Timeout::set(Tick nTimeoutValue)
     {
-        m_timeoutValue = nTimeoutValue ? nTimeoutValue + now() : 0;
+        m_timeoutValue = nTimeoutValue != 0 ? nTimeoutValue + now() : 0;
     }
 
     bool Timeout::operator=(Tick tm)
@@ -154,18 +154,85 @@ namespace atomicx
 
     Tick Timeout::until() const
     {
-        return (m_timeoutValue - now());
+        return (m_timeoutValue ? m_timeoutValue - now() : TICK_MAX);
     }
 
     Tick Timeout::until(Tick now) const
     {
-        return (m_timeoutValue - now);
+        return (m_timeoutValue ? m_timeoutValue - now : TICK_MAX);
     }
 
     const Tick& Timeout::value() const
     {
         return m_timeoutValue;
     }
+
+    /* SHARED LOCK */
+    bool Thread::Mutex::isSharedLocked() const
+    {
+        return mSharedLock > 0;
+    }
+
+    size_t Thread::Mutex::sharedLockCount() const
+    {
+        return mSharedLock;
+    }
+
+    bool Thread::Mutex::isUniqueLocked() const
+    {
+        return mUniqueLock;
+    }
+
+    bool Thread::Mutex::uniqueLock(const Timeout tm) noexcept
+    {
+        // Wait the unique lock to be released
+        while (mUniqueLock) {
+            Payload pl{SLOCK_UNIQUE_NTYPE, 0, SYSTEM_NOTIFY_CHANNEL};
+            SWAIT_(mUniqueLock, pl, tm, Status::WAIT);
+            if (Thread::getCurrent().getParams().status == Status::TIMEOUT)
+                return false;
+        }
+
+        // Own the context
+        mUniqueLock = true;
+
+        // Wait for all shared lock to be released
+        while (mSharedLock) {
+            Payload pl{SLOCK_SHARED_NTYPE, 0, SYSTEM_NOTIFY_CHANNEL};
+            SWAIT_(mSharedLock, pl, tm, Status::WAIT);
+            if (Thread::getCurrent().getParams().status == Status::TIMEOUT)
+                return false;
+        }
+
+        // Lock acquired
+        return true;
+    }
+
+    bool Thread::Mutex::tryUniqueLock()
+    {
+        if (mUniqueLock)
+            return false;
+
+        mUniqueLock = true;
+        return true;
+    }
+
+    bool Thread::Mutex::uniqueUnlock() noexcept
+    {
+        if (mUniqueLock) {
+            mUniqueLock = false;
+            Payload pl{SLOCK_UNIQUE_NTYPE, 0, SYSTEM_NOTIFY_CHANNEL};
+            SNOTIFY_(mUniqueLock, pl, Status::WAIT, false);
+            pl = {SLOCK_SHARED_NTYPE, 0, SYSTEM_NOTIFY_CHANNEL};
+            SNOTIFY_(mSharedLock, pl, Status::WAIT, true);
+        }
+
+        return true;
+    }
+
+    // bool Thread::Mutex::sharedLock(const Timeout tm) noexcept;
+    // bool Thread::Mutex::trySharedLock();
+    // bool Thread::Mutex::sharedUnlock() noexcept;
 
     /* THREAD */
     Thread* Thread::next()
@@ -183,7 +250,7 @@ namespace atomicx
         return Iterator<Thread>(nullptr);
     }
 
-    const Thread::Params& Thread::getParams() const
+    const Params& Thread::getParams() const
     {
         return mDt;
     }
@@ -223,40 +290,32 @@ namespace atomicx
         while (thCount--) {
             th = th->mNext ? th->mNext : mBegin;
 
-            TRACE(SCHEDULER, "SELECT: [" << th << "]: Status:" << statusName(th->mDt.status) << ", until:" << th->mDt.timeout.until());
-            switch (th->mDt.status) {
-                case Status::STARTING:
-                case Status::NOW:
-                    // If NOW it will be executed now
-                    candidate = th;
-                    candidate->mDt.timeout = now;
-                    stop = true;
-                    break;
-                case Status::PAUSED:
-                case Status::RUNNING:
-                case Status::WAIT:
-                case Status::SYNC_WAIT:
-                    // if candidate == null or th will timout sooner than candidate, use th
-                    if (!candidate || th->mDt.timeout < candidate->mDt.timeout)
-                        candidate = th;
-                    break;
-                default:
-                    break;
+            TRACE(SCHEDULER,
+                  "SELECT: [" << th << "." << th->getName() << "]: Status:" << statusName(th->mDt.status) << ", until:" << th->mDt.timeout.until()
+                              << ", canTimout:" << th->mDt.timeout.hasTimeout());
+            if (th->mDt.status == Status::STARTING) {
+                candidate = th;
+                candidate->mDt.timeout = now;
+                stop = true;
+                break;
+            } else if (!candidate || (th->mDt.timeout.hasTimeout() && th->mDt.timeout < candidate->mDt.timeout)) {
+                candidate = th;
+            }
+        }
+
+        if (candidate != nullptr) {
+            TRACE(SCHEDULER,
+                  "Candidate: " << (candidate) << "." << candidate->getName() << ", next:" << candidate->mDt.timeout.until()
+                                << ", value:" << candidate->mDt.timeout.value() << ", timeout:" << candidate->mDt.timeout.hasTimeout());
+
+            if (candidate->mDt.timeout.hasTimeout() && candidate->mDt.timeout.until(now) > 0) {
+                sleep(candidate->mDt.timeout.until(now));
+                TRACE(SCHEDULER, "SLEEP: " << (candidate) << ", for:" << candidate->mDt.timeout.until(now));
             }
 
-            if (stop)
-                break;
-        }
-
-        TRACE(SCHEDULER, "Candidate: " << (candidate) << ", next:" << candidate->mDt.timeout.until() << ", value:" << candidate->mDt.timeout.value());
-
-        if (candidate->mDt.timeout.until(now) > 0) {
-            TRACE(SCHEDULER, "SLEEP: " << (candidate) << ", for:" << candidate->mDt.timeout.until(now));
-            sleep(candidate->mDt.timeout.until(now));
-        }
-
-        if ((candidate->mDt.status == Status::WAIT || candidate->mDt.status == Status::SYNC_WAIT) && candidate->mDt.timeout) {
-            candidate->mDt.status = Status::TIMEOUT;
+            if ((candidate->mDt.status == Status::WAIT || candidate->mDt.status == Status::SYNC_WAIT) && candidate->mDt.timeout) {
+                candidate->mDt.status = Status::TIMEOUT;
+            }
         }
 
         return candidate;
@@ -304,9 +363,11 @@ namespace atomicx
                 // Set running to sleep
                 st = Status::PAUSED;
                 // Update value for nice or custom (if tm is defined)
-                tm = now() + (static_cast<Tick_t>(tm) == TICK_DEFAULT ? mCurrent->mDt.nice : tm);
+                tm = now() + static_cast<Tick_t>(tm == TICK_MAX ? mCurrent->mDt.nice : tm);
+            } else if (st == Status::NOW) {
+                tm = now();
             } else {
-                tm = tm ? Tick(now() + tm) : tm;
+                tm = tm.value() == 0 ? Tick(now() + tm) : tm;
             }
 
             // Set timeout for the context switching thread
@@ -321,7 +382,9 @@ namespace atomicx
             // Calculate the amount of stack used
             mCurrent->mDt.usedStackSize = static_cast<size_t>(mCurrent->mStackBegin - mCurrent->mStackEnd);
 
-            TRACE(KERNEL, "CTX: size:" << mCurrent->mDt.usedStackSize << ", Bgn:" << (size_t)mCurrent->mStackBegin << ", end:" << (size_t)mCurrent->mStackEnd);
+            TRACE(KERNEL,
+                  "CTX: size:" << mCurrent->mDt.usedStackSize << ", Bgn:" << (size_t)mCurrent->mStackBegin
+                               << ", end:" << (size_t)mCurrent->mStackEnd);
 
             // Backup the stack in the virutal stack memory of the thread
             memcpy((void*)&mCurrent->mVirtualStack, (const void*)mCurrent->mStackEnd, mCurrent->mDt.usedStackSize);
@@ -341,4 +404,4 @@ namespace atomicx
         return false;
     }
 
-}  // namespace atomicx
+}  // namespace atx

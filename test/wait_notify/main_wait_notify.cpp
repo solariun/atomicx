@@ -41,37 +41,21 @@ public:
 protected:
     void add()
     {
-        atx::Tick tk;
+        atx::Tick tk{};
+        //yield();
 
-        if (mutex.isUniqueLocked()) { TRACE(YYTRACE, "LOCKED, will wait."); }
-
-        if (mutex.uniqueLock()) {
-            TRACE(YYTRACE, "Acquired unique lock.");
-         } else {
-            TRACE(ERROR, "Failed to acquired lock.");
-         }
-
-        if (mutex.isUniqueLocked()) { TRACE(INFO, "WAIT IS LOCKED.");}
-
-        yield(1000);
+        atx::Payload payload{1, 1};
+        wait(endpoint, payload, 100);
 
         {
             auto& dt = getParams();
             TRACE(INFO,
-                  statusName(dt.status) << mId << ": time:" << tk.diff() << "ms, Nice:" << dt.nice << ", Stack:" << dt.usedStackSize << "/"
-                                        << dt.stackSize << "b"
-                                        << ", Tick_t:" << sizeof(atx::Tick_t));
-            if (dt.status == atx::Status::TIMEOUT)
-                exit(1);
+                  statusName(dt.status) << ":" << mId << ": time:" << tk.diff() << "ms, Nice:" << dt.nice
+                                        << ", Stack:" << dt.usedStackSize << "/" << dt.stackSize << "b"
+                                        << ", Tick_t:" << sizeof(atx::Tick_t) << ", MSG:" << payload.message);
+            // if (dt.status == atx::Status::TIMEOUT)
+            //     exit(1);
         }
-
-        if (mutex.uniqueUnlock()) {
-            TRACE(YYTRACE, "Acquired unique lock.");
-        } else {
-            TRACE(ERROR, "Failed to acquired lock.");
-        }
-
-        yield ();
     }
 
     void run() override
@@ -103,26 +87,10 @@ public:
 protected:
     size_t add(size_t nValue)
     {
-
-        if (mutex.isUniqueLocked()) { TRACE(YYTRACE, "LOCKED, will wait."); }
-
-        if (mutex.uniqueLock()) {
-            TRACE(YYTRACE, "Acquired unique lock.");
-        } else {
-            TRACE(ERROR, "Failed to acquired lock.");
-        }
-
-        yield (100);
-
-        nValue++;
-
-        if (mutex.uniqueUnlock()) {
-            TRACE(YYTRACE, "Acquired unique lock.");
-        } else {
-            TRACE(ERROR, "Failed to acquired lock.");
-        }
-
         yield();
+
+        notify(endpoint, {1, nValue}, 100);
+        nValue++;
 
         return nValue;
     }
@@ -132,7 +100,7 @@ protected:
         size_t nValue{0};
         atx::Tick tk{};
         while (true) {
-            {
+            {                
                 auto& dt = getParams();
                 TRACE(INFO,
                       statusName(dt.status) << mId << ": time:" << tk.diff() << "ms: Value:" << nValue << ", Nice:" << dt.nice

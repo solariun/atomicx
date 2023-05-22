@@ -3,19 +3,19 @@
 
 uint8_t notify = 0;
 
-atomicx::Tick atomicx::now(void)
+atx::Tick atx::now(void)
 {
     return millis();
 }
 
-void atomicx::sleep(atomicx::Tick nSleep)
+void atx::sleep(atx::Tick nSleep)
 {
     delay(nSleep);
 }
 
 uint8_t endpoint{0};
 
-class TestRecv : public atomicx::Thread
+class TestRecv : public atx::Thread
 {
 public:
     TestRecv() : Thread(100, mStack), mId(mIdCounter++)
@@ -24,7 +24,7 @@ public:
 protected:
     void print()
     {
-        static atomicx::Tick tk;
+        static atx::Tick tk;
 
         auto& dt = getParams();
         Serial.print(F("WIT:"));
@@ -39,9 +39,9 @@ protected:
         Serial.println(mValue);
         // Serial.print(F("b"));
         // Serial.print(F(", Status:"));
-        // Serial.print(atomicx::statusName(dt.status));
+        // Serial.print(atx::statusName(dt.status));
         // Serial.print(F(", Tick_t:"));
-        // Serial.print(sizeof(atomicx::Tick_t));
+        // Serial.print(sizeof(atx::Tick_t));
         // Serial.print(F(", St:"));
         // Serial.print((size_t)dt.status);
         // Serial.print(F(", Ret:"));
@@ -53,7 +53,7 @@ protected:
     }
     void add()
     {
-        // atomicx::Thread::Payload payload = {.type = 1, .message = 0};
+        // atx::Payload payload = {.type = 1, .message = 0};
         // wait(endpoint, payload, 10);
 
         print();
@@ -63,8 +63,8 @@ protected:
     {
         while (true) {
             {
-                atomicx::Thread::Payload payload = {.type = 1, .message = 0};
-                wait(endpoint, payload, 10);
+                atx::Payload payload = {.type = 1, .message = 0};
+                wait(endpoint, payload, 100);
                 mValue = payload.message;
             }
 
@@ -87,16 +87,16 @@ private:
 
 size_t TestRecv::mIdCounter{0};
 
-class Test : public atomicx::Thread
+class Test : public atx::Thread
 {
 public:
-    Test() : Thread(0, mStack), mId(mIdCounter++)
+    Test() : Thread(1, mStack), mId(mIdCounter++)
     {}
 
 protected:
-    void print()
+    void print() const
     {
-        static atomicx::Tick tk;
+        static atx::Tick tk;
 
         Serial.print(F("NOTF:"));
         Serial.print((size_t)mId);
@@ -108,7 +108,7 @@ protected:
         Serial.print(getParams().stackSize);
         Serial.println(F("b"));
         // Serial.print(F(", Tick_t:"));
-        // Serial.print(sizeof(atomicx::Tick_t));
+        // Serial.print(sizeof(atx::Tick_t));
         // Serial.print(F(", St:"));
         // Serial.print((size_t)dt.status);
         // Serial.print(F(", Ret:"));
@@ -118,6 +118,7 @@ protected:
 
         tk.update();
     }
+
     size_t add(size_t nValue)
     {
         print();
@@ -127,22 +128,15 @@ protected:
         return nValue;
     }
 
-    void y(atomicx::Tick tm = atomicx::TICK_DEFAULT)
-    {
-        Serial.println(atomicx::TICK_DEFAULT);
-        Serial.println(tm.value() == atomicx::TICK_DEFAULT);
-        Serial.flush();
-        exit(2);
-    }
     void run()
     {
         size_t nValue{(size_t)this};
         char testSzStr[] = "TESTE DE TAMANHO";
         while (true) {
-            yield();
-            notify(endpoint, {1, nValue}, 10);
+            yield(10);
+            //notify(endpoint, {1, nValue}, 10);
 
-            atomicx::Tick tk;
+            atx::Tick tk;
 
             nValue = add(nValue);
         }
@@ -155,28 +149,28 @@ protected:
 
 private:
     size_t mId;
-    size_t mStack[50]{};
+    size_t mStack[20]{};
     static size_t mIdCounter;
 };
 
 size_t Test::mIdCounter{0};
 
-Test th;
+Test th[10];
 
 void setup()
 {
-    TestRecv threcv;
+    //TestRecv threcv;
 
     Serial.begin(115200);
 
     Serial.println(F(""));
-    Serial.println(F("Starting atomicx 3 demo."));
+    Serial.println(F("Starting atx 3 demo."));
     Serial.flush();
     delay(1000);
 
     Serial.println("-------------------------------------");
 
-    for (auto& th : atomicx::Thread::getCurrent()) {
+    for (auto& th : atx::Thread::getCurrent()) {
         auto& dt = th.getParams();
         Serial.print(__func__);
         Serial.print(": Listing thread: ");
@@ -187,7 +181,7 @@ void setup()
 
     Serial.println("-------------------------------------");
 
-    atomicx::Thread::start();
+    atx::Thread::start();
 }
 
 void loop()

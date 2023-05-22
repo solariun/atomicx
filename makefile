@@ -22,7 +22,7 @@
 #// See LICENSE file for the complete information
 
 #
-# 'make'        build executable file 'atomicx.bin'
+# 'make'        build executable file 'atx.bin'
 # 'make clean'  removes all .o and executable files
 #
 # use EXTRA_FLAGS=-D_DEBUG=<TRACE, DEBUG, INFO. WARNING. ERROR, CRITICAL>

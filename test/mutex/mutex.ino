@@ -1,24 +1,24 @@
 
-#include "atomicx.hpp"
+#include "atx.hpp"
 
-atomicx_time atomicx::Thread::GetTick(void)
+atx_time atx::Thread::GetTick(void)
 {
     return millis();
 }
 
-void atomicx::Thread::SleepTick(atomicx_time nSleep)
+void atx::Thread::SleepTick(atx_time nSleep)
 {
     delay(nSleep);
 }
 
-atomicx::Mutex mutex;
+atx::Mutex mutex;
 
 uint32_t nValue = 0;
 
 
-void PrintProcess (atomicx::Thread& endpoint)
+void PrintProcess (atx::Thread& endpoint)
 {
-    atomicx_time tm = atomicx::Thread::GetTick ();
+    atx_time tm = atx::Thread::GetTick ();
 
     Serial.print ("------------------------------------- Now: ");
     Serial.println (tm);
@@ -30,7 +30,7 @@ void PrintProcess (atomicx::Thread& endpoint)
         Serial.print ((size_t) &th);
         
         Serial.print (F("\t"));
-        Serial.print (atomicx::GetStatusName (th.GetStatus ()));
+        Serial.print (atx::GetStatusName (th.GetStatus ()));
 
         Serial.print (F("\t"));
         Serial.print (th.GetStackSize ());
@@ -48,7 +48,7 @@ void PrintProcess (atomicx::Thread& endpoint)
     Serial.println ("-------------------------------------");
 }
 
-class Reader : public atomicx::Thread
+class Reader : public atx::Thread
 {
     private:
         volatile size_t nStack [40];
@@ -57,7 +57,7 @@ class Reader : public atomicx::Thread
 
     Reader () = delete;
 
-    Reader (atomicx_time nNice) : Thread (nNice, nStack)
+    Reader (atx_time nNice) : Thread (nNice, nStack)
     {
         // Serial.print ((size_t) this);
         // Serial.println (F(": Initiating."));
@@ -114,14 +114,14 @@ class Reader : public atomicx::Thread
     }
 };
 
-class Writer : public atomicx::Thread
+class Writer : public atx::Thread
 {
     private:
         volatile size_t nStack [40];
 
     public:
 
-    Writer (atomicx_time nNice) : Thread (nNice, nStack)
+    Writer (atx_time nNice) : Thread (nNice, nStack)
     {
         // Serial.print ((size_t) this);
         // Serial.println (F(": Initiating."));
@@ -208,13 +208,13 @@ void setup()
     Serial.begin (115200);
 
     Serial.println (F(""));
-    Serial.println (F("Starting atomicx 3 demo."));
+    Serial.println (F("Starting atx 3 demo."));
     Serial.flush ();
     delay(1000);
 
     PrintProcess (w1);
 
-    atomicx::Thread::Join ();
+    atx::Thread::Join ();
 }
 
 void loop() {

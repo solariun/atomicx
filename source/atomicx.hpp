@@ -1,5 +1,5 @@
 /**
- * @file atomicx.hpp
+ * @file atx.hpp
  * @author Gustavo Campos
  * @brief  Atomicx header
  * @version 2.0
@@ -47,17 +47,18 @@
 
 #ifdef _DEBUG
 #include <iostream>
-#define TRACE(i, x)                                                                                                      \
-    if (DBGLevel::i <= DBGLevel::_DEBUG)                                                                                 \
-    std::cout << atomicx::Thread::getCurrent().getName() << "." << &(atomicx::Thread::getCurrent()) << "[" << #i << "] " \
-              << "(" << __FUNCTION__ << ", " << __FILE_NAME__ << ":" << __LINE__ << "):  " << x << std::endl             \
-              << std::flush
+#define TRACE(i, x)                                                                                              \
+    { if (DBGLevel::i <= DBGLevel::_DEBUG || DBGLevel::i == DBGLevel::YYTRACE)                                                                         \
+    std::cout << atx::Thread::getCurrent().getName() << "." << &(atx::Thread::getCurrent()) << "[" << #i << "] " \
+              << "(" << __FUNCTION__ << ", " << __FILE_NAME__ << ":" << __LINE__ << "):  " << x << std::endl     \
+              << std::flush; }
 #else
 #define TRACE(i, x) NOTRACE(i, x)
 #endif
 
 enum class DBGLevel
 {
+    YYTRACE,
     KERNEL_CRITICAL,
     CRITICAL,
     KERNEL_ERROR,
@@ -72,9 +73,44 @@ enum class DBGLevel
     SCHEDULER,
 };
 
-namespace atomicx
+namespace atx
 {
-    // typedef uint32_t Tick;
+/**
+ * @brief Simple flattened wait (notification only)
+ *
+ * @param ENDP  Endpoint
+ * @param PL    Payload
+ * @param TM    Timeout
+ * @param ST    Status
+ *
+ * @note To be used by the system implementation only
+ */
+#define SWAIT_(ENDP, PL, TM, ST)            \
+    {                                       \
+        getCurrent().setWait(ENDP, PL); \
+        getCurrent().yield(TM.until(), ST); \
+    }
+
+/**
+ * @brief Simple flattened notify (notification only)
+ *
+ * @param ENDP  Endpoint
+ * @param PL    Payload
+ * @param ST    Status
+ * @param ALL   notify all
+ *
+ * @note To be used by the system implementation only
+ */
+#define SNOTIFY_(ENDP, PL, ST, ALL)                       \
+    {                                                     \
+        getCurrent().safeNotify(ENDP, PL, ST, true, ALL); \
+        getCurrent().yield(0, Status::NOW);               \
+    }
+
+    static constexpr size_t SYSTEM_NOTIFY_CHANNEL = SIZE_MAX;
+
+    static constexpr size_t SLOCK_UNIQUE_NTYPE = 1;
+    static constexpr size_t SLOCK_SHARED_NTYPE = 2;
 
     enum class Status
     {
@@ -109,11 +145,12 @@ namespace atomicx
      */
 #if SIZE_MAX >= UINT32_MAX
     using Tick_t = int64_t;
-    static constexpr Tick_t TICK_DEFAULT = static_cast<size_t>(INT64_MAX);
+    static constexpr Tick_t TICK_MAX = static_cast<size_t>(INT64_MAX);
 #else
     using Tick_t = int32_t;
-    static constexpr Tick_t TICK_DEFAULT = INT32_MAX;
+    static constexpr Tick_t TICK_MAX = INT32_MAX;
 #endif
+
     /*
      * BOTH now and sleep must be defined EXTERNALLY
      */
@@ -309,35 +346,40 @@ namespace atomicx
         T* mObj;
     };
 
+    /**
+     * @brief message payload from wait/notify
+     */
+    struct Payload
+    {
+        Payload();
+        Payload(size_t type, size_t message);
+        Payload(size_t type, size_t message, size_t channel);
+        size_t channel{0};
+        size_t type;
+        size_t message;
+    };
+
+    /**
+     * @brief User controllable Params
+     */
+    struct Params
+    {
+        Status status{Status::STARTING};
+        Tick nice{0};
+        size_t stackSize{0};
+        size_t usedStackSize{0};
+        Timeout timeout{0};
+        const void* endpoint{nullptr};
+        Payload payload{};
+    };
+
     /*
      * THREAD IMPLEMENTATION
      */
     class Thread
     {
     public:
-        struct Payload
-        {
-            Payload();
-            Payload(size_t type, size_t message);
-            Payload(size_t type, size_t message, size_t channel);
-            size_t channel{0};
-            size_t type;
-            size_t message;
-        };
-
-        /**
-         * @brief User controllable Params
-         */
-        struct Params
-        {
-            Status status{Status::STARTING};
-            Tick nice{0};
-            size_t stackSize{0};
-            size_t usedStackSize{0};
-            Timeout timeout{0};
-            const void* endpoint{nullptr};
-            Payload payload{};
-        };
+        class Mutex;
 
         Thread* next();
 
@@ -364,7 +406,7 @@ namespace atomicx
             addThread(*this);
         }
 
-        bool yield(Tick tm = TICK_DEFAULT, Status st = Status::RUNNING);
+        bool yield(Tick tm = TICK_MAX, Status st = Status::RUNNING);
 
         template <typename T>
         static size_t hasWaitings(const T& endpoint, const Payload& payload, Status st)
@@ -385,6 +427,72 @@ namespace atomicx
             return ret;
         }
 
+        template <typename T>
+        size_t notify(T& endpoint, Payload payload, Timeout tm, bool notifyAll = true)
+        {
+            if (payload.channel == SYSTEM_NOTIFY_CHANNEL)
+                return 0;
+
+            size_t nCount{0};
+            if (!hasWaitings(endpoint, payload, Status::WAIT)) {
+                setWait(endpoint, payload);
+                yield(tm.until(), Status::SYNC_WAIT);
+            }
+
+            nCount = safeNotify(endpoint, payload, Status::WAIT, false, notifyAll);
+            yield(0, Status::NOW);
+
+            return nCount;
+        }
+
+        static bool defaultFunc()
+        {
+            return true;
+        }
+        template <typename T, typename FUNC>
+        bool wait(T& endpoint, Payload& payload, Timeout tm, FUNC condition = defaultFunc)
+        {
+            if (payload.channel == SYSTEM_NOTIFY_CHANNEL)
+                return false;
+
+            while (!condition() && mDt.status != Status::TIMEOUT) {
+                if (hasWaitings(endpoint, payload, Status::SYNC_WAIT))
+                    safeNotify(endpoint, payload, Status::SYNC_WAIT, true, false);
+
+                setWait(endpoint, payload);
+                yield(tm.until(), Status::WAIT);
+            }
+
+            if (!tm && mDt.status != Status::TIMEOUT) {
+                payload = mDt.payload;
+                mDt.payload = {};
+                return true;
+            }
+
+            return true;
+        }
+
+        template <typename T>
+        bool wait(T& endpoint, Payload& payload, Timeout tm)
+        {
+            if (payload.channel == SYSTEM_NOTIFY_CHANNEL)
+                return false;
+
+            if (hasWaitings(endpoint, payload, Status::SYNC_WAIT))
+                safeNotify(endpoint, payload, Status::SYNC_WAIT, true, false);
+
+            setWait(endpoint, payload);
+            yield(tm.until(), Status::WAIT);
+
+            if (mDt.status != Status::TIMEOUT) {
+                payload = mDt.payload;
+                mDt.payload = {};
+                return true;
+            }
+            return false;
+        }
+
+    private:
         template <typename T>
         static size_t safeNotify(const T& endpoint, const Payload& payload, Status st, bool notifyOnly, bool notifyAll)
         {
@@ -415,74 +523,17 @@ namespace atomicx
         }
 
         template <typename T>
-        inline void setWait(const T& endpoint, Payload& payload, Status st)
+        inline void setWait(const T& endpoint, Payload& payload)
         {
             TRACE(WAIT,
-                  "WAITING:" << &endpoint << ", st:" << statusName(st) << ", t:" << payload.type << ", m:" << payload.message
+                  "WAITING:" << &endpoint << ", t:" << payload.type << ", m:" << payload.message
                              << ", ch:" << payload.channel);
+                             
             // Prepare payload
             mDt.endpoint = static_cast<const void*>(&endpoint);
             mDt.payload = payload;
         }
 
-        template <typename T>
-        size_t notify(T& endpoint, Payload payload, Timeout tm, bool notifyAll = true)
-        {
-            size_t nCount{0};
-            if (!hasWaitings(endpoint, payload, Status::WAIT)) {
-                setWait(endpoint, payload, Status::SYNC_WAIT);
-                yield(tm.until(), Status::SYNC_WAIT);
-            }
-
-            nCount = safeNotify(endpoint, payload, Status::WAIT, false, notifyAll);
-            yield(0, Status::NOW);
-
-            return nCount;
-        }
-
-        static bool defaultFunc(){ return true; }
-        template <typename T, typename FUNC>
-        bool wait(
-                T& endpoint,
-                Payload& payload,
-                Timeout tm,
-                FUNC condition = defaultFunc)
-        {
-            while (!condition() && mDt.status != Status::TIMEOUT) {
-                if (hasWaitings(endpoint, payload, Status::SYNC_WAIT))
-                    safeNotify(endpoint, payload, Status::SYNC_WAIT, true, false);
-
-                setWait(endpoint, payload, Status::WAIT);
-                yield(tm.until(), Status::WAIT);
-            }
-
-            if (!tm && mDt.status != Status::TIMEOUT) {
-                payload = mDt.payload;
-                mDt.payload = {};
-                return true;
-            }
-
-            return true;
-        }
-
-        template <typename T>
-        bool wait(T& endpoint, Payload& payload, Timeout tm)
-        {
-            if (hasWaitings(endpoint, payload, Status::SYNC_WAIT))
-                safeNotify(endpoint, payload, Status::SYNC_WAIT, true, false);
-
-            setWait(endpoint, payload, Status::WAIT);
-            yield(tm.until(), Status::WAIT);
-
-            if (mDt.status != Status::TIMEOUT) {
-                payload = mDt.payload;
-                mDt.payload = {};
-                return true;
-            }
-            return false;
-        }
-
-    private:
         static Thread* scheduler();
 
         static void addThread(Thread& thread);
@@ -508,6 +559,31 @@ namespace atomicx
         jmp_buf mJmpThread{};
     };
 
-}  // namespace atomicx
+    /**
+     * @brief Mutex implementation
+     */
+    class Thread::Mutex
+    {
+    public:
+        Mutex() = default;
+
+        bool isSharedLocked() const;
+        size_t sharedLockCount() const;
+        bool isUniqueLocked() const;
+
+        bool uniqueLock(const Timeout tm = 0) noexcept;
+        bool tryUniqueLock();
+        bool sharedLock(const Timeout tm = 0) noexcept;
+        bool trySharedLock();
+
+        bool uniqueUnlock() noexcept;
+        bool sharedUnlock() noexcept;
+
+    public:
+        bool mUniqueLock{false};
+        size_t mSharedLock{0};
+    };
+
+}  // namespace atx
 
 #endif
