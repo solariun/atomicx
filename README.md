@@ -1,368 +1,568 @@
 # AtomicX
 
-Version 1.2.1 release
+**Cooperative multitasking for embedded systems and beyond.**
 
 ![image](https://user-images.githubusercontent.com/1805792/125191254-6591cf80-e239-11eb-9e89-d7500e793cd4.png)
 
-What is AtomicX? AtomicX is a general purpose **cooperative** thread lib for embedded applications (single core or confined within other RTOS) that allows you partition your application "context" (since core execution) into several controlled context using cooperative thread. So far here nothing out of the ordinary, right? Lets think again:
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Arduino%20%7C%20ESP8266%20%7C%20ESP32%20%7C%20STM32%20%7C%20Linux-green.svg)](#supported-platforms)
 
-# Backlog and updates
+> **[Architecture & Design Document](design.md)** — class diagrams, state machines, thread lifecycle, intrusive controller internals, and stack management details.
 
-## Implementations from Work on progress
+AtomicX is a general-purpose **cooperative thread library** for embedded applications (single-core or confined within another RTOS). It lets you partition your application into multiple controlled execution contexts using cooperative threads — without requiring an operating system, hardware timers, or dynamic memory (unless you opt in).
 
-## Version 1.3.0
+---
 
-* NOW, I am thrilled to announce that AtomicX have `send` and `receive` functions that enables data transferring between two or more threads, allowing real client / server application strategy inside embedded and non-embedded application, this way, small MCUs can be used to easily transport stack data (which is protected in this thread system) to other thread.
+## Key Features
 
-* Ported and enhanced the DotMatrix project, it implements a full Dot Led Matrix scrolling text system with
-    - Serial terminal
-    - Telnet Terminal
-    - UDP Trap (You can send a UDP message to IP/2221 and it will display, I deal for trapping messages)
-    - An amazing general log API based on `iostream`, capable of adding "Specialized Loggers", and add using `logger.AddLogger`:
-        ```cpp
-            logger << LOG::ERROR << "Failed to start WiFi." << std::endl;
-        ```
-    - based on ESP8266 and 8 or 4 Dot Matrix leds array
-    - Just connect the Led Matrix  (Dot Matrix Modul 8x8 Display Matrix Max7219 Led Lcd with 8 or 4 8x8 display)
-    ```
-        Designed for NodeMCU ESP8266
-        ################# DISPLAY CONNECTIONS ################
-        LED Matrix Pin -> ESP8266 Pin
-        Vcc            -> 3v  (3V on NodeMCU 3V3 on WEMOS)
-        Gnd            -> Gnd (G on NodeMCU)
-        DIN            -> D7  (Same Pin for WEMOS)
-        CS             -> D4  (Same Pin for WEMOS)
-        CLK            -> D5  (Same Pin for WEMOS)
-    ```
+- **Zero stack displacement** — threads run on the real C stack and only back up the minimum necessary bytes on context switch
+- **Two stack modes** — fixed-size (user-provided buffer, zero heap) or self-managed (auto-resizing via `malloc`)
+- **Portable** — uses only `setjmp`/`longjmp` and `memcpy`; no assembly, no platform-specific code in the core
+- **Rich IPC** — Wait/Notify signaling, thread-safe queues, semaphores, read-write mutexes, data pipes (Send/Receive), and broadcast messaging
+- **RAII wrappers** — `smartMutex` and `smartSemaphore` for automatic resource release
+- **Tiny footprint** — single `.hpp` + `.cpp`, suitable for MCUs with as little as 512 bytes of RAM (e.g., ATtiny85)
+- **Dynamic nice** — optional kernel-managed scheduling that auto-tunes thread timing for best performance
 
-* Added WaiTAny, that extends the Wait/Notify functionality, since it will also receive, and return by reference, ANY TAG. giving the developer ability to easily create a full Client / Service infra structure.
+---
 
-* Dropping BROKER functionality, and welcoming **Broadcasting** functionality, it will enable a thread to receive all broadcasts asynchronously sent by other threads, only by enabling it and implementing the handler :
-    ```cpp 
-        virtual void BroadcastHandler (const size_t& messageReference, const Message& message) 
-    ```
-    and enabling it using the code:
-    
-    ```cpp
-        SetReceiveBroadcast (true);
-    ```
-    The handler will deliver tree parameters:
-    - `size_t MessageReference` that works like a reference of what is the message about;
-    - `size_t Message.message` which is the message payload (could be even an pointer);
-    - `size_t Message.tag` that can be used as a meaning for the message:
+## Table of Contents
 
-    Example:
-    - `messageReference=BROADCAST_IRCAMERA`
-    - `Message.message=CAMERA_DONE`
-    - `Message.tag=CAMERA_READINGS`
-        
-    On this simple example using 'mnemonics', that could have been enum class or directives, a single message was able to inform asynchronously that a IR CAMERA just read something, but could have informed ERROR or even that it was READING...., the approach allows a powerful controller, since you can apply layers on your code making processing really fast and precise and less messages will travel across the systems.
+- [Getting Started](#getting-started)
+- [Quick Example](#quick-example)
+- [How It Works](#how-it-works)
+- [API Reference](#api-reference)
+  - [Thread Lifecycle](#thread-lifecycle)
+  - [Synchronization](#synchronization)
+  - [IPC: Wait/Notify](#ipc-waitnotify)
+  - [IPC: Queues](#ipc-queues)
+  - [IPC: Send/Receive Data Pipes](#ipc-sendreceive-data-pipes)
+  - [Broadcasting](#broadcasting)
+- [Platform Porting](#platform-porting)
+- [Examples](#examples)
+- [Architecture & Design](#architecture--design)
+- [Supported Platforms](#supported-platforms)
+- [Changelog](#changelog)
+- [License](#license)
 
-* `mutex` and `smartMutex` now have timeout, by using `lock(<timeout time>)` and `sharedLock(<timeout time>)`, if no timeout is  given: `lock()` or `sharedLock()` wait indefinitely (fully back compatible with existing code)
+---
 
-## Version 1.2.1
+## Getting Started
 
-* Adding Dynamic Nice, now it is possible to let the kernel set the best performance for your thread, for this `SetNice(*initial nice*)` and than `SetDynamicNice(true)` in the constructor of your thread. The kernel will be able to always adjust your thread for Best performance, but, it will leave no room for sleeps between threads, increasing power consumption, it is powerful but use it carefully.
+### Requirements
 
-* Added `YieldNow()` the higher priority context change, it will allow other threads to work, but will, also return faster than others
+- C++11 or later
+- `setjmp.h` support (available on virtually all C/C++ compilers)
 
-* **`smartSemaphore`**, Used to compliance with RAII, once used in the thread context, it takes a semaphore to be initialized and expose the same methods, although it manages the local context, and ones it it gets out of context, due to leaving  {} or a functions, for example the semaphore shared context is released if ever taken during the smartSemaphore instantiated object life cycle. The same is available for `mutex`, called `smartMutex`, follows the same principle.
+### Installation
 
-* **IMPORTANT**, Introducing Semaphores, `atomicx::semaphore(<How many shared>)`, now you can use methods (`acquire()` or `acquire(timeout)`) and `release()` along with `GetCount`, `GetMaxAcquired`, `GetWaitCount` and static method `GetMax` to return the maximum shared you can use to instantiate.  Examples for Arduino and PC where also introduced and fully tested.
+**Arduino**: Copy the `atomicx/` folder into your Arduino libraries directory, or use the Arduino IDE Library Manager.
 
-* Introducing `atomicx::Timeout`, this will help tracking a timeout over time, using methods `IsTimedout` and `GetRemaining` and `GetDurationSince`. Special use case, if the timeout value is zero, IsTimedout will always return false.
+**PlatformIO**: Add the library to your `lib/` directory.
 
-* **IMPORTANT NOTIFICATION** `atomicx::lock` has been renamed to `atomicx::mutex` for consistency, all methods are the same.
+**PC / Linux / macOS**: Include `atomicx.hpp` and compile `atomicx.cpp` alongside your project:
 
-* **Improvement** Added a contructor for self-manager start to define a start size and increase pace. For example: a thread starts with 150 bytes and increase pace of 10, but used stack was 200, the kernel will do 200 + 10 (increase pace) to give it room to work. The default value is (1)
-```cpp
-        /**
-         * @brief Construct a new atomicx object and set initial auto stack and increase pace
-         *
-         * @param nStackSize            Initial Size of the stack
-         * @param nStackIncreasePace    defalt=1, The increase pace on each resize
-         */
-        atomicx(size_t nStackSize, int nStackIncreasePace=1);
+```bash
+g++ -std=c++11 -I atomicx/ atomicx/atomicx.cpp main.cpp -o myapp
 ```
 
-## Version 1.2.0
+### Minimal Setup
 
-* **INTRODUCING** Self managed stack, now it is possible to have self-managed stack memory for any threads, no need to define stack size... (although use it with care) just by not providing a stack memory, AtomicX will automatically switch the tread to self-managed, to do just use atomicx() default constructor instead.
+1. Include the header
+2. Implement two platform functions (`Atomicx_GetTick` and `Atomicx_SleepTick`)
+3. Subclass `thread::atomicx`
+4. Call `atomicx::Start()`
 
-   *Notes*:
-        * It will only entries the stack enough to hold what is needed if the used stack is greater than the stack memory managed.
-        * No decrease of the stack size was added to this release.
-        * In case your thread is not able to resize the stack, if it needs more, StackOverflowHandle is called.
+---
 
+## Quick Example
 
-*Examples:*
-    - Ardunino/Simple
-    - avrAutoRobotController
-
-* Explicitly added the pc example shown here to to examples/pc as simple along with makefile for it.
-   Also updated it to have an example of Self-managed stack memory as well.
-
-## Version 1.1.3
-
-* Added a Thermal Camera Demo ported from CorePartition but now fully object oriented
-
-
-* **POWERFUL**: Now `Wait`\`Notify` will accept a new parameter called subType, the name gives no clue but it is really powerfull it allows developer to create custom Types of notifications, that same strategy is used when syncNotify is called and get blocked until a timeout occur or a wait functions is used by another thread.
-
-## Version 1.1.2
-
-* **Important* `Notify` was split into `Notify` and `SyncNotify` to avoid compilation ambiguity reported for some boards, all the examples have been migrated to use one of those accordingly and tested against all supported processors.
-
-## Version 1.1.1
-
-* *PLEASE NOTE* **No Spin Lock what so ever in this Kernel**, it is working fully based on Notification event along with message transportation.
-
-* `NOTIFY` are now able to sync, if a atomicx_time is provided, Notify will wait for a specific signal to inform a `Wait` for refVar/Tag is up. This is a important feature toward using WAIT/Notify reliably, while your thread can do other stuffs on idle moment
-
-* `avrRobotController` simulator for Arduino, is introduced, to show real inter process communication, it will open a terminal and both commands are available: `system` - To show Memory, Threads and motor status and `move <flot motor A> <flot motor B> <flot motor C>`
-
-## Version 1.1.0
-
-* `finish()` method will be call every time `run()` is returned, this allow special cases like eventual threads to self-destroy itself, otherwise the object would be only a memory leak.... see examples on `main.cpp`
-
-* `smartMutex` RAII (Resource Acquisition Is Initialization) compliance, allow mutex or shared mutex to be auto release on object destruction.
-    - Further reading about RAII : https://en.cppreference.com/w/cpp/language/raii
-
-* **IMPORTANT** Now Notifications (Wait/Notify) can be timedout. if Tick based time is given, the waiting procedure will only stay blocked during it. (NO SPIN LOCK, REAL STATE BLOCK)
-* **IMPORTANT** `LookForWaitings` block for timeout time will a wait for specific refVar/tag is available, otherwise timeout, can be used sync wait and notify availability
-* **IMPORTANT** Now `Wait/Notify` `Tags`, used to give meaning/channel to a notification can be se to "all tags" if `Tag` is zero, otherwise it will respect refVar/Tag
-
-## Version 1.0.0
-
-
-* **DOES NOT DISPLACE STACK, IT WILL STILL AVAILABLE FOR PROCESSING**, the *Stack Page* will only hold a backup of the most necessary information needed, allowing stacks in few bites most if the time. This implementation if highly suitable for Microcontrollers like ATINY85, for example, that only has 512 bites, and you can have 5 or more threads doing things for you, only backup the most important context information.
-
-*  **STACK MEMORY ARE PROTECTED** by nature and confined to the context execution only, if you want to exchange non-data global use `atomicx::Send` and `atomicx::Receive`.
-     * *IMPORTANT*: DO NOT USE CONTEXT(stack) MEMORY POINTER to exchange information to other threads, extractables like wait/notify, lock uses global memory instead. All threads will use the *default stack memory* which is protected during execution, instead use Global variables, allocated memory or atomicx_smart_ptr objects. Alternatively use `atomicx::send` and `atomicx::receive` to transport stack, global or heap memory data.
-
-* Since it implements Cooperative thread every execution will atomic between *atomicx* thrteads. 
-
-* AtomicX **DOES NOT DISPLACE STACK**, yes, it will use a novel technique that allow you to use full stack memory freely, and once done, just call `Yield()` to switch the context.
-    1. Allow you to use all your stack during thread execution and only switch once back to an appropriate place
-    ```
-        Stack memory
-        *-----------*
-        |___________| Yield()
-        |___________|    thread 0..N
-        |___________|     |       .  - After context execution
-        |___________|     |      /|\   is done, the developer can
-        |___________|     |       |    choose where to switch
-        |___________|     |       |    context, saving only what is
-        |___________|    \|/      |    necessary
-        |___________|     ---------
-        |           |     - During context
-        *-----------*       can goes deeper as
-                            necessary
-    ```
-* Due to the **zero stack-displacement** technology, developers can ensure minimal stack memory page, allowing ultra sophisticated designes and execution stack diving and only backing up to the stack memory page what is necessary.
-
-* Full feature for IPC (_Inter Process Communication_)
-    * Thread safe Queues for data/object transporting.
-    * EVERY Smart Lock can transport information (atomicx::message)
-    * Message is composed by "size_t `atomix::message` and a "size_t tag"
-        * This novel concept of "tag"s for an atomicx::message gives the message meaning.
-        * Since `atomicx::message` uses `size_t` messages can also transport pointers
-    * Smart Locks can Lock and Shared Lock in the same object, making
-    * Full QUEUE capable to transport objects.
-
-* Full feature for IPN (_Inter Process Notification_)
-    * Thread can wait for an event to happen.
-    * On event notification a `atomix::message` can be sent/received
-
-* (DEPRECATED) A message broker based on observer pattern (NOW DROPPED and REPLACED BY BROADCAST)
-    * A thread can use `WaitBroker Message` to wait for any specifc topic asynchronously.
-    * Instead of having a `Subcrib` call, the developer will provide a `IsSubscribed` method that the kernel will use to determine if the object/thread is subscribed to a given topic.
-    * Broker uses `atomicx::message` to transport information. For inter process Object transport, please use atomicx::queue.
-
-* ALL *WAIT* actions will block the thread, on kernel level (setting thread to a waiting state), until the notification occurs. Alternatively the notification can be transport a `atomicx::message` structure (tag/message)
-    * _WAIT_ and _NOTIFY_ (one or all) will use *any pointer* as the signal input, virtually any valid address pointer can  be used. *IMPORTANT*: Unless you know what you are doing, do *NOT* use context pointer (execution stack memory), use a global or allocated memory instead (including `atomicx::smart_prt`)
-
-* All *Notifications* or *Publish* functions will provide a Safe version, that different from the pure functions, will not trigger a context change and the function will only fully take effect onces the context is changed in the current thread where the interrupt request happened.
-
-* **IMPORTANT** since all threads will be executed in the "_default_" stack memory, it will not be jailed in the stack size memory page, *DO NOT USE STACK ADDRESS TO COMMUNICATE* with another threads, use only global or alloced memory pointers to communicate
-
-* **IMPORTANT** In order to operate with precision, specialise ticks by providing either `atomicx_time Atomicx_GetTick (void)` and `void Atomicx_SleepTick(atomicx_time nSleep)` to work within the timeframe (milleseconds, nanoseconds, seconds.. etc). Since AtomicX, also, provice, Sleep Tick functionality (to handle idle time), depending on the sleep time, to developer can redude the processor overall consuption to minimal whenever it is not necessary.
-
-    * Since it will be provided by the developer, it gives the possibility to use external clocks, hardware sleep or lower consumptions and fine tune power and resource usages.
-
-    * If not specialization is done, the source code will use a simple and non-deterministic loop cycle to count ticks.
-
-
-``` C++
-//
-//  main.cpp
-//  atomicx
-//
-//  Created by GUSTAVO CAMPOS on 28/08/2021.
-//
-
-#include <unistd.h>
+```cpp
+#include <iostream>
 #include <sys/time.h>
 #include <unistd.h>
-
-#include <cstring>
-#include <cstdint>
-#include <iostream>
-#include <setjmp.h>
-#include <string>
-
 #include "atomicx.hpp"
 
 using namespace thread;
 
-#ifdef FAKE_TIMER
-uint nCounter=0;
-#endif
+// --- Platform functions (user must implement) ---
 
-void ListAllThreads();
-
-/*
- * Define the default ticket granularity
- * to milliseconds or round tick if -DFAKE_TICKER
- * is provided on compilation
- */
-atomicx_time Atomicx_GetTick (void)
-{
-#ifndef FAKE_TIMER
-    usleep (20000);
+atomicx_time Atomicx_GetTick(void) {
     struct timeval tp;
-    gettimeofday (&tp, NULL);
-
+    gettimeofday(&tp, NULL);
     return (atomicx_time)tp.tv_sec * 1000 + tp.tv_usec / 1000;
-#else
-    nCounter++;
-
-    return nCounter;
-#endif
 }
 
-/*
- * Sleep for few Ticks, since the default ticket granularity
- * is set to Milliseconds (if -DFAKE_TICKET provide will it will
- * be context switch countings), the thread will sleep for
- * the amount of time needed till next thread start.
- */
-void Atomicx_SleepTick(atomicx_time nSleep)
-{
-#ifndef FAKE_TIMER
-    usleep ((useconds_t)nSleep * 1000);
-#else
-    while (nSleep); usleep(100);
-#endif
+void Atomicx_SleepTick(atomicx_time nSleep) {
+    usleep((useconds_t)nSleep * 1000);
 }
 
-/*
- * Object that implements thread with self-managed (dynamic) stack size
- */
-class SelfManagedThread : public atomicx
-{
+// --- Thread with fixed stack ---
+
+class Blinker : public atomicx {
 public:
-    SelfManagedThread(atomicx_time nNice) : atomicx()
-    {
-        SetNice(nNice);
+    Blinker() : atomicx(stack) { SetNice(500); }
+
+    void run() noexcept override {
+        int count = 0;
+        while (Yield()) {
+            std::cout << "Blink " << ++count << std::endl;
+        }
     }
 
-    ~SelfManagedThread()
-    {
-        std::cout << "Deleting " << GetName() << ": " << (size_t) this << std::endl;
+    void StackOverflowHandler() noexcept override {
+        std::cerr << "Stack overflow in Blinker!" << std::endl;
     }
 
-    void run() noexcept override
-    {
-        size_t nCount=0;
-
-        do
-        {
-            std::cout << __FUNCTION__ << ", Executing " << GetName() << ": " << (size_t) this << ", Counter: " << nCount << std::endl << std::flush;
-
-            nCount++;
-
-        }  while (Yield());
-
-    }
-
-    void StackOverflowHandler (void) noexcept override
-    {
-        std::cout << __FUNCTION__ << ":" << GetName() << "_" << (size_t) this << ": needed: " << GetUsedStackSize() << ", allocated: " << GetStackSize() << std::endl;
-    }
-
-    const char* GetName (void) override
-    {
-        return "Self-Managed Thread";
-    }
-};
-
-/*
- * Object that implements thread
- */
-class Thread : public atomicx
-{
-public:
-    Thread(atomicx_time nNice) : atomicx(stack)
-    {
-        SetNice(nNice);
-    }
-
-    ~Thread()
-    {
-        std::cout << "Deleting " << GetName() << ": " << (size_t) this << std::endl;
-    }
-
-    void run() noexcept override
-    {
-        size_t nCount=0;
-
-        do
-        {
-            std::cout << __FUNCTION__ << ", Executing " << GetName() << ": " << (size_t) this << ", Counter: " << nCount << std::endl << std::flush;
-
-            nCount++;
-
-        }  while (Yield());
-
-    }
-
-    void StackOverflowHandler (void) noexcept override
-    {
-        std::cout << __FUNCTION__ << ":" << GetName() << "_" << (size_t) this << ": needed: " << GetUsedStackSize() << ", allocated: " << GetStackSize() << std::endl;
-    }
-
-    const char* GetName (void) override
-    {
-        return "Thread";
-    }
+    const char* GetName() override { return "Blinker"; }
 
 private:
-    uint8_t stack[1024]=""; //Static initialization to avoid initialization order problem
+    uint8_t stack[512] = "";
 };
 
+// --- Thread with self-managed (auto) stack ---
 
-int main()
-{
-    Thread t1(200);
-    Thread t2(500);
+class Counter : public atomicx {
+public:
+    Counter() : atomicx(128, 64) { SetNice(1000); }
 
-    SelfManagedThread st1(200);
-
-    // This must creates threads and destroy on leaving {} context
-    {
-        Thread t3_1(0);
-        Thread t3_2(0);
-        Thread t3_3(0);
-
-        // since those objects will be destroied here
-        // they should never start and AtomicX should
-        // transparently clean it from the execution list
+    void run() noexcept override {
+        int n = 0;
+        while (Yield()) {
+            std::cout << "Count " << ++n << std::endl;
+        }
     }
 
-    Thread t4(1000);
+    void StackOverflowHandler() noexcept override {
+        std::cerr << "Stack overflow in Counter!" << std::endl;
+    }
 
-    atomicx::Start();
+    const char* GetName() override { return "Counter"; }
+};
+
+int main() {
+    Blinker b;
+    Counter c;
+    atomicx::Start();  // blocks here, running all threads cooperatively
 }
+```
+
+---
+
+## How It Works
+
+AtomicX implements **stackful cooperative coroutines**:
+
+1. **Construction** — When you instantiate a thread object, it automatically registers itself into a global intrusive doubly-linked list. No manual registration needed.
+2. **`Start()`** — Enters the kernel loop. The scheduler picks the next thread and either calls `run()` (first time) or restores its context.
+3. **`Yield()`** — The running thread saves its stack segment via `memcpy`, saves its CPU context via `setjmp`, and jumps back to the scheduler via `longjmp`.
+4. **Resume** — The scheduler restores the stack segment and jumps into the thread's saved context. Execution continues right after `Yield()`.
+5. **Destruction** — When the thread object is destroyed, it automatically removes itself from the scheduler's list.
 
 ```
+Thread A          Scheduler          Thread B
+   │                  │                  │
+   │── Yield() ──────>│                  │
+   │  [save stack]    │                  │
+   │  [setjmp+longjmp]│                  │
+   │                  │── resume ────────>│
+   │                  │  [restore stack] │
+   │                  │  [longjmp]       │
+   │                  │                  │── runs...
+   │                  │<── Yield() ──────│
+   │<── resume ───────│                  │
+   │── runs...        │                  │
+```
+
+> **No preemption.** Threads must call `Yield()` (or `Wait()`, or any blocking IPC call) to give control back to the scheduler. This makes all code between yields **atomic** with respect to other AtomicX threads.
+
+For comprehensive architecture details, see [`design.md`](design.md).
+
+---
+
+## API Reference
+
+### Thread Lifecycle
+
+#### Creating a Thread
+
+Subclass `atomicx` and implement the required virtual methods:
+
+```cpp
+class MyThread : public thread::atomicx {
+public:
+    // Fixed stack: provide a buffer
+    MyThread() : atomicx(stack) { SetNice(100); }
+
+    // OR self-managed stack: initial size + increase pace
+    // MyThread() : atomicx(256, 32) { SetNice(100); }
+
+    void run() noexcept override {
+        // Your thread logic. Call Yield() periodically.
+        while (Yield()) {
+            // do work
+        }
+    }
+
+    void StackOverflowHandler() noexcept override {
+        // Called when stack exceeds buffer (and auto-resize fails)
+    }
+
+    // Optional overrides:
+    const char* GetName() override { return "MyThread"; }
+    void finish() noexcept override { /* cleanup after run() returns */ }
+
+private:
+    uint8_t stack[512] = "";
+};
+```
+
+#### Key Methods
+
+| Method | Description |
+|--------|-------------|
+| `atomicx::Start()` | **Static.** Enters the kernel loop — blocks until all threads finish or deadlock |
+| `Yield(nSleep)` | Context switch. Default sleep = thread's nice value. Pass `0` for immediate return |
+| `YieldNow()` | High-priority yield — this thread gets picked up before normal sleepers |
+| `SetNice(ms)` | Set the default sleep interval between yields (in tick units) |
+| `SetDynamicNice(true)` | Let the kernel auto-tune nice based on actual execution time |
+| `Stop()` / `Resume()` | Suspend / resume the thread |
+| `Restart()` | Calls `finish()` and re-enters `run()` from the beginning |
+| `Detach()` | Calls `finish()`, removes thread from scheduler permanently |
+| `GetID()` | Returns the thread's unique ID (its memory address) |
+| `GetName()` | Returns the thread name (override to customize) |
+| `GetStackSize()` | Allocated stack buffer size |
+| `GetUsedStackSize()` | Actual stack usage from last context switch |
+| `IsStackSelfManaged()` | `true` if using auto-stack mode |
+| `GetStatus()` / `GetSubStatus()` | Current thread state (see state machine in [design.md](design.md)) |
+| `GetCurrentTick()` | Returns the current tick via `Atomicx_GetTick()` |
+| `GetLastUserExecTime()` | How long the thread ran during its last time slice |
+| `GetThreadCount()` | Number of active threads in the system |
+| `IsKernelRunning()` | `true` if `Start()` is currently executing |
+
+#### Iterating All Threads
+
+```cpp
+for (auto& th : *atomicx::GetCurrent()) {
+    std::cout << th.GetName() << " stack: " << th.GetUsedStackSize()
+              << "/" << th.GetStackSize() << std::endl;
+}
+```
+
+### Synchronization
+
+#### Semaphore
+
+```cpp
+atomicx::semaphore sem(3);  // max 3 concurrent acquisitions
+
+// In thread:
+if (sem.acquire(1000)) {   // wait up to 1000 ticks
+    // critical section
+    sem.release();
+}
+
+// RAII version:
+atomicx::smartSemaphore ss(sem);
+if (ss.acquire()) {
+    // auto-released when ss goes out of scope
+}
+```
+
+| Method | Description |
+|--------|-------------|
+| `semaphore(maxShared)` | Create with max concurrent locks |
+| `acquire(timeout)` | Acquire a slot (0 = wait forever) |
+| `release()` | Release one slot |
+| `GetCount()` | Current acquired count |
+| `GetWaitCount()` | Threads waiting to acquire |
+
+#### Mutex (Read-Write Lock)
+
+```cpp
+atomicx::mutex mtx;
+
+// Exclusive lock:
+if (mtx.Lock(1000)) {      // timeout optional
+    // only this thread has access
+    mtx.Unlock();
+}
+
+// Shared lock (multiple readers):
+if (mtx.SharedLock()) {
+    // read-only access, other shared locks allowed
+    mtx.SharedUnlock();
+}
+
+// RAII version:
+atomicx::smartMutex sm(mtx);
+if (sm.Lock()) {
+    // auto-unlocked when sm is destroyed
+}
+```
+
+### IPC: Wait/Notify
+
+Any variable's address can be used as a synchronization point. The `tag` parameter adds a channel/meaning layer.
+
+```cpp
+int mySignal;  // the variable itself is just an anchor — its value doesn't matter
+
+// Thread A (consumer): blocks until notified
+size_t message;
+if (Wait(message, mySignal, /*tag=*/1, /*timeout=*/5000)) {
+    // received notification with message
+}
+
+// Thread B (producer): wakes up Thread A
+size_t payload = 42;
+Notify(payload, mySignal, /*tag=*/1);
+```
+
+| Method | Description |
+|--------|-------------|
+| `Wait(msg, ref, tag, timeout)` | Block until notified. Returns message via `msg` |
+| `Wait(ref, tag, timeout)` | Block until notified (no message) |
+| `WaitAny(msg, ref, tag, timeout)` | Wait for any tag on `ref`. Returns the actual tag |
+| `Notify(ref, tag)` | Wake one waiting thread + yield |
+| `Notify(msg, ref, tag)` | Wake one + send message + yield |
+| `SafeNotify(ref, tag)` | Wake one thread, **no** yield (use in ISR-like contexts) |
+| `SyncNotify(msg, ref, tag, timeout)` | Wait until a waiter exists, then notify |
+| `LookForWaitings(ref, tag, timeout)` | Block until someone is waiting on ref+tag |
+| `HasWaitings(ref, tag)` | Count of threads waiting on ref+tag |
+| `IsWaiting(ref, tag)` | `true` if at least one waiter exists |
+
+### IPC: Queues
+
+Thread-safe, blocking queue built on Wait/Notify:
+
+```cpp
+atomicx::queue<int> q(10);  // capacity of 10
+
+// Producer thread:
+q.PushBack(42);       // blocks if full
+q.PushFront(99);      // push to front
+
+// Consumer thread:
+int val = q.Pop();    // blocks if empty
+
+q.GetSize();          // current item count
+q.IsFull();           // true if at capacity
+```
+
+### IPC: Send/Receive Data Pipes
+
+Transfer arbitrary binary data between threads. Built on top of SyncNotify/WaitAny:
+
+```cpp
+struct SensorData { float temp; float humidity; };
+
+int channel;  // any variable as reference anchor
+
+// Sender thread:
+SensorData data = {23.5f, 65.0f};
+uint16_t sent = Send(channel, (uint8_t*)&data, sizeof(data), Timeout(5000));
+
+// Receiver thread:
+SensorData buf;
+uint16_t received = Receive(channel, (uint8_t*)&buf, sizeof(buf), Timeout(5000));
+```
+
+### Broadcasting
+
+Send messages to all threads that have opted in:
+
+```cpp
+// In your thread class:
+class MyThread : public atomicx {
+    MyThread() : atomicx(stack) {
+        SetReceiveBroadcast(true);  // opt in
+    }
+
+    void BroadcastHandler(const size_t& ref, const Message& msg) override {
+        // handle broadcast: ref, msg.message, msg.tag
+    }
+};
+
+// From any thread:
+BroadcastMessage(SIGNAL_TYPE, {payload, tag});
+```
+
+---
+
+## Platform Porting
+
+To run AtomicX on any platform, implement these two `extern "C"` functions:
+
+```cpp
+// Return the current time in your chosen tick unit (ms, us, etc.)
+atomicx_time Atomicx_GetTick(void);
+
+// Sleep/idle for nSleep ticks — opportunity for power saving
+void Atomicx_SleepTick(atomicx_time nSleep);
+```
+
+### Arduino Example
+
+```cpp
+atomicx_time Atomicx_GetTick(void) {
+    return (atomicx_time)millis();
+}
+
+void Atomicx_SleepTick(atomicx_time nSleep) {
+    delay(nSleep);
+}
+```
+
+### POSIX (Linux / macOS) Example
+
+```cpp
+atomicx_time Atomicx_GetTick(void) {
+    struct timeval tp;
+    gettimeofday(&tp, NULL);
+    return (atomicx_time)tp.tv_sec * 1000 + tp.tv_usec / 1000;
+}
+
+void Atomicx_SleepTick(atomicx_time nSleep) {
+    usleep((useconds_t)nSleep * 1000);
+}
+```
+
+### ESP32 with Power Saving
+
+```cpp
+atomicx_time Atomicx_GetTick(void) {
+    return (atomicx_time)millis();
+}
+
+void Atomicx_SleepTick(atomicx_time nSleep) {
+    esp_sleep_enable_timer_wakeup(nSleep * 1000);  // light sleep
+    esp_light_sleep_start();
+}
+```
+
+> The `Atomicx_SleepTick` function is called by the scheduler when no thread is ready to run. Use it to reduce power consumption on battery-powered devices.
+
+---
+
+## Examples
+
+### PC
+
+| Example | Description |
+|---------|-------------|
+| [`examples/pc/simple`](examples/pc/simple) | Basic threads with fixed and self-managed stacks |
+| [`examples/pc/semaphore`](examples/pc/semaphore) | Semaphore usage with Send/Receive data pipes |
+
+### Arduino
+
+| Example | Description |
+|---------|-------------|
+| [`examples/Arduino/simple`](examples/Arduino/simple) | Minimal thread example |
+| [`examples/Arduino/semaphore`](examples/Arduino/semaphore) | Counting semaphore demo |
+| [`examples/Arduino/sharedlock`](examples/Arduino/sharedlock) | Read-write mutex (shared lock) |
+| [`examples/Arduino/send_receive`](examples/Arduino/send_receive) | Data pipe transfer between threads |
+| [`examples/Arduino/watchdog`](examples/Arduino/watchdog) | Watchdog pattern using thread monitoring |
+| [`examples/Arduino/DotMatrix`](examples/Arduino/DotMatrix) | Full project: LED matrix scroller with Serial/Telnet terminals, UDP trap, and logging (ESP8266) |
+| [`examples/Arduino/ThermalCameraDemo`](examples/Arduino/ThermalCameraDemo) | Thermal camera display |
+| [`examples/Arduino/avrAutoRobotController`](examples/Arduino/avrAutoRobotController) | Robot controller with IPC motor commands |
+
+---
+
+## Architecture & Design
+
+For detailed architecture diagrams, class relationships, state machines, stack management internals, and the intrusive object controller design, see **[`design.md`](design.md)**.
+
+### Key Design Decisions
+
+- **Cooperative, not preemptive** — deterministic behavior, no race conditions between AtomicX threads, no need for critical sections
+- **Intrusive linked list** — zero-allocation thread management; threads register/unregister themselves on construction/destruction
+- **`setjmp`/`longjmp` context switch** — portable across all C compilers, no assembly required
+- **Stack save/restore via `memcpy`** — threads use the real C stack during execution, only backing up the used portion on yield
+- **All synchronization built on Wait/Notify** — semaphores, mutexes, and queues are layered on top of a single primitive, keeping the core small
+
+---
+
+## Supported Platforms
+
+| Platform | Tested | Notes |
+|----------|--------|-------|
+| Arduino AVR (Uno, Mega, ATtiny85) | Yes | Fixed stack recommended |
+| ESP8266 | Yes | Full featured, see DotMatrix example |
+| ESP32 | Yes | Single-core cooperative context |
+| STM32 | Yes | Via Arduino core or bare-metal |
+| Linux / macOS (POSIX) | Yes | Great for development and testing |
+| Any C++11 with `setjmp.h` | Should work | Implement the two platform functions |
+
+---
+
+## Changelog
+
+### Version 1.3.0
+
+- **Send/Receive data pipes** — transfer binary data between threads using `Send()` and `Receive()`, enabling client/server patterns inside embedded applications
+- **WaitAny** — extends Wait/Notify to receive any tag, returning the actual tag by reference
+- **Broadcasting** — replaced the old Broker with `BroadcastMessage()` + `BroadcastHandler()` for async thread-to-thread signaling
+- **Mutex/Semaphore timeouts** — `Lock(timeout)` and `SharedLock(timeout)` now accept optional timeouts (fully backward compatible)
+- **DotMatrix project** — full ESP8266 example with Serial/Telnet terminals, UDP trap, and a logging API
+
+### Version 1.2.1
+
+- **Dynamic Nice** — kernel auto-tunes thread timing via `SetDynamicNice(true)`
+- **`YieldNow()`** — high-priority context switch for time-sensitive threads
+- **`smartSemaphore`** and **`smartMutex`** — RAII wrappers for automatic resource release
+- **Semaphores** — `atomicx::semaphore` with `acquire()`/`release()` and optional timeout
+- **`Timeout` utility class** — `IsTimedout()`, `GetRemaining()`, `GetDurationSince()`
+- **Renamed** `atomicx::lock` to `atomicx::mutex` for consistency
+- **Stack increase pace** — configurable growth rate for self-managed stacks
+
+### Version 1.2.0
+
+- **Self-managed stack** — use `atomicx()` default constructor for automatic stack memory management
+- New examples: Arduino/Simple, avrAutoRobotController
+
+### Version 1.1.3
+
+- Thermal Camera Demo
+- Custom `subType` parameter for Wait/Notify (enables layered notification channels)
+
+### Version 1.1.2
+
+- Split `Notify` into `Notify` and `SyncNotify` to resolve compilation ambiguity on some boards
+
+### Version 1.1.1
+
+- `SyncNotify` — Notify waits for a matching `Wait` to be available before sending
+- `avrRobotController` simulator with terminal interface
+
+### Version 1.1.0
+
+- `finish()` callback after `run()` returns (enables self-destroying eventual threads)
+- `smartMutex` RAII compliance
+- **Timed Wait/Notify** — real state-blocking with timeout, no spin locks
+- `LookForWaitings` — block until a waiter appears for a given ref+tag
+- Tag value `0` matches all tags (wildcard)
+
+### Version 1.0.0
+
+- Initial release
+- Cooperative threading with `setjmp`/`longjmp` context switching
+- Zero stack displacement — threads use the full C stack
+- Wait/Notify IPC with message and tag
+- Thread-safe queues
+- Read-write mutex (Lock / SharedLock)
+- Safe notification variants (no context switch) for use in interrupt-like contexts
+
+---
+
+## Important Notes
+
+- **Stack memory is protected** — each thread's stack context is isolated. Do not pass stack pointers between threads. Use global variables, heap allocations, `smart_ptr`, queues, or `Send`/`Receive` instead.
+- **No spin locks** — all blocking operations use real kernel-level state blocking via the scheduler. Waiting threads consume zero CPU.
+- **Cooperative discipline** — you must call `Yield()` (or any blocking API) regularly. A thread that never yields will starve all others.
+
+---
+
+## License
+
+[MIT License](LICENSE) - Copyright (c) 2022 Gustavo Campos
